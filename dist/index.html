@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#fafaf8">
     <meta name="description" content="Somil Aggarwal — engineer, product manager, investor. An index of work, things I'm building, reading, games, and writing.">
     <title>Somil Aggarwal — A few different players</title>
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="./styles.css">
     <script src="./reading.js" defer></script>
     <script src="./app.js" defer></script>
@@ -25,22 +25,13 @@
 
     <div class="site-shell">
       <header class="site-header">
-        <a class="brand" href="#" aria-label="Somil Aggarwal, back to top"><span class="brand-mark" aria-hidden="true">s<span>.</span></span><span>Somil Aggarwal</span></a>
+        <a class="brand" href="#" aria-label="Somil Aggarwal, back to top">Somil Aggarwal</a>
         <button class="player-trigger" type="button" data-open-players><svg class="icon" aria-hidden="true"><use href="#icon-grid"/></svg>Choose a player</button>
       </header>
 
       <main id="main">
         <section class="intro" aria-labelledby="intro-heading">
-          <div class="intro-copy">
-            <p class="eyebrow">A PERSONAL CORNER OF THE INTERNET</p>
-            <h1 id="intro-heading">One person.<br>A few different <em>players.</em></h1>
-            <p class="intro-description">I'm Somil. I build things, follow my curiosity, and occasionally<br class="desktop-break"> turn a side quest into something real.</p>
-          </div>
-          <div class="intro-art" aria-hidden="true">
-            <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
-            <span class="art-spark">✳</span>
-            <span class="art-note">a work in progress,<br>in the best way.</span>
-          </div>
+          <h1 id="intro-heading">One person.<br>A few different <em>players.</em></h1>
         </section>
 
         <div class="index-layout">
@@ -54,72 +45,63 @@
               <a href="#games"><svg class="icon" aria-hidden="true"><use href="#icon-games"/></svg>Games</a>
               <a href="#writing"><svg class="icon" aria-hidden="true"><use href="#icon-writing"/></svg>Writing</a>
             </nav>
-            <p class="sidebar-note">Different hats.<br>Same person underneath.</p>
           </aside>
 
           <div class="content-sections">
             <section class="content-section" id="work" aria-labelledby="work-title">
-              <div class="section-heading"><h2 id="work-title" tabindex="-1">Work experience</h2><span class="section-kicker">THE DAY JOBS</span></div>
-              <p class="section-description">A few different seats at the table.</p>
+              <div class="section-heading"><h2 id="work-title" tabindex="-1">Work experience</h2></div>
               <div class="roles">
-                <div class="role"><span class="role-symbol" aria-hidden="true">&lt;/&gt;</span><h3>Engineer</h3><p>Make it work.</p></div>
-                <div class="role"><span class="role-symbol" aria-hidden="true">⌘</span><h3>Product manager</h3><p>Make it matter.</p></div>
-                <div class="role"><span class="role-symbol role-star" aria-hidden="true">✳</span><h3>Investor</h3><p>See what could be.</p></div>
+                <div class="role"><span class="role-symbol" aria-hidden="true">&lt;/&gt;</span><h3>Engineer</h3></div>
+                <div class="role"><span class="role-symbol" aria-hidden="true">⌘</span><h3>Product manager</h3></div>
+                <div class="role"><span class="role-symbol role-star" aria-hidden="true">✳</span><h3>Investor</h3></div>
               </div>
-              <p class="quiet-note">The longer story is coming soon.</p>
             </section>
 
             <section class="content-section" id="library" aria-labelledby="library-title">
-              <div class="section-heading"><h2 id="library-title" tabindex="-1">Library</h2><span class="section-kicker">FOOD FOR THOUGHT</span></div>
-              <p class="section-description">Good reads. Rabbit holes. Ideas that stick around.</p>
-              <div class="library-shelf"><div class="books" aria-hidden="true"><span></span><span></span><span></span><span></span></div><div><h3>Making room on the shelf.</h3><p>A collection of articles is coming soon.</p></div></div>
+              <div class="section-heading"><h2 id="library-title" tabindex="-1">Library</h2></div>
               <ul class="link-list" id="article-links" hidden></ul>
-              <details class="more-reading" id="more-reading" hidden><summary id="more-reading-label">More from the reading shelf</summary><ul class="link-list" id="more-article-links"></ul></details>
+              <details class="more-reading" id="more-reading" hidden><summary id="more-reading-label">More articles</summary><ul class="link-list" id="more-article-links"></ul></details>
             </section>
 
             <section class="content-section" id="building" aria-labelledby="building-title">
-              <div class="section-heading"><h2 id="building-title" tabindex="-1">Building & inventing</h2><span class="section-kicker">FROM ZERO TO SOMETHING</span></div>
-              <p class="section-description">Things I've been bringing into the world.</p>
+              <div class="section-heading"><h2 id="building-title" tabindex="-1">Building & inventing</h2></div>
               <ul class="link-list project-list" id="project-links"></ul>
             </section>
 
             <section class="content-section" id="factory" aria-labelledby="factory-title">
-              <div class="section-heading"><h2 id="factory-title" tabindex="-1">Software factory</h2><span class="section-kicker">TOOLS FOR MAKING TOOLS</span></div>
-              <p class="section-description">A little structure for agents to do good work.</p>
+              <div class="section-heading"><h2 id="factory-title" tabindex="-1">Software factory</h2></div>
               <div class="factory-card"><div class="terminal-art" aria-hidden="true"><span>~</span> agent-shape<span class="terminal-caret"></span></div><div class="factory-caption"><h3>My agent harness</h3><span id="harness-link" class="pending-label">Link coming soon</span></div></div>
             </section>
 
             <section class="content-section" id="games" aria-labelledby="games-title">
-              <div class="section-heading"><h2 id="games-title" tabindex="-1">Games</h2><span class="section-kicker">STRICTLY FOR FUN</span></div>
-              <p class="section-description">Because not everything needs to be productive.</p>
+              <div class="section-heading"><h2 id="games-title" tabindex="-1">Games</h2></div>
               <ul class="game-list" id="game-links"></ul>
             </section>
 
             <section class="content-section" id="writing" aria-labelledby="writing-title">
-              <div class="section-heading"><h2 id="writing-title" tabindex="-1">Writing</h2><span class="section-kicker">THINKING OUT LOUD</span></div>
-              <p class="section-description">Short thoughts and the occasional longer one.</p>
+              <div class="section-heading"><h2 id="writing-title" tabindex="-1">Writing</h2></div>
               <ul class="link-list" id="writing-links"></ul>
             </section>
           </div>
         </div>
       </main>
 
-      <footer class="site-footer"><span>Somil Aggarwal<span class="footer-divider">/</span>Always a work in progress.</span><a href="#">Back to top</a></footer>
+      <footer class="site-footer"><span>Somil Aggarwal</span><a href="#">Back to top</a></footer>
     </div>
 
-    <dialog id="player-dialog" aria-labelledby="player-title" aria-describedby="player-description">
+    <dialog id="player-dialog" aria-labelledby="player-title">
       <div class="player-screen">
-        <div class="player-top"><span class="brand-mark" aria-hidden="true">s<span>.</span></span><button class="close-player" aria-label="Close player selector" type="button">×</button></div>
-        <div class="player-intro"><p class="eyebrow">SAME PERSON. DIFFERENT SIDE QUESTS.</p><h2 id="player-title">Choose your <em>player.</em></h2><p id="player-description">Pick a side of me to get to know.</p></div>
+        <div class="player-top"><button class="close-player" aria-label="Close player selector" type="button">×</button></div>
+        <div class="player-intro"><h2 id="player-title">Choose your <em>player.</em></h2></div>
         <div class="player-grid">
-          <a href="#work" class="player-card" style="--player-color:#e8edf8"><span class="player-portrait"><svg aria-hidden="true"><use href="#icon-work"/></svg></span><span class="player-name">The professional</span><span class="player-caption">Engineer. PM. Investor.</span></a>
-          <a href="#library" class="player-card" style="--player-color:#ede8f5"><span class="player-portrait"><svg aria-hidden="true"><use href="#icon-library"/></svg></span><span class="player-name">The curious one</span><span class="player-caption">An ever-growing reading list.</span></a>
-          <a href="#building" class="player-card" style="--player-color:#e8f0e5"><span class="player-portrait"><svg aria-hidden="true"><use href="#icon-building"/></svg></span><span class="player-name">The builder</span><span class="player-caption">Ideas, made real.</span></a>
-          <a href="#factory" class="player-card" style="--player-color:#f8ecd9"><span class="player-portrait"><svg aria-hidden="true"><use href="#icon-factory"/></svg></span><span class="player-name">The tinkerer</span><span class="player-caption">Inside the software factory.</span></a>
-          <a href="#games" class="player-card" style="--player-color:#f5e5e8"><span class="player-portrait"><svg aria-hidden="true"><use href="#icon-games"/></svg></span><span class="player-name">The player</span><span class="player-caption">A little friendly competition.</span></a>
-          <a href="#writing" class="player-card" style="--player-color:#e4eeee"><span class="player-portrait"><svg aria-hidden="true"><use href="#icon-writing"/></svg></span><span class="player-name">The writer</span><span class="player-caption">Working things out in words.</span></a>
+          <a href="#work" class="player-card" style="--player-color:#e8edf8"><span class="player-portrait"><svg aria-hidden="true"><use href="#icon-work"/></svg></span><span class="player-name">The professional</span></a>
+          <a href="#library" class="player-card" style="--player-color:#ede8f5"><span class="player-portrait"><svg aria-hidden="true"><use href="#icon-library"/></svg></span><span class="player-name">The curious one</span></a>
+          <a href="#building" class="player-card" style="--player-color:#e8f0e5"><span class="player-portrait"><svg aria-hidden="true"><use href="#icon-building"/></svg></span><span class="player-name">The builder</span></a>
+          <a href="#factory" class="player-card" style="--player-color:#f8ecd9"><span class="player-portrait"><svg aria-hidden="true"><use href="#icon-factory"/></svg></span><span class="player-name">The tinkerer</span></a>
+          <a href="#games" class="player-card" style="--player-color:#f5e5e8"><span class="player-portrait"><svg aria-hidden="true"><use href="#icon-games"/></svg></span><span class="player-name">The player</span></a>
+          <a href="#writing" class="player-card" style="--player-color:#e4eeee"><span class="player-portrait"><svg aria-hidden="true"><use href="#icon-writing"/></svg></span><span class="player-name">The writer</span></a>
         </div>
-        <button class="skip-player" type="button">Just browsing? Skip straight to the content.</button>
+        <button class="skip-player" type="button">Skip to content</button>
       </div>
     </dialog>
   </body>

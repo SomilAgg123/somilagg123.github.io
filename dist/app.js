@@ -3,9 +3,9 @@ const content = {
   projects: [
     { name: 'customermemory.dev', mark: 'cm', url: 'https://customermemory.dev', color: '#edf0e9' },
     { name: 'Temba', mark: 't', url: null, color: '#f0e9e4', status: 'No public link' },
-    { name: 'Mutual', mark: 'm', url: 'https://somilagg123.github.io/mutual/', color: '#e8eaf3', detail: 'A matchmaking prototype where friends make the introduction.' },
-    { name: 'Agcess', mark: 'a', url: 'https://somilagg123.github.io/agcess/', color: '#e8eee3', detail: 'Agricultural field data, captured through SMS.' },
-    { name: 'Horlo', mark: '◷', url: 'https://somilagg123.github.io/horlo/', color: '#eeece6', detail: 'A watch collection and discovery app.' },
+    { name: 'Mutual', mark: 'm', url: 'https://somilagg123.github.io/mutual/', color: '#e8eaf3' },
+    { name: 'Agcess', mark: 'a', url: 'https://somilagg123.github.io/agcess/', color: '#e8eee3' },
+    { name: 'Horlo', mark: '◷', url: 'https://somilagg123.github.io/horlo/', color: '#eeece6' },
   ],
   articles: readingArticles,
   harness: 'https://github.com/SomilAgg123/agent-shape',
@@ -14,8 +14,8 @@ const content = {
     { name: 'forhappyhour', mark: '✷', url: 'https://forhappyhour.com', action: 'Explore Happy Hour' },
   ],
   writing: [
-    { name: 'X', mark: '𝕏', detail: 'The short version', url: 'https://x.com/Somil_Agg' },
-    { name: 'Substack', mark: '≡', detail: 'A little more room to think', url: 'https://foundaition.substack.com' },
+    { name: 'X', mark: '𝕏', url: 'https://x.com/Somil_Agg' },
+    { name: 'Substack', mark: '≡', url: 'https://foundaition.substack.com' },
   ],
 };
 
@@ -47,10 +47,7 @@ function renderList(id, items) {
       if (item.color) mark.style.setProperty('--tile', item.color);
       main.append(mark);
     }
-    const copy = label('item-copy', '');
-    copy.append(label('item-name', item.name));
-    if (item.detail) copy.append(label('item-detail', item.detail));
-    main.append(copy);
+    main.append(label('item-name', item.name));
     row.append(main, label(item.url ? 'visit-label' : 'pending-label', item.url ? (item.source || 'Visit site') : (item.status || 'Link coming soon')));
     if (item.url) row.setAttribute('aria-label', `${item.name} (opens in a new tab)`);
     li.append(row);
@@ -62,12 +59,11 @@ renderList('project-links', content.projects);
 renderList('writing-links', content.writing);
 
 if (content.articles.length) {
-  document.querySelector('.library-shelf').hidden = true;
   document.getElementById('article-links').hidden = false;
   renderList('article-links', content.articles.slice(0, 5));
   if (content.articles.length > 5) {
     document.getElementById('more-reading').hidden = false;
-    document.getElementById('more-reading-label').textContent = `Explore ${content.articles.length - 5} more reads`;
+    document.getElementById('more-reading-label').textContent = `Show ${content.articles.length - 5} more`;
     renderList('more-article-links', content.articles.slice(5));
   }
 }
