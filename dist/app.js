@@ -149,8 +149,9 @@ window.addEventListener('scroll', () => {
   });
 }, { passive: true });
 
-// The content view is the default. /?view=players opens the optional entry screen.
-if (new URLSearchParams(location.search).get('view') === 'players') openPlayers();
+// Open the chooser on arrival. Explicit content URLs and section links skip it.
+const requestedView = new URLSearchParams(location.search).get('view');
+if (requestedView === 'players' || (requestedView !== 'content' && !location.hash)) openPlayers();
 if (location.hash) setActive(location.hash.slice(1));
 
 window.addEventListener('hashchange', () => {

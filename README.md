@@ -1,6 +1,6 @@
 # Somil's personal website
 
-A small, dependency-free personal site. The content index is the default; the optional player chooser is accessible from the header or `/?view=players`.
+A small, dependency-free personal site. The player chooser opens on arrival. Visitors can choose a section or use “Skip to content.” Direct section links and `/?view=content` open the content index immediately; the header button reopens the chooser.
 
 Website: https://somilagg123.github.io/
 
