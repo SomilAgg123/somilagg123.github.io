@@ -5,9 +5,9 @@ const content = {
     { statement: '...a new variation of poker', name: 'French Poker', url: 'https://frenchpoker.onrender.com' },
   ],
   pastProjects: [
-    { statement: '...a dating app for friends to set their friends up', name: 'Mutual', url: 'https://somilagg123.github.io/mutual/' },
-    { statement: '...a data tracking tool for farmers in the field', name: 'Agcess', url: 'https://somilagg123.github.io/agcess/' },
-    { statement: '...the social platform for watch collectors', name: 'Horlo', url: 'https://somilagg123.github.io/horlo/' },
+    { statement: '...a dating app for friends to set their friends up', name: 'Mutual', url: 'https://somilagg123.github.io/mutual/', github: 'https://github.com/SomilAgg123/mutual' },
+    { statement: '...a data tracking tool for farmers in the field', name: 'Agcess', url: 'https://somilagg123.github.io/agcess/', github: 'https://github.com/SomilAgg123/agcess' },
+    { statement: '...the social platform for watch collectors', name: 'Horlo', url: 'https://somilagg123.github.io/horlo/', github: 'https://github.com/SomilAgg123/horlo' },
   ],
   articles: readingArticles,
   harness: 'https://github.com/SomilAgg123/agent-shape',
@@ -24,9 +24,14 @@ const content = {
     { statement: '...that reading is an act of creativity', name: 'Observations', url: 'https://foundaition.substack.com/p/observations' },
   ],
   investingThesis: [
-    { name: 'Corridor', note: 'Acquired by Cognition', url: 'https://cognition.com/blog/corridor-joining-cognition' },
+    { name: 'Corridor', note: 'Acquired by Cognition', noteUrl: 'https://cognition.com/blog/corridor-joining-cognition', url: 'https://www.corridor.dev/' },
     { name: 'Pangram Labs', url: 'https://www.pangram.com/' },
     { name: 'Lucid Computing', url: 'https://lucidcomputing.ai/' },
+  ],
+  aiInsurance: [
+    { name: 'AIUC', url: 'https://www.aiuc.com/' },
+    { name: 'Testudo', url: 'https://www.testudo.co/' },
+    { name: 'Armilla AI', url: 'https://www.armilla.ai/' },
   ],
   elementalInvestments: [
     { name: 'Symbium', url: 'https://symbium.com/' },
@@ -70,9 +75,9 @@ const content = {
       dates: 'Mar 2023 – Sep 2023',
       summary: 'Sourced 60%+ of the fund’s dealflow and developed its AI investing strategy. Learned everything I know about how to invest in venture for the right reasons.',
       investments: [
-        { name: 'Machinery Partner', stage: 'Series A' },
-        { name: 'Multiplayer', stage: 'Seed' },
-        { name: 'Heretto', stage: 'Series B' },
+        { name: 'Machinery Partner', stage: 'Series A', url: 'https://www.machinerypartner.com/' },
+        { name: 'Multiplayer', stage: 'Seed', url: 'https://www.multiplayer.app/' },
+        { name: 'Heretto', stage: 'Series B', url: 'https://www.heretto.com/' },
       ],
     },
     {
@@ -121,8 +126,36 @@ function renderStoryList(id, items) {
   });
 }
 
-renderStoryList('current-projects', content.currentProjects);
-renderStoryList('past-projects', content.pastProjects);
+function appendDestinationLinks(parent, item) {
+  const links = document.createElement('div');
+  links.className = 'row-links';
+  [['Website', item.url], ['GitHub', item.github]].forEach(([title, url]) => {
+    if (!url) return;
+    const link = externalLink(url);
+    link.className = 'destination-link';
+    link.textContent = title;
+    link.setAttribute('aria-label', `${item.name} ${title} (opens in a new tab)`);
+    links.append(link);
+  });
+  if (links.childElementCount) parent.append(links);
+}
+
+function renderProjects(id, projects) {
+  const list = document.getElementById(id);
+  projects.forEach(project => {
+    const row = document.createElement('li');
+    row.className = 'project-row';
+    const copy = document.createElement('div');
+    copy.className = 'row-copy';
+    copy.append(label('story-statement', project.statement), label('story-source', project.name));
+    row.append(copy);
+    appendDestinationLinks(row, project);
+    list.append(row);
+  });
+}
+
+renderProjects('current-projects', content.currentProjects);
+renderProjects('past-projects', content.pastProjects);
 renderStoryList('writing-links', content.writing);
 
 function renderBooks(id, articles) {
@@ -158,7 +191,11 @@ function appendInvestments(parent, investments) {
   list.className = 'investment-list';
   investments.forEach(investment => {
     const item = document.createElement('li');
-    item.append(label('investment-name', investment.name), label('investment-stage', investment.stage));
+    const copy = document.createElement('div');
+    copy.className = 'row-copy';
+    copy.append(label('investment-name', investment.name), label('investment-stage', investment.stage));
+    item.append(copy);
+    appendDestinationLinks(item, investment);
     list.append(item);
   });
   parent.append(heading, list);
@@ -237,15 +274,22 @@ function renderExperience() {
 renderExperience();
 
 function renderInvesting() {
-  [['thesis-companies', content.investingThesis], ['elemental-companies', content.elementalInvestments]].forEach(([id, companies]) => {
+  [['thesis-companies', content.investingThesis], ['insurance-companies', content.aiInsurance], ['elemental-companies', content.elementalInvestments]].forEach(([id, companies]) => {
     const list = document.getElementById(id);
     companies.forEach(company => {
       const item = document.createElement('li');
-      const link = externalLink(company.url);
-      link.setAttribute('aria-label', `${company.name}${company.note ? ` — ${company.note}` : ''} (opens in a new tab)`);
-      link.append(label('thesis-company-name', company.name));
-      if (company.note) link.append(label('thesis-company-note', company.note));
-      item.append(link);
+      const copy = document.createElement('div');
+      copy.className = 'row-copy';
+      copy.append(label('thesis-company-name', company.name));
+      if (company.note) {
+        const note = company.noteUrl ? externalLink(company.noteUrl) : document.createElement('span');
+        note.className = 'thesis-company-note';
+        note.textContent = company.note;
+        if (company.noteUrl) note.setAttribute('aria-label', `${company.name}: ${company.note} (opens in a new tab)`);
+        copy.append(note);
+      }
+      item.append(copy);
+      appendDestinationLinks(item, company);
       list.append(item);
     });
   });

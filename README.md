@@ -12,6 +12,8 @@ Run `npm run dev` and visit http://127.0.0.1:4173. Run `npm run check` to check 
 
 Edit project, game, and writing URLs in `dist/app.js`. Projects are grouped into current and past work; the writing statements link to individual essays. Edit the introduction in `dist/index.html`; styles live in `dist/styles.css`.
 
+Project rows show right-aligned Website and GitHub links. Mutual, Agcess, and Horlo have public repositories, verified on 23 November 2026. CustomerMemory and French Poker show only their public websites. Keep repository links limited to public repositories. All investing companies have right-aligned Website links. Somil's “Insurance for AI” group includes AIUC, Testudo, and Armilla AI with their official websites; these are thesis examples, not stated portfolio holdings.
+
 `dist/reading.js` contains a snapshot of all 30 articles marked `Read` in the Notion Reading Log on 23 November 2026. Six book-style cards display initially in three columns; the remaining 24 expand inline. The grid adapts to two or one column on narrower screens. This is a static snapshot, not a live Notion integration. Only titles, public URLs, and publication names are included.
 
 Project URLs for Mutual, Agcess, and Horlo come from their GitHub READMEs. The harness links to `SomilAgg123/agent-shape` from the opening “A bit about me” section. X, Substack, French Poker, and Happy Hour use the URLs supplied by Somil. The investor and builder chooser cards have separate destinations.
