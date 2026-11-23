@@ -16,3 +16,47 @@ dialog{border:0;padding:0;margin:auto;width:min(1000px,calc(100% - 48px));max-he
 @media(max-width:760px){.index-label{display:none}}
 
 .site-name{font:inherit}
+
+/* A section becomes its own page; the full index stays available via Skip. */
+.section-link{border-radius:3px;transition:color .2s}
+.section-link:hover{color:var(--accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:6px}
+.section-blob{display:none}
+.back-to-index{display:inline-flex;align-items:center;gap:9px;margin-bottom:36px;color:var(--muted);font-size:14px}
+.back-to-index .icon{width:15px;height:15px}
+.back-to-index:hover{color:var(--ink)}
+#main:focus{outline:none}
+.section-view .site-shell{min-height:100svh;display:flex;flex-direction:column}
+.section-view main{flex:1}
+.section-view .index-layout{display:block;max-width:760px;margin:0 auto;padding-top:35px}
+.section-view .content-section{padding:0;margin:0;border:0;animation:section-arrive .35s ease-out both}
+.section-view .section-heading{display:flex;align-items:center;gap:26px;margin-bottom:40px;min-height:100px}
+.section-view .section-heading h2{font-family:var(--serif);font-size:clamp(36px,4.5vw,52px);font-weight:400;line-height:1.08;letter-spacing:-1.2px}
+.section-view .section-link:hover{text-decoration:none}
+.section-view .section-blob{position:relative;display:grid;place-items:center;width:96px;height:96px;flex-shrink:0;isolation:isolate}
+.section-blob:before{content:'';position:absolute;inset:0;background:var(--player-color);border:1px solid #2527220a;border-radius:42% 58% 62% 38% / 46% 40% 60% 54%;animation:blob-morph 8s ease-in-out infinite}
+.section-blob svg{position:relative;width:40px;height:40px;stroke-width:1.25;color:#424a3f;animation:blob-float 5s ease-in-out infinite}
+#library .section-blob:before,#games .section-blob:before{animation-delay:-2s}
+#building .section-blob:before,#writing .section-blob:before{animation-delay:-4s}
+#factory .section-blob:before{animation-delay:-6s}
+.section-view .site-footer{margin-top:80px}
+@keyframes blob-morph{
+  0%,100%{border-radius:42% 58% 62% 38% / 46% 40% 60% 54%;transform:rotate(-7deg) scale(1)}
+  33%{border-radius:59% 41% 42% 58% / 54% 64% 36% 46%;transform:rotate(8deg) scale(1.04,.96)}
+  66%{border-radius:48% 52% 35% 65% / 38% 45% 55% 62%;transform:rotate(-3deg) scale(.97,1.03)}
+}
+@keyframes blob-float{0%,100%{transform:translateY(2px) rotate(-4deg)}50%{transform:translateY(-3px) rotate(4deg)}}
+@keyframes section-arrive{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:760px){
+  .section-view .index-layout{padding-top:24px}
+  .back-to-index{margin-bottom:28px}
+  .section-view .section-heading{gap:20px;margin-bottom:30px;min-height:80px}
+  .section-view .section-blob{width:76px;height:76px}
+  .section-blob svg{width:33px;height:33px}
+  .section-view .site-footer{margin-top:60px}
+}
+@media(max-width:480px){
+  .section-view .section-heading{gap:16px}
+  .section-view .section-heading h2{font-size:36px}
+  .section-view .section-blob{width:68px;height:68px}
+  .section-blob svg{width:30px;height:30px}
+}

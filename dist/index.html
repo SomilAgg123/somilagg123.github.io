@@ -25,16 +25,16 @@
 
     <div class="site-shell">
       <header class="site-header">
-        <h1 class="site-name"><a class="brand" href="#" aria-label="Somil Aggarwal, back to top">Somil Aggarwal</a></h1>
+        <h1 class="site-name"><a class="brand" href="?view=content" data-all-content aria-label="Somil Aggarwal, all content">Somil Aggarwal</a></h1>
         <button class="player-trigger" type="button" data-open-players><svg class="icon" aria-hidden="true"><use href="#icon-grid"/></svg>Choose a player</button>
       </header>
 
-      <main id="main">
+      <main id="main" tabindex="-1">
         <div class="index-layout">
           <aside class="index-sidebar">
             <p class="eyebrow index-label">THE INDEX</p>
             <nav class="index-nav" aria-label="Explore my interests">
-              <a href="#work" aria-current="location"><svg class="icon" aria-hidden="true"><use href="#icon-work"/></svg>Work experience</a>
+              <a href="#work"><svg class="icon" aria-hidden="true"><use href="#icon-work"/></svg>Work experience</a>
               <a href="#library"><svg class="icon" aria-hidden="true"><use href="#icon-library"/></svg>Library</a>
               <a href="#building"><svg class="icon" aria-hidden="true"><use href="#icon-building"/></svg>Building & inventing</a>
               <a href="#factory"><svg class="icon" aria-hidden="true"><use href="#icon-factory"/></svg>Software factory</a>
@@ -44,8 +44,9 @@
           </aside>
 
           <div class="content-sections">
+            <a class="back-to-index" href="?view=content" data-all-content hidden><svg class="icon" aria-hidden="true"><use href="#icon-grid"/></svg>All content</a>
             <section class="content-section" id="work" aria-labelledby="work-title">
-              <div class="section-heading"><h2 id="work-title" tabindex="-1">Work experience</h2></div>
+              <div class="section-heading"><h2 id="work-title" tabindex="-1"><a href="#work" class="section-link">Work experience</a></h2></div>
               <div class="roles">
                 <div class="role"><span class="role-symbol" aria-hidden="true">&lt;/&gt;</span><h3>Engineer</h3></div>
                 <div class="role"><span class="role-symbol" aria-hidden="true">⌘</span><h3>Product manager</h3></div>
@@ -54,35 +55,35 @@
             </section>
 
             <section class="content-section" id="library" aria-labelledby="library-title">
-              <div class="section-heading"><h2 id="library-title" tabindex="-1">Library</h2></div>
+              <div class="section-heading"><h2 id="library-title" tabindex="-1"><a href="#library" class="section-link">Library</a></h2></div>
               <ul class="link-list" id="article-links" hidden></ul>
               <details class="more-reading" id="more-reading" hidden><summary id="more-reading-label">More articles</summary><ul class="link-list" id="more-article-links"></ul></details>
             </section>
 
             <section class="content-section" id="building" aria-labelledby="building-title">
-              <div class="section-heading"><h2 id="building-title" tabindex="-1">Building & inventing</h2></div>
+              <div class="section-heading"><h2 id="building-title" tabindex="-1"><a href="#building" class="section-link">Building & inventing</a></h2></div>
               <ul class="link-list project-list" id="project-links"></ul>
             </section>
 
             <section class="content-section" id="factory" aria-labelledby="factory-title">
-              <div class="section-heading"><h2 id="factory-title" tabindex="-1">Software factory</h2></div>
+              <div class="section-heading"><h2 id="factory-title" tabindex="-1"><a href="#factory" class="section-link">Software factory</a></h2></div>
               <div class="factory-card"><div class="terminal-art" aria-hidden="true"><span>~</span> agent-shape<span class="terminal-caret"></span></div><div class="factory-caption"><h3>My agent harness</h3><span id="harness-link" class="pending-label">Link coming soon</span></div></div>
             </section>
 
             <section class="content-section" id="games" aria-labelledby="games-title">
-              <div class="section-heading"><h2 id="games-title" tabindex="-1">Games</h2></div>
+              <div class="section-heading"><h2 id="games-title" tabindex="-1"><a href="#games" class="section-link">Games</a></h2></div>
               <ul class="game-list" id="game-links"></ul>
             </section>
 
             <section class="content-section" id="writing" aria-labelledby="writing-title">
-              <div class="section-heading"><h2 id="writing-title" tabindex="-1">Writing</h2></div>
+              <div class="section-heading"><h2 id="writing-title" tabindex="-1"><a href="#writing" class="section-link">Writing</a></h2></div>
               <ul class="link-list" id="writing-links"></ul>
             </section>
           </div>
         </div>
       </main>
 
-      <footer class="site-footer"><span>Somil Aggarwal</span><a href="#">Back to top</a></footer>
+      <footer class="site-footer"><span>Somil Aggarwal</span><a href="#main" data-back-to-top>Back to top</a></footer>
     </div>
 
     <dialog id="player-dialog" aria-labelledby="player-title">

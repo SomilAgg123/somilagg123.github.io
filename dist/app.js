@@ -89,6 +89,22 @@ content.games.forEach(game => {
 
 const dialog = document.getElementById('player-dialog');
 const openButton = document.querySelector('[data-open-players]');
+const sections = [...document.querySelectorAll('.content-section')];
+const navLinks = [...document.querySelectorAll('.index-nav a')];
+const allContentLink = document.querySelector('.back-to-index');
+const sidebar = document.querySelector('.index-sidebar');
+let activeSection;
+
+// Reuse each player's color and icon without duplicating the section's content.
+sections.forEach(section => {
+  const player = document.querySelector(`.player-card[href="#${section.id}"]`);
+  section.style.setProperty('--player-color', player.style.getPropertyValue('--player-color'));
+  const blob = document.createElement('span');
+  blob.className = 'section-blob';
+  blob.setAttribute('aria-hidden', 'true');
+  blob.append(player.querySelector('svg').cloneNode(true));
+  section.querySelector('.section-heading').prepend(blob);
+});
 
 function openPlayers() {
   if (!dialog.open) dialog.showModal();
@@ -98,8 +114,7 @@ openButton.addEventListener('click', openPlayers);
 document.querySelector('.close-player').addEventListener('click', () => dialog.close());
 document.querySelector('.skip-player').addEventListener('click', () => {
   dialog.close();
-  history.replaceState(null, '', '#work');
-  navigateTo('work');
+  navigateTo(null, { replace: true });
 });
 
 dialog.addEventListener('click', event => {
@@ -109,51 +124,80 @@ dialog.addEventListener('click', event => {
   }
 });
 
-function navigateTo(id) {
-  const section = document.getElementById(id);
-  if (!section) return;
-  section.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' });
-  section.querySelector('h2')?.focus({ preventScroll: true });
-  setActive(id);
+function sectionFromUrl() {
+  return sections.find(section => `#${section.id}` === location.hash)?.id || null;
 }
 
-document.querySelectorAll('.player-card').forEach(card => {
-  card.addEventListener('click', event => {
+function showSection(id, { focus = false } = {}) {
+  activeSection = id;
+  const focused = Boolean(id);
+  document.body.classList.toggle('section-view', focused);
+  sidebar.hidden = focused;
+  allContentLink.hidden = !focused;
+  sections.forEach(section => {
+    section.hidden = focused && section.id !== id;
+  });
+  navLinks.forEach(link => {
+    if (link.hash === `#${id}`) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+  });
+  const heading = id ? document.getElementById(`${id}-title`) : document.getElementById('main');
+  document.title = focused ? `${heading.textContent} — Somil Aggarwal` : 'Somil Aggarwal';
+  if (focus) {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    heading.focus({ preventScroll: true });
+  }
+}
+
+function navigateTo(id, { replace = false } = {}) {
+  const url = new URL(location.href);
+  url.searchParams.delete('view');
+  url.hash = id || '';
+  if (!id) url.searchParams.set('view', 'content');
+  if (url.href !== location.href) history[replace ? 'replaceState' : 'pushState'](null, '', url);
+  showSection(id, { focus: true });
+}
+
+function isPlainClick(event) {
+  return event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
+}
+
+document.querySelectorAll('.player-card, .index-nav a, .section-link').forEach(link => {
+  link.addEventListener('click', event => {
+    if (!isPlainClick(event)) return;
     event.preventDefault();
-    dialog.close();
-    history.pushState(null, '', card.hash);
-    navigateTo(card.hash.slice(1));
+    if (dialog.open) dialog.close();
+    navigateTo(link.hash.slice(1));
   });
 });
 
-const navLinks = [...document.querySelectorAll('.index-nav a')];
-function setActive(id) {
-  navLinks.forEach(link => {
-    if (link.hash === `#${id}`) link.setAttribute('aria-current', 'location');
-    else link.removeAttribute('aria-current');
+document.querySelectorAll('[data-all-content]').forEach(link => {
+  link.addEventListener('click', event => {
+    if (!isPlainClick(event)) return;
+    event.preventDefault();
+    navigateTo(null);
+    window.scrollTo({ top: 0, behavior: 'instant' });
   });
+});
+
+document.querySelectorAll('.a11y-skip, [data-back-to-top]').forEach(link => {
+  link.addEventListener('click', event => {
+    if (!isPlainClick(event)) return;
+    event.preventDefault();
+    document.getElementById('main').focus({ preventScroll: true });
+    window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+  });
+});
+
+function restoreView() {
+  if (dialog.open) dialog.close();
+  const id = sectionFromUrl();
+  if (id !== activeSection) showSection(id, { focus: true });
 }
+window.addEventListener('popstate', restoreView);
+window.addEventListener('hashchange', restoreView);
 
-navLinks.forEach(link => link.addEventListener('click', () => setActive(link.hash.slice(1))));
-const sections = [...document.querySelectorAll('.content-section')];
-let scrollPending = false;
-window.addEventListener('scroll', () => {
-  if (scrollPending) return;
-  scrollPending = true;
-  requestAnimationFrame(() => {
-    const offset = window.innerWidth <= 760 ? 150 : 160;
-    const current = sections.filter(section => section.getBoundingClientRect().top <= offset).at(-1);
-    if (current) setActive(current.id);
-    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) setActive('writing');
-    scrollPending = false;
-  });
-}, { passive: true });
-
+showSection(sectionFromUrl());
 // Open the chooser on arrival. Explicit content URLs and section links skip it.
 const requestedView = new URLSearchParams(location.search).get('view');
 if (requestedView === 'players' || (requestedView !== 'content' && !location.hash)) openPlayers();
-if (location.hash) setActive(location.hash.slice(1));
-
-window.addEventListener('hashchange', () => {
-  if (location.hash) setActive(location.hash.slice(1));
-});

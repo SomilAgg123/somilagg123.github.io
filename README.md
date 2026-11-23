@@ -1,8 +1,8 @@
 # Somil's personal website
 
-A small, dependency-free personal site. The player chooser opens on arrival. Visitors can choose a section or use “Skip to content.” Direct section links and `/?view=content` open the content index immediately; the header button reopens the chooser.
+A small, dependency-free personal site. The player chooser opens on arrival. Selecting a player, sidebar item, or section heading opens a focused view of that section with an animated icon. Direct links such as `/#building` open the same view without the chooser. “Skip to content,” “All content,” and `/?view=content` show the full index; the header button reopens the chooser. Browser back/forward restores the corresponding view. Icon animation respects reduced-motion preferences.
 
-Website: https://somilagg123.github.io/
+Website: https://somilaggarwal.com/
 
 Repository: https://github.com/SomilAgg123/somilagg123.github.io
 
@@ -24,9 +24,9 @@ Every push to `main` runs the JavaScript checks and publishes `dist/` using `.gi
 
 The `.openai/hosting.json` file identifies the earlier private Sites preview. It is not used by GitHub Pages.
 
-## Connecting somilaggarwal.com later
+## Custom domain
 
-The domain is not configured yet, so the default GitHub URL remains usable.
+`somilaggarwal.com` is configured in GitHub Pages with HTTPS enabled. DNS is managed in Spaceship. The steps below document the setup; no DNS changes are needed when publishing content updates.
 
 1. Open this repository's **Settings → Pages**, enter `somilaggarwal.com` under **Custom domain**, and save.
 2. In Spaceship, open the DNS settings for `somilaggarwal.com` and set these website records:
