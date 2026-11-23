@@ -177,15 +177,17 @@ function renderBooks(id, articles) {
   });
 }
 
-if (content.articles.length) {
-  document.getElementById('article-links').hidden = false;
-  renderBooks('article-links', content.articles.slice(0, 6));
-  if (content.articles.length > 6) {
-    document.getElementById('more-reading').hidden = false;
-    document.getElementById('more-reading-label').textContent = `Show ${content.articles.length - 6} more`;
-    renderBooks('more-article-links', content.articles.slice(6));
-  }
-}
+const favoriteArticles = content.articles.filter(article => article.favorite);
+const otherArticles = content.articles.filter(article => !article.favorite);
+[
+  ['favorite-reading', 'favorite-article-links', 'favorites-count', favoriteArticles],
+  ['other-reading', 'article-links', 'other-reading-count', otherArticles],
+].forEach(([groupId, listId, countId, articles]) => {
+  if (!articles.length) return;
+  document.getElementById(groupId).hidden = false;
+  document.getElementById(countId).textContent = articles.length;
+  renderBooks(listId, articles);
+});
 
 document.getElementById('harness-link').href = content.harness;
 

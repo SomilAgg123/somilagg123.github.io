@@ -1,5 +1,5 @@
 // Snapshot of articles marked Read in Somil's Notion Reading Log, 23 November 2026.
-// Only public destinations and article titles are included; no private notes.
+// Public article metadata only. Favorites confirmed by Somil; no private notes.
 const readingArticles = [
   {
     "name": "How To Give Your Agent Memory",
@@ -111,12 +111,14 @@ const readingArticles = [
   },
   {
     "name": "\"Hi @s\": How we built our company agent harness",
+    "favorite": true,
     "url": "https://www.sanity.io/engineering/how-we-built-our-company-agent-harness",
     "detail": "Sanity",
     "source": "Read article"
   },
   {
     "name": "Building Laminar, Ramp's in-house agent harness",
+    "favorite": true,
     "url": "https://engineering.ramp.com/post/building-laminar",
     "detail": "Ramp",
     "source": "Read article"
@@ -129,6 +131,7 @@ const readingArticles = [
   },
   {
     "name": "Free the models: harness design at the frontier",
+    "favorite": true,
     "url": "https://replit.com/blog/free-the-models",
     "detail": "Replit",
     "source": "Read article"
@@ -159,6 +162,7 @@ const readingArticles = [
   },
   {
     "name": "How the Claude Code team does code review",
+    "favorite": true,
     "url": "https://claude.dev/blog/solving-code-review-at-anthropic/",
     "detail": "Anthropic",
     "source": "Read article"

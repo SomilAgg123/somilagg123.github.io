@@ -66,8 +66,14 @@
 
             <section class="content-section" id="library" aria-labelledby="library-title">
               <div class="section-heading"><h2 id="library-title" tabindex="-1"><a href="#library" class="section-link">Library</a></h2></div>
-              <ul class="library-grid" id="article-links" hidden></ul>
-              <details class="more-reading" id="more-reading" hidden><summary id="more-reading-label">More articles</summary><ul class="library-grid" id="more-article-links"></ul></details>
+              <div class="reading-group" id="favorite-reading" hidden>
+                <h3 class="reading-heading" id="favorites-title">Favorites <span class="reading-count" id="favorites-count"></span></h3>
+                <ul class="library-grid favorites-grid" id="favorite-article-links" aria-labelledby="favorites-title"></ul>
+              </div>
+              <div class="reading-group" id="other-reading" hidden>
+                <h3 class="reading-heading" id="other-reading-title">More reading <span class="reading-count" id="other-reading-count"></span></h3>
+                <ul class="library-grid" id="article-links" aria-labelledby="other-reading-title"></ul>
+              </div>
             </section>
 
             <section class="content-section" id="investing" aria-labelledby="investing-title">
