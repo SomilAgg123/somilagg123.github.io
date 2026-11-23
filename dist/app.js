@@ -1,11 +1,13 @@
 // Add real destinations here. A missing URL stays readable, without a dead link.
 const content = {
-  projects: [
-    { name: 'customermemory.dev', mark: 'cm', url: 'https://customermemory.dev', color: '#edf0e9' },
-    { name: 'Temba', mark: 't', url: null, color: '#f0e9e4', status: 'No public link' },
-    { name: 'Mutual', mark: 'm', url: 'https://somilagg123.github.io/mutual/', color: '#e8eaf3' },
-    { name: 'Agcess', mark: 'a', url: 'https://somilagg123.github.io/agcess/', color: '#e8eee3' },
-    { name: 'Horlo', mark: '◷', url: 'https://somilagg123.github.io/horlo/', color: '#eeece6' },
+  currentProjects: [
+    { statement: '...better context management for AI agents', name: 'CustomerMemory', url: 'https://customermemory.dev' },
+    { statement: '...a new variation of poker', name: 'French Poker', url: 'https://frenchpoker.onrender.com' },
+  ],
+  pastProjects: [
+    { statement: '...a dating app for friends to set their friends up', name: 'Mutual', url: 'https://somilagg123.github.io/mutual/' },
+    { statement: '...a data tracking tool for farmers in the field', name: 'Agcess', url: 'https://somilagg123.github.io/agcess/' },
+    { statement: '...the social platform for watch collectors', name: 'Horlo', url: 'https://somilagg123.github.io/horlo/' },
   ],
   articles: readingArticles,
   harness: 'https://github.com/SomilAgg123/agent-shape',
@@ -14,9 +16,14 @@ const content = {
     { name: 'forhappyhour', mark: '✷', url: 'https://forhappyhour.com', action: 'Explore Happy Hour' },
   ],
   writing: [
-    { name: 'X', mark: '𝕏', url: 'https://x.com/Somil_Agg' },
-    { name: 'Substack', mark: '≡', url: 'https://foundaition.substack.com' },
+    // Short editorial paraphrases, each grounded in the linked essay.
+    { statement: '...that better memory makes for better AI agents', name: 'The Right to Remember', url: 'https://foundaition.substack.com/p/the-right-to-remember' },
+    { statement: '...that AI safety is an engineering problem, too', name: 'The Gordian Knot of AI Control', url: 'https://foundaition.substack.com/p/the-gordian-knot-of-ai-control' },
+    { statement: '...that AI oversight has to continue after deployment', name: 'Why the Real GenAI Risk Is What Happens After You Deploy', url: 'https://foundaition.substack.com/p/why-the-real-genai-risk-is-what-happens' },
+    { statement: '...that evals should show us where systems break', name: 'What Is an Eval?', url: 'https://foundaition.substack.com/p/what-is-an-eval' },
+    { statement: '...that reading is an act of creativity', name: 'Observations', url: 'https://foundaition.substack.com/p/observations' },
   ],
+  experience: [],
 };
 
 function externalLink(url) {
@@ -34,46 +41,112 @@ function label(className, value) {
   return element;
 }
 
-function renderList(id, items) {
+function renderStoryList(id, items) {
   const list = document.getElementById(id);
   items.forEach(item => {
     const li = document.createElement('li');
     const row = item.url ? externalLink(item.url) : document.createElement('div');
-    row.className = 'item-row';
-    const main = label('item-main', '');
-    if (item.mark) {
-      const mark = label('item-monogram', item.mark);
-      mark.setAttribute('aria-hidden', 'true');
-      if (item.color) mark.style.setProperty('--tile', item.color);
-      main.append(mark);
-    }
-    main.append(label('item-name', item.name));
-    row.append(main, label(item.url ? 'visit-label' : 'pending-label', item.url ? (item.source || 'Visit site') : (item.status || 'Link coming soon')));
-    if (item.url) row.setAttribute('aria-label', `${item.name} (opens in a new tab)`);
+    row.className = 'story-link';
+    row.append(label('story-statement', item.statement), label('story-source', item.name));
+    if (item.url) row.setAttribute('aria-label', `${item.statement} — ${item.name} (opens in a new tab)`);
     li.append(row);
     list.append(li);
   });
 }
 
-renderList('project-links', content.projects);
-renderList('writing-links', content.writing);
+renderStoryList('current-projects', content.currentProjects);
+renderStoryList('past-projects', content.pastProjects);
+renderStoryList('writing-links', content.writing);
+
+function renderBooks(id, articles) {
+  const list = document.getElementById(id);
+  articles.forEach(article => {
+    const li = document.createElement('li');
+    const card = externalLink(article.url);
+    card.className = 'book-card';
+    card.setAttribute('aria-label', `${article.name} (opens in a new tab)`);
+    card.append(label('book-title', article.name), label('book-author', article.detail));
+    li.append(card);
+    list.append(li);
+  });
+}
 
 if (content.articles.length) {
   document.getElementById('article-links').hidden = false;
-  renderList('article-links', content.articles.slice(0, 5));
-  if (content.articles.length > 5) {
+  renderBooks('article-links', content.articles.slice(0, 6));
+  if (content.articles.length > 6) {
     document.getElementById('more-reading').hidden = false;
-    document.getElementById('more-reading-label').textContent = `Show ${content.articles.length - 5} more`;
-    renderList('more-article-links', content.articles.slice(5));
+    document.getElementById('more-reading-label').textContent = `Show ${content.articles.length - 6} more`;
+    renderBooks('more-article-links', content.articles.slice(6));
   }
 }
 
-if (content.harness) {
-  const link = externalLink(content.harness);
-  link.className = 'visit-label';
-  link.textContent = 'Explore the harness';
-  document.getElementById('harness-link').replaceWith(link);
+document.getElementById('harness-link').href = content.harness;
+
+function renderExperience() {
+  if (!content.experience.length) return;
+  document.getElementById('experience-layout').hidden = false;
+  document.getElementById('experience-link').hidden = true;
+  const tabs = document.getElementById('experience-tabs');
+  const panels = document.getElementById('experience-panels');
+  content.experience.forEach((job, index) => {
+    const tab = document.createElement('button');
+    tab.type = 'button';
+    tab.id = `job-tab-${index}`;
+    tab.setAttribute('role', 'tab');
+    tab.setAttribute('aria-controls', `job-panel-${index}`);
+    tab.textContent = job.company;
+    const panel = document.createElement('div');
+    panel.className = 'experience-panel';
+    panel.id = `job-panel-${index}`;
+    panel.setAttribute('role', 'tabpanel');
+    panel.setAttribute('aria-labelledby', tab.id);
+    panel.tabIndex = 0;
+    const title = document.createElement('h3');
+    title.textContent = job.title;
+    panel.append(title, label('experience-dates', job.dates));
+    if (job.summary) {
+      const description = document.createElement('p');
+      description.textContent = job.summary;
+      panel.append(description);
+    }
+    if (job.highlights?.length) {
+      const list = document.createElement('ul');
+      job.highlights.forEach(text => {
+        const li = document.createElement('li');
+        li.textContent = text;
+        list.append(li);
+      });
+      panel.append(list);
+    }
+    tabs.append(tab);
+    panels.append(panel);
+    tab.addEventListener('click', () => selectJob(index));
+  });
+  function selectJob(index, focus = false) {
+    [...tabs.children].forEach((tab, i) => {
+      tab.setAttribute('aria-selected', String(i === index));
+      tab.tabIndex = i === index ? 0 : -1;
+      panels.children[i].hidden = i !== index;
+    });
+    if (focus) tabs.children[index].focus();
+  }
+  tabs.addEventListener('keydown', event => {
+    const index = [...tabs.children].indexOf(event.target);
+    if (index < 0) return;
+    let next;
+    if (event.key === 'ArrowDown' || event.key === 'ArrowRight') next = (index + 1) % tabs.children.length;
+    if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') next = (index - 1 + tabs.children.length) % tabs.children.length;
+    if (event.key === 'Home') next = 0;
+    if (event.key === 'End') next = tabs.children.length - 1;
+    if (next !== undefined) {
+      event.preventDefault();
+      selectJob(next, true);
+    }
+  });
+  selectJob(0);
 }
+renderExperience();
 
 content.games.forEach(game => {
   const li = document.createElement('li');
@@ -98,11 +171,12 @@ let activeSection;
 // Reuse each player's color and icon without duplicating the section's content.
 sections.forEach(section => {
   const player = document.querySelector(`.player-card[href="#${section.id}"]`);
-  section.style.setProperty('--player-color', player.style.getPropertyValue('--player-color'));
+  const icon = player?.querySelector('svg') || document.querySelector(`.index-nav a[href="#${section.id}"] svg`);
+  section.style.setProperty('--player-color', player?.style.getPropertyValue('--player-color') || '#e8edf0');
   const blob = document.createElement('span');
   blob.className = 'section-blob';
   blob.setAttribute('aria-hidden', 'true');
-  blob.append(player.querySelector('svg').cloneNode(true));
+  blob.append(icon.cloneNode(true));
   section.querySelector('.section-heading').prepend(blob);
 });
 
@@ -125,6 +199,8 @@ dialog.addEventListener('click', event => {
 });
 
 function sectionFromUrl() {
+  // Keep old Software factory bookmarks useful after moving it into About.
+  if (location.hash === '#factory') return 'about';
   return sections.find(section => `#${section.id}` === location.hash)?.id || null;
 }
 
@@ -198,6 +274,12 @@ window.addEventListener('popstate', restoreView);
 window.addEventListener('hashchange', restoreView);
 
 showSection(sectionFromUrl());
+// A direct section link opens at the page controls, rather than a native anchor offset.
+if (sectionFromUrl()) {
+  window.addEventListener('load', () => {
+    requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+  }, { once: true });
+}
 // Open the chooser on arrival. Explicit content URLs and section links skip it.
 const requestedView = new URLSearchParams(location.search).get('view');
 if (requestedView === 'players' || (requestedView !== 'content' && !location.hash)) openPlayers();

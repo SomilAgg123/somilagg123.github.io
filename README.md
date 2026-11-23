@@ -10,11 +10,15 @@ Repository: https://github.com/SomilAgg123/somilagg123.github.io
 
 Run `npm run dev` and visit http://127.0.0.1:4173. Run `npm run check` to check JavaScript syntax.
 
-Edit project, game, and writing URLs in `dist/app.js`. Missing URLs render as text with a clear status. Temba intentionally has no public link. Edit the introduction and experience content in `dist/index.html`; styles live in `dist/styles.css`.
+Edit project, game, and writing URLs in `dist/app.js`. Projects are grouped into current and past work; the writing statements link to individual essays. Edit the introduction in `dist/index.html`; styles live in `dist/styles.css`.
 
-`dist/reading.js` contains a snapshot of all 30 articles marked `Read` in the Notion Reading Log on 23 November 2026. Five display initially; the rest expand inline. This is a static snapshot, not a live Notion integration. Only titles, public URLs, and publication names are included.
+`dist/reading.js` contains a snapshot of all 30 articles marked `Read` in the Notion Reading Log on 23 November 2026. Six book-style cards display initially in three columns; the remaining 24 expand inline. The grid adapts to two or one column on narrower screens. This is a static snapshot, not a live Notion integration. Only titles, public URLs, and publication names are included.
 
-Project URLs for Mutual, Agcess, and Horlo come from their GitHub READMEs. The harness links to `SomilAgg123/agent-shape`. X, Substack, French Poker, and Happy Hour use the URLs supplied by Somil. Detailed work history remains to be added.
+Project URLs for Mutual, Agcess, and Horlo come from their GitHub READMEs. The harness links to `SomilAgg123/agent-shape` from the opening “A bit about me” section. X, Substack, French Poker, and Happy Hour use the URLs supplied by Somil. The investor and builder chooser cards have separate destinations.
+
+Work history uses a company selector and detail panel, inspired by `gramliu.com`. Add confirmed roles to `content.experience` in `dist/app.js` (company, title, dates, optional summary and highlights). LinkedIn's public profile did not expose a complete timeline, so the live section links to LinkedIn until those details are supplied. Investing details are also pending; no portfolio holdings or employment dates are inferred.
+
+The “I believe...” lines are editorial paraphrases of Somil's essays, verified against the public foundAItion feed on 23 November 2026: “The Right to Remember,” “The Gordian Knot of AI Control,” “Why the Real GenAI Risk Is What Happens After You Deploy,” “What Is an Eval?,” and “Observations.” Each statement links to its source essay directly. The project sentences and software factory line use Somil's supplied wording.
 
 The `dist` directory is the complete static website. No build or application server is required. Typography uses Google Fonts with local system fallbacks.
 
