@@ -12,7 +12,7 @@ Run `npm run dev` and visit http://127.0.0.1:4173. Run `npm run check` to check 
 
 Edit project, game, and writing URLs in `dist/app.js`. Projects are grouped into current and past work; the writing statements link to individual essays. Edit the introduction in `dist/index.html`; styles live in `dist/styles.css`.
 
-Current Building entries are CustomerMemory, Sell My Newspaper, For Happy Hour, and French Poker. Sell My Newspaper and For Happy Hour were added at Somil's request and link to their public websites; their repositories remain private and are not linked. Other GitHub projects reviewed for possible future inclusion are recommendations only until selected.
+Current Building entries are CustomerMemory, agentifyapi, Jagged, Sell My Newspaper, For Happy Hour, and French Poker. Sell My Newspaper and For Happy Hour link to their public websites; their repositories remain private and are not linked. At Somil's request, agentifyapi and Jagged are featured with public GitHub links and in a paragraph immediately after the software factory line in About. The descriptions follow their READMEs: agentifyapi exposes existing APIs as approved MCP tools; Jagged is model-routing research, not a completed routing engine. Other GitHub projects reviewed for possible future inclusion are recommendations only until selected.
 
 Project rows show right-aligned Website and GitHub links. Mutual, Agcess, and Horlo have public repositories, verified on 23 November 2026. CustomerMemory and French Poker show only their public websites. Keep repository links limited to public repositories. Investing companies have right-aligned Website links; “Insurance for AI” is a single thesis row with AIUC, Testudo, and Armilla AI linked inline in parentheses. These are thesis examples, not stated portfolio holdings. Armory company names use the same serif typography as the other investing rows, while the Work experience panel keeps its compact styling.
 
@@ -35,6 +35,8 @@ The `dist` directory is the complete static website. No build or application ser
 ## GitHub Pages
 
 Every push to `main` runs the JavaScript checks and publishes `dist/` using `.github/workflows/pages.yml`. No dependency installation, build step, or deployment secret is needed. The workflow can also be run manually from GitHub Actions. Only the static website files are deployed.
+
+Before upload, the workflow adds content-hash query strings to JavaScript and stylesheet URLs in the deployed HTML. This prevents returning browsers from reusing outdated assets after a content update. Keep the source HTML's relative asset references unversioned; the workflow derives versions automatically.
 
 The `.openai/hosting.json` file identifies the earlier private Sites preview. It is not used by GitHub Pages.
 

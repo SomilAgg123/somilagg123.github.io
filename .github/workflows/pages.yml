@@ -27,6 +27,19 @@ jobs:
         run: npm run check
       - name: Configure Pages
         uses: actions/configure-pages@v5
+      - name: Version browser assets
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          from pathlib import Path
+
+          index = Path('dist/index.html')
+          html = index.read_text()
+          for asset in ('app.js', 'reading.js', 'styles.css'):
+              version = hashlib.sha256(Path('dist', asset).read_bytes()).hexdigest()[:12]
+              html = html.replace(f'./{asset}"', f'./{asset}?v={version}"')
+          index.write_text(html)
+          PY
       - name: Upload website
         uses: actions/upload-pages-artifact@v4
         with:

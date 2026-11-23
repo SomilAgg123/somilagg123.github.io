@@ -2,6 +2,8 @@
 const content = {
   currentProjects: [
     { statement: '...better context management for AI agents', name: 'CustomerMemory', url: 'https://customermemory.dev' },
+    { statement: '...a way to turn existing APIs into approved MCP tools', name: 'agentifyapi', github: 'https://github.com/SomilAgg123/agentifyapi' },
+    { statement: '...a research-backed guide to choosing the right model for each task and budget', name: 'Jagged', github: 'https://github.com/SomilAgg123/jagged' },
     { statement: '...a new chapter for local newspaper owners', name: 'Sell My Newspaper', url: 'https://www.sellmynewspaper.com/' },
     { statement: '...custom games that bring people together', name: 'For Happy Hour', url: 'https://forhappyhour.com' },
     { statement: '...a new variation of poker', name: 'French Poker', url: 'https://frenchpoker.onrender.com' },
