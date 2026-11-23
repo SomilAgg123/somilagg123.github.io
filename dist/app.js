@@ -23,7 +23,74 @@ const content = {
     { statement: '...that evals should show us where systems break', name: 'What Is an Eval?', url: 'https://foundaition.substack.com/p/what-is-an-eval' },
     { statement: '...that reading is an act of creativity', name: 'Observations', url: 'https://foundaition.substack.com/p/observations' },
   ],
-  experience: [],
+  investingThesis: [
+    { name: 'Corridor', note: 'Acquired by Cognition', url: 'https://cognition.com/blog/corridor-joining-cognition' },
+    { name: 'Pangram Labs', url: 'https://www.pangram.com/' },
+    { name: 'Lucid Computing', url: 'https://lucidcomputing.ai/' },
+  ],
+  elementalInvestments: [
+    { name: 'Symbium', url: 'https://symbium.com/' },
+    { name: 'Cambium', url: 'https://www.cambium.com/' },
+    { name: 'Gradient', url: 'https://gradientcomfort.com/' },
+  ],
+  // Roles, dates, and highlights supplied by Somil from LinkedIn, November 2026.
+  experience: [
+    {
+      company: 'Decagon',
+      title: 'Agent Hillclimbing',
+      dates: 'Oct 2025 – Present',
+      highlights: [
+        'Hillclimbing large enterprise deployments.',
+        'Autopilot.',
+        'Co-founded the agent deployment engineering (ADE) team.',
+      ],
+    },
+    {
+      company: 'Schmidt Futures',
+      title: 'Fellow – Product Manager',
+      dates: 'Sep 2023 – Oct 2025',
+      summary: 'A two-year rotational program run by Eric Schmidt, modeled after Google’s Associate Product Manager program, to build cool things with high impact.',
+      highlights: [
+        'Ran AI security investments in the Office of Eric Schmidt.',
+        'Built and ran a technology program to study the frontier of multi-agent failures at Schmidt Sciences.',
+        'Designed and delivered the 0-to-1 on an internal IP dashboard for the Schmidt Hub for IP.',
+        'Invested in climate tech solutions at Elemental Impact.',
+        'Led product strategy at SparkCharge.',
+      ],
+    },
+    {
+      company: 'CleanTechies',
+      title: 'Show Co-Host',
+      dates: 'Jul 2023 – Sep 2025',
+      summary: 'An excuse to talk to the best climate tech founders and investors about what they do best.',
+    },
+    {
+      company: 'Armory Square Ventures',
+      title: 'Investor',
+      dates: 'Mar 2023 – Sep 2023',
+      summary: 'Sourced 60%+ of the fund’s dealflow and developed its AI investing strategy. Learned everything I know about how to invest in venture for the right reasons.',
+      investments: [
+        { name: 'Machinery Partner', stage: 'Series A' },
+        { name: 'Multiplayer', stage: 'Seed' },
+        { name: 'Heretto', stage: 'Series B' },
+      ],
+    },
+    {
+      company: 'Agcess',
+      title: 'Founder & CEO',
+      dates: 'Feb 2022 – Jan 2023',
+      summary: 'Founded a data management tool to deliver agricultural insights to high cash-value farmers, including vineyards and orchards.',
+      highlights: [
+        'Sold the tool to three agricultural conglomerates and realized it wasn’t the right go-to-market approach for me.',
+        'Moved on after college graduation to take a venture investing role.',
+      ],
+    },
+    {
+      company: 'PayPal',
+      title: 'Software Engineer · Internship',
+      dates: 'May 2021 – Aug 2021',
+    },
+  ],
 };
 
 function externalLink(url) {
@@ -83,6 +150,20 @@ if (content.articles.length) {
 
 document.getElementById('harness-link').href = content.harness;
 
+function appendInvestments(parent, investments) {
+  const heading = document.createElement('h4');
+  heading.className = 'investment-list-heading';
+  heading.textContent = 'Investments I led or supported';
+  const list = document.createElement('ul');
+  list.className = 'investment-list';
+  investments.forEach(investment => {
+    const item = document.createElement('li');
+    item.append(label('investment-name', investment.name), label('investment-stage', investment.stage));
+    list.append(item);
+  });
+  parent.append(heading, list);
+}
+
 function renderExperience() {
   if (!content.experience.length) return;
   document.getElementById('experience-layout').hidden = false;
@@ -119,6 +200,7 @@ function renderExperience() {
       });
       panel.append(list);
     }
+    if (job.investments) appendInvestments(panel, job.investments);
     tabs.append(tab);
     panels.append(panel);
     tab.addEventListener('click', () => selectJob(index));
@@ -144,9 +226,33 @@ function renderExperience() {
       selectJob(next, true);
     }
   });
+  const mobileTabs = matchMedia('(max-width: 760px)');
+  function updateOrientation() {
+    tabs.setAttribute('aria-orientation', mobileTabs.matches ? 'horizontal' : 'vertical');
+  }
+  mobileTabs.addEventListener('change', updateOrientation);
+  updateOrientation();
   selectJob(0);
 }
 renderExperience();
+
+function renderInvesting() {
+  [['thesis-companies', content.investingThesis], ['elemental-companies', content.elementalInvestments]].forEach(([id, companies]) => {
+    const list = document.getElementById(id);
+    companies.forEach(company => {
+      const item = document.createElement('li');
+      const link = externalLink(company.url);
+      link.setAttribute('aria-label', `${company.name}${company.note ? ` — ${company.note}` : ''} (opens in a new tab)`);
+      link.append(label('thesis-company-name', company.name));
+      if (company.note) link.append(label('thesis-company-note', company.note));
+      item.append(link);
+      list.append(item);
+    });
+  });
+  const armory = content.experience.find(job => job.company === 'Armory Square Ventures');
+  if (armory?.investments) appendInvestments(document.getElementById('armory-investments'), armory.investments);
+}
+renderInvesting();
 
 content.games.forEach(game => {
   const li = document.createElement('li');
