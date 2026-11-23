@@ -2,6 +2,12 @@
 
 A small, dependency-free personal site. The content index is the default; the optional player chooser is accessible from the header or `/?view=players`.
 
+Website: https://somilagg123.github.io/
+
+Repository: https://github.com/SomilAgg123/somilagg123.github.io
+
+## Development
+
 Run `npm run dev` and visit http://127.0.0.1:4173. Run `npm run check` to check JavaScript syntax.
 
 Edit project, game, and writing URLs in `dist/app.js`. Missing URLs render as text with a clear status. Temba intentionally has no public link. Edit the introduction and experience content in `dist/index.html`; styles live in `dist/styles.css`.
@@ -12,4 +18,31 @@ Project URLs for Mutual, Agcess, and Horlo come from their GitHub READMEs. The h
 
 The `dist` directory is the complete static website. No build or application server is required. Typography uses Google Fonts with local system fallbacks.
 
-The custom domain is intended to be `somilaggarwal.com`. Domain and DNS status must be verified before claiming it is connected.
+## GitHub Pages
+
+Every push to `main` runs the JavaScript checks and publishes `dist/` using `.github/workflows/pages.yml`. No dependency installation, build step, or deployment secret is needed. The workflow can also be run manually from GitHub Actions. Only the static website files are deployed.
+
+The `.openai/hosting.json` file identifies the earlier private Sites preview. It is not used by GitHub Pages.
+
+## Connecting somilaggarwal.com later
+
+The domain is not configured yet, so the default GitHub URL remains usable.
+
+1. Open this repository's **Settings → Pages**, enter `somilaggarwal.com` under **Custom domain**, and save.
+2. In Spaceship, open the DNS settings for `somilaggarwal.com` and set these website records:
+
+| Type | Host | Value |
+| --- | --- | --- |
+| A | @ | 185.199.108.153 |
+| A | @ | 185.199.109.153 |
+| A | @ | 185.199.110.153 |
+| A | @ | 185.199.111.153 |
+| CNAME | www | somilagg123.github.io |
+
+Replace conflicting website/parking records for these hosts; keep unrelated email and verification records. No ChatGPT Sites DNS records are required for GitHub Pages.
+
+3. After GitHub's DNS check and certificate provisioning complete, enable **Enforce HTTPS** in Pages settings.
+
+GitHub recommends verifying domain ownership in your account's Pages settings. Follow the unique TXT record shown there if you enable verification.
+
+Reference: https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site
