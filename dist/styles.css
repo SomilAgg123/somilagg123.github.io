@@ -15,6 +15,9 @@ dialog{border:0;padding:0;margin:auto;width:min(1000px,calc(100% - 48px));max-he
 @media(max-width:760px){.index-label{display:none}}
 
 .site-name{font:inherit}
+.profile-photo{position:relative;width:144px;aspect-ratio:1;margin:0 0 24px 12px;overflow:hidden;border-radius:50%;background:#eaf0e4;box-shadow:0 0 0 1px var(--line)}
+.profile-photo img{position:absolute;left:50%;top:50%;display:block;width:170%;max-width:none;height:auto;transform:translate(-52%,-43%)}
+@media(max-width:760px){.profile-photo{width:96px;margin:0 0 20px 10px}.index-sidebar{top:-116px}}
 
 /* A section becomes its own page; the full index stays available via Skip. */
 .section-link{border-radius:3px;transition:color .2s}
