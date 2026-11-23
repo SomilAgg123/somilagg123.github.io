@@ -16,7 +16,9 @@ const content = {
     { name: 'forhappyhour', mark: '✷', url: 'https://forhappyhour.com', action: 'Explore Happy Hour' },
   ],
   writing: [
-    // Short editorial paraphrases, each grounded in the linked essay.
+    // Short editorial paraphrases, each grounded in the linked article or essay.
+    { statement: '...that AI keeps raising the bar for great products', name: 'the bar gets higher', url: 'https://x.com/Somil_Agg/status/2120989847082979722' },
+    { statement: '...that game design can teach us how to build better agents', name: 'winning games with agents', url: 'https://x.com/Somil_Agg/status/2115888000605343911' },
     { statement: '...that better memory makes for better AI agents', name: 'The Right to Remember', url: 'https://foundaition.substack.com/p/the-right-to-remember' },
     { statement: '...that AI safety is an engineering problem, too', name: 'The Gordian Knot of AI Control', url: 'https://foundaition.substack.com/p/the-gordian-knot-of-ai-control' },
     { statement: '...that AI oversight has to continue after deployment', name: 'Why the Real GenAI Risk Is What Happens After You Deploy', url: 'https://foundaition.substack.com/p/why-the-real-genai-risk-is-what-happens' },
@@ -274,7 +276,7 @@ function renderExperience() {
 renderExperience();
 
 function renderInvesting() {
-  [['thesis-companies', content.investingThesis], ['insurance-companies', content.aiInsurance], ['elemental-companies', content.elementalInvestments]].forEach(([id, companies]) => {
+  [['thesis-companies', content.investingThesis], ['elemental-companies', content.elementalInvestments]].forEach(([id, companies]) => {
     const list = document.getElementById(id);
     companies.forEach(company => {
       const item = document.createElement('li');
@@ -293,6 +295,20 @@ function renderInvesting() {
       list.append(item);
     });
   });
+  const insurance = document.createElement('li');
+  insurance.className = 'insurance-row';
+  const insuranceCopy = label('thesis-company-name', 'Insurance for AI (');
+  content.aiInsurance.forEach((company, index) => {
+    if (index) insuranceCopy.append(', ');
+    const link = externalLink(company.url);
+    link.className = 'inline-company-link';
+    link.textContent = company.name;
+    link.setAttribute('aria-label', `${company.name} website (opens in a new tab)`);
+    insuranceCopy.append(link);
+  });
+  insuranceCopy.append(')');
+  insurance.append(insuranceCopy);
+  document.getElementById('thesis-companies').append(insurance);
   const armory = content.experience.find(job => job.company === 'Armory Square Ventures');
   if (armory?.investments) appendInvestments(document.getElementById('armory-investments'), armory.investments);
 }
@@ -388,7 +404,7 @@ function isPlainClick(event) {
   return event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
 }
 
-document.querySelectorAll('.player-card, .index-nav a, .section-link').forEach(link => {
+document.querySelectorAll('.player-card, .index-nav a, .section-link, [data-section-link]').forEach(link => {
   link.addEventListener('click', event => {
     if (!isPlainClick(event)) return;
     event.preventDefault();

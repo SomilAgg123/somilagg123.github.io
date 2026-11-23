@@ -68,8 +68,9 @@ dialog{border:0;padding:0;margin:auto;width:min(1000px,calc(100% - 48px));max-he
 .text-link{font-size:14px;color:var(--accent);text-decoration:underline;text-decoration-color:#b2bea7;text-underline-offset:5px}
 .text-link:hover{text-decoration-color:currentColor}
 .about-copy{max-width:600px;font-size:19px;line-height:1.8}
-.about-copy p+p{margin-top:16px}
-.about-copy .text-link{display:inline-block;margin-top:22px}
+.about-copy p+p{margin-top:24px}
+.about-copy a{color:var(--accent);text-decoration:underline;text-decoration-color:#b2bea7;text-underline-offset:4px}
+.about-copy a:hover{text-decoration-color:currentColor}
 .story-list{list-style:none;padding:0;margin:0}
 .story-list li+li{border-top:1px solid var(--line)}
 .story-link{display:block;padding:22px 0;transition:color .2s}
@@ -119,11 +120,14 @@ dialog{border:0;padding:0;margin:auto;width:min(1000px,calc(100% - 48px));max-he
 .investing-story p+p{margin-top:18px}
 .investing-story .investing-lead{font-family:var(--serif);font-size:29px;line-height:1.35;letter-spacing:-.3px}
 .investing-chapter{border-top:1px solid var(--line);padding-top:28px;margin-top:30px}
-.investing-subheading{font-family:var(--serif);font-size:29px;line-height:1.25;font-weight:400;letter-spacing:-.3px}
 .thesis-companies{list-style:none;margin:24px 0 0;padding:0}
 .thesis-companies li{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:20px;padding:17px 0}
 .thesis-companies li+li{border-top:1px solid var(--line)}
 .thesis-company-name{font-family:var(--serif);font-size:29px;line-height:1.2}
+.thesis-companies .insurance-row{display:block}
+.insurance-row .thesis-company-name{line-height:1.5}
+.inline-company-link{color:var(--accent);text-decoration:underline;text-decoration-color:#b2bea7;text-decoration-thickness:1px;text-underline-offset:4px;white-space:nowrap}
+.inline-company-link:hover{text-decoration-color:currentColor}
 .thesis-company-note{display:block;width:fit-content;margin-top:7px;font-size:14px;line-height:1.5;color:var(--muted)}
 a.thesis-company-note:hover{color:var(--accent);text-decoration:underline;text-underline-offset:4px}
 .investment-list-heading{font-size:14px;font-weight:550;margin:28px 0 10px}
@@ -132,6 +136,10 @@ a.thesis-company-note:hover{color:var(--accent);text-decoration:underline;text-u
 .investment-list .row-links{padding-top:0}
 .investment-list li+li,.experience-panel .investment-list li+li{border-top:1px solid var(--line);margin-top:0}
 .investment-stage{display:block;margin-top:3px;font-size:14px;color:var(--muted);white-space:nowrap}
+#armory-investments .investment-name{font-family:var(--serif);font-size:29px;line-height:1.2}
+#armory-investments .investment-list li{padding:17px 0}
+#armory-investments .investment-stage{margin-top:7px}
+#armory-investments .row-links{padding-top:5px}
 @container(max-width:520px){.project-row{gap:18px}.project-row .row-links{flex-direction:column;align-items:flex-end;gap:12px}}
 @container(max-width:620px){.library-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.book-card{min-height:255px}.book-title{font-size:29px}}
 @container(max-width:380px){.library-grid{grid-template-columns:1fr}.book-card{min-height:230px}.book-title{font-size:32px}}
