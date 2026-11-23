@@ -2,6 +2,8 @@
 const content = {
   currentProjects: [
     { statement: '...better context management for AI agents', name: 'CustomerMemory', url: 'https://customermemory.dev' },
+    { statement: '...a new chapter for local newspaper owners', name: 'Sell My Newspaper', url: 'https://www.sellmynewspaper.com/' },
+    { statement: '...custom games that bring people together', name: 'For Happy Hour', url: 'https://forhappyhour.com' },
     { statement: '...a new variation of poker', name: 'French Poker', url: 'https://frenchpoker.onrender.com' },
   ],
   pastProjects: [

@@ -12,6 +12,8 @@ Run `npm run dev` and visit http://127.0.0.1:4173. Run `npm run check` to check 
 
 Edit project, game, and writing URLs in `dist/app.js`. Projects are grouped into current and past work; the writing statements link to individual essays. Edit the introduction in `dist/index.html`; styles live in `dist/styles.css`.
 
+Current Building entries are CustomerMemory, Sell My Newspaper, For Happy Hour, and French Poker. Sell My Newspaper and For Happy Hour were added at Somil's request and link to their public websites; their repositories remain private and are not linked. Other GitHub projects reviewed for possible future inclusion are recommendations only until selected.
+
 Project rows show right-aligned Website and GitHub links. Mutual, Agcess, and Horlo have public repositories, verified on 23 November 2026. CustomerMemory and French Poker show only their public websites. Keep repository links limited to public repositories. Investing companies have right-aligned Website links; “Insurance for AI” is a single thesis row with AIUC, Testudo, and Armilla AI linked inline in parentheses. These are thesis examples, not stated portfolio holdings. Armory company names use the same serif typography as the other investing rows, while the Work experience panel keeps its compact styling.
 
 The About section uses Somil's supplied copy about building with AI, preserving past startups, software factories, reading, and games. Project references link directly to their public websites. Sell My Newspaper's URL was confirmed against its repository's robots.txt and its public site at `https://www.sellmynewspaper.com/`. The reading link opens the focused Library view.
