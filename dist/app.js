@@ -119,10 +119,11 @@ function label(className, value) {
   return element;
 }
 
-function renderStoryList(id, items) {
+function renderStoryList(id, items, previewCount = Infinity) {
   const list = document.getElementById(id);
-  items.forEach(item => {
+  items.forEach((item, index) => {
     const li = document.createElement('li');
+    if (index >= previewCount) li.dataset.detailOnly = '';
     const row = item.url ? externalLink(item.url) : document.createElement('div');
     row.className = 'story-link';
     row.append(label('story-statement', item.statement), label('story-source', item.name));
@@ -162,10 +163,11 @@ function renderProjects(id, projects) {
 
 renderProjects('current-projects', content.currentProjects);
 renderProjects('past-projects', content.pastProjects);
-renderStoryList('writing-links', content.writing);
+renderStoryList('writing-links', content.writing, 2);
 
 function renderBooks(id, articles) {
   const list = document.getElementById(id);
+  list.replaceChildren();
   articles.forEach(article => {
     const li = document.createElement('li');
     const card = externalLink(article.url);
@@ -187,6 +189,26 @@ const otherArticles = content.articles.filter(article => !article.favorite);
   document.getElementById(groupId).hidden = false;
   document.getElementById(countId).textContent = articles.length;
   renderBooks(listId, articles);
+});
+
+const readingCategories = ['All', 'Agents', 'Knowledge factories', 'Engineering', 'Game design'];
+const readingFilters = document.getElementById('reading-filters');
+readingCategories.forEach(category => {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.dataset.readingCategory = category;
+  button.setAttribute('aria-controls', 'article-links');
+  button.setAttribute('aria-pressed', String(category === 'All'));
+  const count = category === 'All' ? otherArticles.length : otherArticles.filter(article => article.category === category).length;
+  button.append(document.createTextNode(category), label('filter-count', count));
+  button.addEventListener('click', () => {
+    const filtered = category === 'All' ? otherArticles : otherArticles.filter(article => article.category === category);
+    [...readingFilters.children].forEach(filter => filter.setAttribute('aria-pressed', String(filter === button)));
+    document.getElementById('other-reading-count').textContent = filtered.length;
+    renderBooks('article-links', filtered);
+    document.getElementById('reading-status').textContent = `${filtered.length} articles${category === 'All' ? '' : ` in ${category}`}`;
+  });
+  readingFilters.append(button);
 });
 
 document.getElementById('harness-link').href = content.harness;
@@ -211,6 +233,20 @@ function appendInvestments(parent, investments) {
 
 function renderExperience() {
   if (!content.experience.length) return;
+  const currentJob = content.experience[0];
+  const preview = document.getElementById('work-preview');
+  const company = document.createElement('h3');
+  company.textContent = currentJob.company;
+  preview.append(company, label('work-preview-title', currentJob.title), label('experience-dates', currentJob.dates));
+  if (currentJob.highlights?.length) {
+    const highlights = document.createElement('ul');
+    currentJob.highlights.forEach(highlight => {
+      const item = document.createElement('li');
+      item.textContent = highlight;
+      highlights.append(item);
+    });
+    preview.append(highlights);
+  }
   document.getElementById('experience-layout').hidden = false;
   document.getElementById('experience-link').hidden = true;
   const tabs = document.getElementById('experience-tabs');

@@ -48,23 +48,26 @@
           </aside>
 
           <div class="content-sections">
-            <a class="back-to-index" href="?view=content" data-all-content hidden><svg class="icon" aria-hidden="true"><use href="#icon-grid"/></svg>All content</a>
+            <a class="back-to-index" href="?view=content" data-all-content hidden><svg class="icon" aria-hidden="true"><use href="#icon-grid"/></svg>Overview</a>
             <section class="content-section" id="about" aria-labelledby="about-title">
               <div class="section-heading"><h2 id="about-title" tabindex="-1"><a href="#about" class="section-link">A bit about me</a></h2></div>
               <div class="about-copy">
                 <p>AI has rekindled my passion for building valuable products. I'm creating <a href="https://customermemory.dev" target="_blank" rel="noopener noreferrer">better knowledge factories for agents</a>, and helping <a href="https://www.sellmynewspaper.com/" target="_blank" rel="noopener noreferrer">owners of local newspapers passed down through generations</a> find the right next chapter for their businesses.</p>
-                <p>Thanks to AI, I've preserved my previous startups as a little digital museum: <a href="https://somilagg123.github.io/agcess/" target="_blank" rel="noopener noreferrer">a data tracking tool for farmers in the field</a>, <a href="https://somilagg123.github.io/mutual/" target="_blank" rel="noopener noreferrer">a dating app for friends to match their friends</a>, and <a href="https://somilagg123.github.io/horlo/" target="_blank" rel="noopener noreferrer">a social platform for watch enthusiasts</a>.</p>
+                <p data-detail-only>Thanks to AI, I've preserved my previous startups as a little digital museum: <a href="https://somilagg123.github.io/agcess/" target="_blank" rel="noopener noreferrer">a data tracking tool for farmers in the field</a>, <a href="https://somilagg123.github.io/mutual/" target="_blank" rel="noopener noreferrer">a dating app for friends to match their friends</a>, and <a href="https://somilagg123.github.io/horlo/" target="_blank" rel="noopener noreferrer">a social platform for watch enthusiasts</a>.</p>
                 <p>I'm a huge software factory stan. Here's <a id="harness-link" href="https://github.com/SomilAgg123/agent-shape" target="_blank" rel="noopener noreferrer">my agent harness</a>.</p>
-                <p>Along the way, I ran into a few common bottlenecks: <a href="https://github.com/SomilAgg123/agentifyapi" target="_blank" rel="noopener noreferrer">turning my existing APIs into MCP tools</a>, and <a href="https://github.com/SomilAgg123/jagged" target="_blank" rel="noopener noreferrer">giving my harness context about which models are best at which tasks</a>, so it can choose the right model without spending more than it needs to.</p>
-                <p>I love reading technical blogs. Here's <a href="#library" data-section-link>what I've read most recently</a>.</p>
-                <p>I'm also a huge game fanatic: board games, strategy games, party games, you name it. I believe we're heading toward a future where <a href="https://forhappyhour.com" target="_blank" rel="noopener noreferrer">games can be easily custom-made</a> to make getting together even more fun.</p>
+                <p data-detail-only>Along the way, I ran into a few common bottlenecks: <a href="https://github.com/SomilAgg123/agentifyapi" target="_blank" rel="noopener noreferrer">turning my existing APIs into MCP tools</a>, and <a href="https://github.com/SomilAgg123/jagged" target="_blank" rel="noopener noreferrer">giving my harness context about which models are best at which tasks</a>, so it can choose the right model without spending more than it needs to.</p>
+                <p data-detail-only>I love reading technical blogs. Here's <a href="#library" data-section-link>what I've read most recently</a>.</p>
+                <p data-detail-only>I'm also a huge game fanatic: board games, strategy games, party games, you name it. I believe we're heading toward a future where <a href="https://forhappyhour.com" target="_blank" rel="noopener noreferrer">games can be easily custom-made</a> to make getting together even more fun.</p>
               </div>
+              <a class="section-more" href="#about" data-section-link data-overview-only>More about me <span aria-hidden="true">→</span></a>
             </section>
 
             <section class="content-section" id="work" aria-labelledby="work-title">
               <div class="section-heading"><h2 id="work-title" tabindex="-1"><a href="#work" class="section-link">Work experience</a></h2></div>
-              <div class="experience-layout" id="experience-layout" hidden><div class="experience-tabs" id="experience-tabs" role="tablist" aria-label="Work experience" aria-orientation="vertical"></div><div id="experience-panels"></div></div>
+              <div class="work-preview" id="work-preview" data-overview-only></div>
+              <div class="experience-layout" id="experience-layout" data-detail-only hidden><div class="experience-tabs" id="experience-tabs" role="tablist" aria-label="Work experience" aria-orientation="vertical"></div><div id="experience-panels"></div></div>
               <a class="text-link" id="experience-link" href="https://www.linkedin.com/in/somil-aggarwal/" target="_blank" rel="noopener noreferrer">Work experience on LinkedIn</a>
+              <a class="section-more" href="#work" data-section-link data-overview-only>View full experience <span aria-hidden="true">→</span></a>
             </section>
 
             <section class="content-section" id="library" aria-labelledby="library-title">
@@ -73,10 +76,13 @@
                 <h3 class="reading-heading" id="favorites-title">Favorites <span class="reading-count" id="favorites-count"></span></h3>
                 <ul class="library-grid favorites-grid" id="favorite-article-links" aria-labelledby="favorites-title"></ul>
               </div>
-              <div class="reading-group" id="other-reading" hidden>
+              <div class="reading-group" id="other-reading" data-detail-only hidden>
                 <h3 class="reading-heading" id="other-reading-title">More reading <span class="reading-count" id="other-reading-count"></span></h3>
+                <div class="reading-filters" id="reading-filters" role="group" aria-label="Filter more reading by category"></div>
+                <p class="visually-hidden" id="reading-status" role="status" aria-live="polite" aria-atomic="true"></p>
                 <ul class="library-grid" id="article-links" aria-labelledby="other-reading-title"></ul>
               </div>
+              <a class="section-more" href="#library" data-section-link data-overview-only>Explore the library <span aria-hidden="true">→</span></a>
             </section>
 
             <section class="content-section" id="investing" aria-labelledby="investing-title">
@@ -85,21 +91,25 @@
                 <p class="investing-lead">In my time as an investor in 2024, I was (and still am) bullish on AI security.</p>
                 <p>My thesis included breakout companies such as:</p>
                 <ul class="thesis-companies" id="thesis-companies"></ul>
-                <div class="investing-chapter">
+                <div class="investing-chapter" data-detail-only>
                   <p>Before that, I learned how to generate impact by investing in climate tech solutions at Elemental Impact, including:</p>
                   <ul class="thesis-companies" id="elemental-companies"></ul>
                 </div>
-                <div class="investing-chapter" id="armory-investments">
+                <div class="investing-chapter" id="armory-investments" data-detail-only>
                   <p>I started my career at Armory Square Ventures, learning how to invest with a differentiated thesis: identifying opportunities outside the usual venture geographies with the potential for outsized returns.</p>
                 </div>
               </div>
+              <a class="section-more" href="#investing" data-section-link data-overview-only>More investing <span aria-hidden="true">→</span></a>
             </section>
 
             <section class="content-section" id="building" aria-labelledby="building-title">
               <div class="section-heading"><h2 id="building-title" tabindex="-1"><a href="#building" class="section-link">Building...</a></h2></div>
               <ul class="story-list" id="current-projects"></ul>
-              <h3 class="story-subheading">In the past, I've built...</h3>
-              <ul class="story-list" id="past-projects"></ul>
+              <div data-detail-only>
+                <h3 class="story-subheading">In the past, I've built...</h3>
+                <ul class="story-list" id="past-projects"></ul>
+              </div>
+              <a class="section-more" href="#building" data-section-link data-overview-only>View all projects <span aria-hidden="true">→</span></a>
             </section>
 
             <section class="content-section" id="games" aria-labelledby="games-title">
@@ -111,7 +121,8 @@
               <div class="section-heading"><h2 id="writing-title" tabindex="-1"><a href="#writing" class="section-link">Writing</a></h2></div>
               <h3 class="story-subheading writing-intro">I believe...</h3>
               <ul class="story-list" id="writing-links"></ul>
-              <div class="writing-profiles"><a class="text-link" href="https://foundaition.substack.com" target="_blank" rel="noopener noreferrer">More on Substack</a><a class="text-link" href="https://x.com/Somil_Agg" target="_blank" rel="noopener noreferrer">X</a></div>
+              <div class="writing-profiles" data-detail-only><a class="text-link" href="https://foundaition.substack.com" target="_blank" rel="noopener noreferrer">More on Substack</a><a class="text-link" href="https://x.com/Somil_Agg" target="_blank" rel="noopener noreferrer">X</a></div>
+              <a class="section-more" href="#writing" data-section-link data-overview-only>View all writing <span aria-hidden="true">→</span></a>
             </section>
           </div>
         </div>
