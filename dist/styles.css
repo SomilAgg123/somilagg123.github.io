@@ -186,21 +186,13 @@ a.thesis-company-note:hover{color:var(--accent);text-decoration:underline;text-u
 .game-description{display:block;margin:9px 0 14px;font-size:15px;line-height:1.6;color:var(--muted)}
 .game-list{grid-template-columns:1fr;gap:0}
 .game-list li{display:block;min-width:0}
+.game-list li:nth-child(n+3){margin-top:14px}
 .game-tile{width:100%;display:grid;grid-template-columns:48px minmax(0,1fr);gap:20px;align-items:start}
 .game-art{width:48px;height:48px;display:grid;place-items:center;margin:0;border-radius:50%;font-size:32px;background:#f5ede0;color:#9b7742}
-.game-list li:nth-child(2) .game-art{background:#f5e5e8;color:#7e5262}
+.game-list li:nth-child(n+2) .game-art{background:#f5e5e8;color:#7e5262}
 .game-name{font-family:var(--serif);font-size:24px;font-weight:400;line-height:1.35}
 .game-bridge{margin:0 0 0 46px;padding:18px 0 18px 43px;border-left:1px solid var(--line);font-family:var(--serif);font-size:22px;font-style:italic;line-height:1.5;color:var(--muted)}
 .game-tile .visit-label{font-size:14px}
-.poker-experiments{margin-top:32px;padding-top:28px;border-top:1px solid var(--line)}
-.poker-variants{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.poker-variants li{min-width:0;display:flex}
-.poker-variant{width:100%;display:flex;flex-direction:column;align-items:flex-start;padding:22px;border:1px solid var(--line);border-radius:7px;background:#fff;transition:border-color .2s}
-.poker-variant:hover{border-color:#a6b59b}
-.variant-name{font-family:var(--serif);font-size:23px;font-weight:400;line-height:1.35;margin:0}
-.variant-description{display:block;font-size:16px;line-height:1.6;margin:10px 0 18px;color:var(--muted)}
-.variant-action{font-size:14px;margin-top:auto;color:var(--accent);border-bottom:1px solid #b2bea7}
-@container(max-width:480px){.poker-variants{grid-template-columns:1fr}}
 @media(max-width:480px){.game-bridge{margin-left:42px}.game-tile{gap:16px}}
 .player-owner{font-size:14px;font-weight:500}
 @media(max-width:760px){

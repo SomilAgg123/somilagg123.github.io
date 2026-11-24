@@ -15,12 +15,10 @@ const content = {
   games: [
     { name: 'For Happy Hour', title: 'Custom games that bring people together', mark: '✷', description: 'Made for a good night with friends.', url: 'https://forhappyhour.com', action: 'Explore Happy Hour' },
     { name: 'French Poker', title: 'French Poker', bridge: 'Like…', mark: '♧', description: 'A new variation of poker.', url: 'https://frenchpoker.onrender.com', action: 'Play French Poker' },
-  ],
-  pokerVariants: [
-    { name: 'Flux Poker', description: 'Build ten poker hands on a grid, with two swaps and an AI rival.', url: 'https://somilaggarwal.com/poker-muse/', action: 'Play' },
-    { name: 'River Market', description: 'Draft three poker hands from a shared, face-up card market.', url: 'https://somilaggarwal.com/poker-instinct/', action: 'Play' },
+    { name: 'Flux Poker', description: 'Build ten poker hands on a grid, with two swaps and an AI rival.', url: 'https://somilaggarwal.com/poker-muse/', action: 'Play Flux Poker' },
+    { name: 'River Market', description: 'Draft three poker hands from a shared, face-up card market.', url: 'https://somilaggarwal.com/poker-instinct/', action: 'Play River Market' },
     { name: 'Poker Dots', description: 'A poker puzzle where every card belongs to two hands.', url: 'https://github.com/SomilAgg123/poker-dots', action: 'View project' },
-    { name: 'Tell Hold’em', description: 'A twist on Hold’em where everyone must reveal one card.', url: 'https://somilaggarwal.com/poker-grok-bot/', action: 'Play' },
+    { name: 'Tell Hold’em', description: 'A twist on Hold’em where everyone must reveal one card.', url: 'https://somilaggarwal.com/poker-grok-bot/', action: 'Play Tell Hold’em' },
   ],
   writing: [
     { name: 'the bar gets higher', publication: 'X', url: 'https://x.com/Somil_Agg/status/2120989847082979722' },
@@ -343,8 +341,9 @@ function renderInvesting() {
 }
 renderInvesting();
 
-content.games.forEach(game => {
+content.games.forEach((game, index) => {
   const li = document.createElement('li');
+  if (index >= 2) li.dataset.detailOnly = '';
   if (game.bridge) {
     const bridge = document.createElement('p');
     bridge.className = 'game-bridge';
@@ -353,31 +352,18 @@ content.games.forEach(game => {
   }
   const tile = game.url ? externalLink(game.url) : document.createElement('div');
   tile.className = 'game-tile';
-  const mark = label('game-art', game.mark);
+  const mark = label('game-art', game.mark || '♧');
   mark.setAttribute('aria-hidden', 'true');
   const copy = document.createElement('div');
   copy.className = 'game-copy';
   const title = document.createElement('h3');
   title.className = 'game-name';
-  title.textContent = game.title;
+  title.textContent = game.title || game.name;
   copy.append(title, label('game-description', game.description), label(game.url ? 'visit-label' : 'pending-label', game.url ? (game.action || 'Play the game') : 'Link coming soon'));
   tile.append(mark, copy);
   if (game.url) tile.setAttribute('aria-label', `${game.name} (opens in a new tab)`);
   li.append(tile);
   document.getElementById('game-links').append(li);
-});
-
-content.pokerVariants.forEach(game => {
-  const item = document.createElement('li');
-  const link = externalLink(game.url);
-  link.className = 'poker-variant';
-  link.setAttribute('aria-label', `${game.action} ${game.name} (opens in a new tab)`);
-  const title = document.createElement('h4');
-  title.className = 'variant-name';
-  title.textContent = game.name;
-  link.append(title, label('variant-description', game.description), label('variant-action', game.action));
-  item.append(link);
-  document.getElementById('poker-variants').append(item);
 });
 
 const dialog = document.getElementById('player-dialog');
