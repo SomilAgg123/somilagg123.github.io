@@ -16,11 +16,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Check out source
         uses: actions/checkout@v6
@@ -45,23 +42,17 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           path: dist
-      - name: Wait for the uploaded website to become available
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          for artifact_attempt in {1..12}; do
-            artifact_count="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts" --jq '[.artifacts[] | select(.name == "github-pages" and .expired == false)] | length')"
-            if [ "$artifact_count" -eq 1 ]; then
-              exit 0
-            fi
-            if [ "$artifact_count" -gt 1 ]; then
-              echo "::error::More than one website artifact was found."
-              exit 1
-            fi
-            sleep 5
-          done
-          echo "::error::The website artifact did not become available within 60 seconds."
-          exit 1
+
+  # Finish the upload job before artifact discovery; retrying deployment then
+  # reuses the same artifact instead of uploading a duplicate.
+  # https://github.com/actions/deploy-pages/issues/451
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

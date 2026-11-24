@@ -38,6 +38,8 @@ The `dist` directory is the complete static website. No build or application ser
 
 Every push to `main` runs the JavaScript checks and publishes `dist/` using `.github/workflows/pages.yml`. No dependency installation, build step, or deployment secret is needed. The workflow can also be run manually from GitHub Actions. Only the static website files are deployed.
 
+Upload and deployment run in separate dependent jobs to avoid the artifact-discovery race in [actions/deploy-pages#451](https://github.com/actions/deploy-pages/issues/451). If deployment needs a retry, rerun only the failed deployment job so it reuses the existing artifact.
+
 Before upload, the workflow adds content-hash query strings to JavaScript and stylesheet URLs in the deployed HTML. This prevents returning browsers from reusing outdated assets after a content update. Keep the source HTML's relative asset references unversioned; the workflow derives versions automatically.
 
 The `.openai/hosting.json` file identifies the earlier private Sites preview. It is not used by GitHub Pages.
