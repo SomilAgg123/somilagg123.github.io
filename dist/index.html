@@ -117,8 +117,32 @@
 
             <section class="content-section" id="games" aria-labelledby="games-title">
               <div class="section-heading"><h2 id="games-title" tabindex="-1"><a href="#games" class="section-link">Games</a></h2></div>
-              <p class="section-intro">Games I'm making for friends</p>
-              <ul class="game-list" id="game-links" aria-labelledby="games-title"></ul>
+              <div class="games-intro">
+                <p class="section-intro">Games I'm making for friends</p>
+                <label class="game-search-label" data-detail-only><span class="visually-hidden">Find a game</span><input id="game-search" type="search" placeholder="Find a game" autocomplete="off" aria-controls="game-shelf"></label>
+              </div>
+              <ul class="game-list" id="game-links" aria-labelledby="games-title" data-overview-only></ul>
+              <div class="game-collection" id="game-collection" data-detail-only>
+                <div class="game-collection-layout">
+                  <div class="game-filters" id="game-filters" role="group" aria-label="Filter games by category"></div>
+                  <div class="game-shelf-container">
+                    <ul class="game-shelf" id="game-shelf" aria-label="Game collection"></ul>
+                    <div class="game-empty" id="game-empty" hidden><p>No games found.</p><button type="button" id="game-clear-filters" class="text-link">Clear filters</button></div>
+                  </div>
+                  <aside class="game-detail" id="game-detail" aria-labelledby="game-detail-title">
+                    <p class="game-detail-label">On the table</p>
+                    <div class="game-detail-art" id="game-detail-art"></div>
+                    <div class="game-detail-copy">
+                      <h3 id="game-detail-title" tabindex="-1">French Poker</h3>
+                      <p class="game-detail-description" id="game-detail-description"></p>
+                      <p class="game-detail-kind" id="game-detail-kind"></p>
+                      <a class="game-play-link" id="game-play-link" href="https://frenchpoker.onrender.com" target="_blank" rel="noopener noreferrer">Play French Poker</a>
+                      <button class="game-back-to-shelf text-link" id="game-back-to-shelf" type="button">Back to games</button>
+                    </div>
+                  </aside>
+                </div>
+                <p class="visually-hidden" id="game-status" role="status" aria-live="polite" aria-atomic="true"></p>
+              </div>
               <a class="section-more" href="#games" data-section-link data-overview-only>View all games</a>
             </section>
 

@@ -13,12 +13,12 @@ const content = {
   ],
   articles: readingArticles,
   games: [
-    { name: 'For Happy Hour', title: 'Custom games that bring people together', mark: '✷', description: 'Made for a good night with friends.', url: 'https://forhappyhour.com', action: 'Explore Happy Hour' },
-    { name: 'French Poker', title: 'French Poker', bridge: 'Like…', mark: '♧', description: 'A new variation of poker.', url: 'https://frenchpoker.onrender.com', action: 'Play French Poker' },
-    { name: 'Flux Poker', description: 'Build ten poker hands on a grid, with two swaps and an AI rival.', url: 'https://somilaggarwal.com/poker-muse/', action: 'Play Flux Poker' },
-    { name: 'River Market', description: 'Draft three poker hands from a shared, face-up card market.', url: 'https://somilaggarwal.com/poker-instinct/', action: 'Play River Market' },
-    { name: 'Poker Dots', description: 'A poker puzzle where every card belongs to two hands.', url: 'https://github.com/SomilAgg123/poker-dots', action: 'View project' },
-    { name: 'Tell Hold’em', description: 'A twist on Hold’em where everyone must reveal one card.', url: 'https://somilaggarwal.com/poker-grok-bot/', action: 'Play Tell Hold’em' },
+    { id: 'happyhour', name: 'For Happy Hour', category: 'party', title: 'Custom games that bring people together', mark: '✷', description: 'Made for a good night with friends.', url: 'https://forhappyhour.com', action: 'Explore Happy Hour', cover: { theme: 'party', title: ['FOR', 'HAPPY', 'HOUR'], kicker: 'Party games', caption: 'Made for your people' } },
+    { id: 'french', name: 'French Poker', category: 'poker', title: 'French Poker', bridge: 'Like…', mark: '♧', description: 'A new variation of poker.', url: 'https://frenchpoker.onrender.com', action: 'Play French Poker', cover: { theme: 'french', title: ['FRENCH', 'POKER'], kicker: 'A different deal', caption: 'A new variation of poker' } },
+    { id: 'flux', name: 'Flux Poker', category: 'poker', description: 'Build ten poker hands on a grid, with two swaps and an AI rival.', url: 'https://somilaggarwal.com/poker-muse/', action: 'Play Flux Poker', cover: { theme: 'flux', title: ['FLUX', 'POKER'], kicker: 'Every card counts', caption: '25 cards · 10 hands' } },
+    { id: 'river', name: 'River Market', category: 'poker', description: 'Draft three poker hands from a shared, face-up card market.', url: 'https://somilaggarwal.com/poker-instinct/', action: 'Play River Market', cover: { theme: 'river', title: ['RIVER', 'MARKET'], kicker: 'Make your pick', caption: 'One shared market' } },
+    { id: 'dots', name: 'Poker Dots', category: 'poker', projectOnly: true, description: 'A poker puzzle where every card belongs to two hands.', url: 'https://github.com/SomilAgg123/poker-dots', action: 'View project', cover: { theme: 'dots', title: ['POKER', 'DOTS'], kicker: 'Find the connection', caption: 'Every card. Two possibilities.' } },
+    { id: 'tell', name: 'Tell Hold’em', category: 'poker', description: 'A twist on Hold’em where everyone must reveal one card.', url: 'https://somilaggarwal.com/poker-grok-bot/', action: 'Play Tell Hold’em', cover: { theme: 'tell', title: ['TELL', 'HOLD’EM'], kicker: 'Show just enough', caption: 'One card. Out in the open.' } },
   ],
   writing: [
     { name: 'the bar gets higher', publication: 'X', url: 'https://x.com/Somil_Agg/status/2120989847082979722' },
@@ -341,9 +341,9 @@ function renderInvesting() {
 }
 renderInvesting();
 
-content.games.forEach((game, index) => {
+// The overview stays a short sequence; the focused page opens the collection.
+content.games.slice(0, 2).forEach(game => {
   const li = document.createElement('li');
-  if (index >= 2) li.dataset.detailOnly = '';
   if (game.bridge) {
     const bridge = document.createElement('p');
     bridge.className = 'game-bridge';
@@ -365,6 +365,117 @@ content.games.forEach((game, index) => {
   li.append(tile);
   document.getElementById('game-links').append(li);
 });
+
+function gameCover(game) {
+  const cover = label(`game-cover cover-${game.cover.theme}`, '');
+  cover.setAttribute('aria-hidden', 'true');
+  const title = label('cover-title', '');
+  game.cover.title.forEach(line => title.append(label('cover-title-line', line)));
+  const art = label(`cover-art art-${game.id}`, '');
+  if (game.id === 'happyhour') art.textContent = '✷';
+  if (game.id === 'french') ['♠', '♧', '♥'].forEach(suit => art.append(label('playing-card', suit)));
+  if (game.id === 'flux') Array.from({ length: 25 }, () => art.append(document.createElement('span')));
+  if (game.id === 'river') ['♠', '♥', '♣', '♦'].forEach(suit => art.append(label('', suit)));
+  if (game.id === 'tell') ['✦', 'A♥'].forEach(suit => art.append(label('playing-card', suit)));
+  cover.append(label('cover-type', game.cover.kicker), title, art, label('cover-bottom', game.cover.caption));
+  return cover;
+}
+
+function renderGameCollection() {
+  const root = document.getElementById('game-collection');
+  const shelf = document.getElementById('game-shelf');
+  const filters = document.getElementById('game-filters');
+  const search = document.getElementById('game-search');
+  const detail = document.getElementById('game-detail');
+  const detailTitle = document.getElementById('game-detail-title');
+  const empty = document.getElementById('game-empty');
+  const status = document.getElementById('game-status');
+  const categoryNames = { all: 'All games', poker: 'Poker', party: 'Party games' };
+  const state = { selected: 'french', category: 'all', query: '' };
+  const choices = new Map();
+
+  content.games.forEach(game => {
+    const item = document.createElement('li');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'game-choice';
+    button.dataset.game = game.id;
+    button.setAttribute('aria-label', `Select ${game.name}`);
+    button.setAttribute('aria-controls', detail.id);
+    button.append(gameCover(game), label('shelf-title', game.name), label('shelf-kind', `${categoryNames[game.category]}${game.projectOnly ? ' · Project' : ''}`));
+    button.addEventListener('click', () => {
+      state.selected = game.id;
+      update(true);
+      // On small screens the details sit below the shelf, outside the viewport.
+      if (root.getBoundingClientRect().width <= 560) {
+        detailTitle.focus({ preventScroll: true });
+        detail.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+      }
+    });
+    choices.set(game.id, { item, button });
+    item.append(button);
+    shelf.append(item);
+  });
+
+  Object.entries(categoryNames).forEach(([category, name]) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.dataset.category = category;
+    button.setAttribute('aria-controls', shelf.id);
+    const count = content.games.filter(game => category === 'all' || category === game.category).length;
+    button.append(document.createTextNode(name), label('game-filter-count', String(count)));
+    button.addEventListener('click', () => {
+      state.category = category;
+      update(true);
+    });
+    filters.append(button);
+  });
+
+  function update(announce = false) {
+    const query = state.query.trim().toLocaleLowerCase();
+    const matching = content.games.filter(game =>
+      (state.category === 'all' || game.category === state.category) &&
+      `${game.name} ${game.description} ${categoryNames[game.category]}`.toLocaleLowerCase().includes(query)
+    );
+    if (matching.length && !matching.some(game => game.id === state.selected)) state.selected = matching[0].id;
+    const visible = new Set(matching.map(game => game.id));
+    choices.forEach(({ item, button }, id) => {
+      item.hidden = !visible.has(id);
+      button.setAttribute('aria-pressed', String(id === state.selected));
+    });
+    [...filters.children].forEach(button => button.setAttribute('aria-pressed', String(button.dataset.category === state.category)));
+    empty.hidden = matching.length > 0;
+    detail.hidden = matching.length === 0;
+    const game = content.games.find(game => game.id === state.selected);
+    document.getElementById('game-detail-art').replaceChildren(gameCover(game));
+    detailTitle.textContent = game.name;
+    document.getElementById('game-detail-description').textContent = game.id === 'happyhour' ? `${game.title}. ${game.description}` : game.description;
+    document.getElementById('game-detail-kind').textContent = `${categoryNames[game.category]}${game.projectOnly ? ' · Public project' : game.category === 'poker' ? ' · Browser game' : ''}`;
+    const link = document.getElementById('game-play-link');
+    link.href = game.url;
+    link.textContent = game.action;
+    link.setAttribute('aria-label', `${game.action}${game.projectOnly ? ': ' + game.name : ''} (opens in a new tab)`);
+    if (announce) status.textContent = matching.length ? `${matching.length} ${matching.length === 1 ? 'game' : 'games'}. ${game.name} selected.` : 'No games found. Try another search or clear the filters.';
+  }
+
+  search.addEventListener('input', () => {
+    state.query = search.value;
+    update(true);
+  });
+  document.getElementById('game-clear-filters').addEventListener('click', () => {
+    state.category = 'all';
+    state.query = '';
+    search.value = '';
+    update(true);
+    search.focus();
+  });
+  document.getElementById('game-back-to-shelf').addEventListener('click', () => {
+    choices.get(state.selected).button.focus({ preventScroll: true });
+    shelf.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+  });
+  update();
+}
+renderGameCollection();
 
 const dialog = document.getElementById('player-dialog');
 const openButton = document.querySelector('[data-open-players]');
