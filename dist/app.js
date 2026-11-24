@@ -341,27 +341,13 @@ function renderInvesting() {
 }
 renderInvesting();
 
-// The overview stays a short sequence; the focused page opens the collection.
+// Reuse the collection's covers for a two-game overview preview.
 content.games.slice(0, 2).forEach(game => {
   const li = document.createElement('li');
-  if (game.bridge) {
-    const bridge = document.createElement('p');
-    bridge.className = 'game-bridge';
-    bridge.textContent = game.bridge;
-    li.append(bridge);
-  }
-  const tile = game.url ? externalLink(game.url) : document.createElement('div');
-  tile.className = 'game-tile';
-  const mark = label('game-art', game.mark || '♧');
-  mark.setAttribute('aria-hidden', 'true');
-  const copy = document.createElement('div');
-  copy.className = 'game-copy';
-  const title = document.createElement('h3');
-  title.className = 'game-name';
-  title.textContent = game.title || game.name;
-  copy.append(title, label('game-description', game.description), label(game.url ? 'visit-label' : 'pending-label', game.url ? (game.action || 'Play the game') : 'Link coming soon'));
-  tile.append(mark, copy);
-  if (game.url) tile.setAttribute('aria-label', `${game.name} (opens in a new tab)`);
+  const tile = externalLink(game.url);
+  tile.className = 'game-choice';
+  tile.setAttribute('aria-label', `${game.action} (opens in a new tab)`);
+  tile.append(gameCover(game), label('shelf-title', game.name), label('shelf-kind', game.category === 'party' ? 'Party games' : 'Poker'));
   li.append(tile);
   document.getElementById('game-links').append(li);
 });

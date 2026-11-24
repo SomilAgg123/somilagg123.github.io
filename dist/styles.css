@@ -235,6 +235,8 @@ a.thesis-company-note:hover{color:var(--accent);text-decoration:underline;text-u
 .game-shelf-container{min-width:0}
 .game-shelf{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px 16px;list-style:none;padding:4px;margin:0 -4px;scroll-margin-top:24px}
 .game-shelf li{min-width:0}
+.game-preview{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;max-width:460px;list-style:none;padding:0;margin:0}
+.game-preview li{min-width:0}
 .game-choice{display:block;width:100%;padding:0;border-radius:7px;text-align:left}
 .game-cover{display:block;position:relative;aspect-ratio:3/4;overflow:hidden;border-radius:5px 8px 8px 5px;background:var(--cover-bg);color:var(--cover-ink,#fff3db);box-shadow:inset 5px 0 0 #0002,0 3px 6px #00000012;transition:transform .18s,box-shadow .18s}
 .game-choice:hover .game-cover{transform:translateY(-4px) rotate(-1deg);box-shadow:inset 5px 0 0 #0002,0 7px 12px #00000020}
