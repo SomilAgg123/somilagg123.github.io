@@ -179,6 +179,11 @@ a.thesis-company-note:hover{color:var(--accent);text-decoration:underline;text-u
 .nav-group[open] summary{color:var(--ink)}
 .nav-group-links{border-left:1px solid var(--line);margin:4px 0 8px 21px;padding-left:12px}
 .nav-group-links a{padding:8px 10px}
+.sidebar-socials{display:flex;flex-direction:column;gap:4px;margin-top:24px;padding-top:16px;border-top:1px solid var(--line)}
+.sidebar-socials a{display:flex;align-items:center;gap:12px;min-height:44px;padding:10px 12px;border-radius:6px;font-size:14px;color:#72766c;transition:background .2s,color .2s}
+.sidebar-socials a:hover{background:#eef0e9;color:var(--ink)}
+.social-icon{width:19px;height:19px;flex-shrink:0;fill:currentColor;stroke:none}
+@media(max-width:760px){.sidebar-socials{grid-column:2;flex-direction:row;flex-wrap:wrap;margin-top:0;padding-top:12px}.sidebar-socials .social-icon{width:15px;height:15px}}
 .about-copy .about-lead{font-size:22px;font-weight:500;line-height:1.55;letter-spacing:-.25px}
 .section-intro{font-family:var(--serif);font-size:22px;font-style:italic;line-height:1.5;max-width:640px;margin-bottom:28px}
 .collection-heading{font-family:var(--sans);font-size:16px;font-weight:600;line-height:1.5;margin-bottom:20px}
