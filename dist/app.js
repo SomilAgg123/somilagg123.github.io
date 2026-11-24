@@ -12,7 +12,6 @@ const content = {
     { statement: 'A social platform for watch collectors', name: 'Horlo', url: 'https://somilagg123.github.io/horlo/', github: 'https://github.com/SomilAgg123/horlo' },
   ],
   articles: readingArticles,
-  harness: 'https://github.com/SomilAgg123/agent-shape',
   games: [
     { name: 'frenchpoker', mark: '♧', description: 'A new variation of poker.', url: 'https://frenchpoker.onrender.com', action: 'Play French Poker' },
     { name: 'forhappyhour', mark: '✷', description: 'Custom games that bring people together.', url: 'https://forhappyhour.com', action: 'Explore Happy Hour' },
@@ -207,8 +206,6 @@ readingCategories.forEach(category => {
   });
   readingFilters.append(button);
 });
-
-document.getElementById('harness-link').href = content.harness;
 
 function appendInvestments(parent, investments) {
   const heading = document.createElement('h4');
