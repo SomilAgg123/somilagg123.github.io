@@ -99,9 +99,12 @@ body:not(.section-view) [data-detail-only],.section-view [data-overview-only]{di
 .story-subheading{font-family:var(--serif);font-size:32px;font-weight:400;line-height:1.25;letter-spacing:-.6px;margin:36px 0 26px}
 .writing-intro{margin-top:0;font-style:italic}
 .writing-profiles{display:flex;gap:24px;margin-top:26px}
-.section-view:has(#library:not([hidden])) .index-layout{max-width:1000px}
+.section-view:has(#library:not([hidden]),#writing:not([hidden])) .index-layout{max-width:1000px}
 .library-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
 .library-grid li{min-width:0;display:flex}
+body:not(.section-view) .writing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+body:not(.section-view) .writing-grid .book-card{min-height:220px}
+@container(max-width:380px){body:not(.section-view) .writing-grid{grid-template-columns:1fr}}
 .book-card{width:100%;min-height:275px;display:flex;flex-direction:column;justify-content:space-between;gap:32px;padding:25px 22px 23px;background:#f1f0e8;border:1px solid #e1e1d7;border-left:4px solid #d6d9c8;border-radius:2px 7px 7px 2px;box-shadow:0 3px 0 #25272204;transition:transform .2s,box-shadow .2s}
 .library-grid li:nth-child(6n+2) .book-card{background:#eceaf2;border-color:#e1dde9;border-left-color:#d1cada}
 .library-grid li:nth-child(6n+3) .book-card{background:#eaf0e8;border-color:#dce5da;border-left-color:#cad8c6}
@@ -181,9 +184,24 @@ a.thesis-company-note:hover{color:var(--accent);text-decoration:underline;text-u
 .collection-heading{font-family:var(--sans);font-size:16px;font-weight:600;line-height:1.5;margin-bottom:20px}
 .past-projects-heading{margin-top:36px}
 .game-description{display:block;margin:9px 0 14px;font-size:15px;line-height:1.6;color:var(--muted)}
-.game-list li{display:flex}
-.game-tile{width:100%}
+.game-list{grid-template-columns:1fr;gap:0}
+.game-list li{display:block;min-width:0}
+.game-tile{width:100%;display:grid;grid-template-columns:48px minmax(0,1fr);gap:20px;align-items:start}
+.game-art{width:48px;height:48px;display:grid;place-items:center;margin:0;border-radius:50%;font-size:32px;background:#f5ede0;color:#9b7742}
+.game-list li:nth-child(2) .game-art{background:#f5e5e8;color:#7e5262}
+.game-name{font-family:var(--serif);font-size:24px;font-weight:400;line-height:1.35}
+.game-bridge{margin:0 0 0 46px;padding:18px 0 18px 43px;border-left:1px solid var(--line);font-family:var(--serif);font-size:22px;font-style:italic;line-height:1.5;color:var(--muted)}
 .game-tile .visit-label{font-size:14px}
+.poker-experiments{margin-top:32px;padding-top:28px;border-top:1px solid var(--line)}
+.poker-variants{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.poker-variants li{min-width:0;display:flex}
+.poker-variant{width:100%;display:flex;flex-direction:column;align-items:flex-start;padding:22px;border:1px solid var(--line);border-radius:7px;background:#fff;transition:border-color .2s}
+.poker-variant:hover{border-color:#a6b59b}
+.variant-name{font-family:var(--serif);font-size:23px;font-weight:400;line-height:1.35;margin:0}
+.variant-description{display:block;font-size:16px;line-height:1.6;margin:10px 0 18px;color:var(--muted)}
+.variant-action{font-size:14px;margin-top:auto;color:var(--accent);border-bottom:1px solid #b2bea7}
+@container(max-width:480px){.poker-variants{grid-template-columns:1fr}}
+@media(max-width:480px){.game-bridge{margin-left:42px}.game-tile{gap:16px}}
 .player-owner{font-size:14px;font-weight:500}
 @media(max-width:760px){
   .site-header{gap:12px}
