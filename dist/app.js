@@ -471,16 +471,19 @@ const allContentLink = document.querySelector('.back-to-index');
 const sidebar = document.querySelector('.index-sidebar');
 let activeSection;
 
-// Section icons stay static inside their animated blobs; chooser artwork is separate.
+// Reuse the chooser artwork so each section has the same icon and motion.
 sections.forEach(section => {
   const player = document.querySelector(`.player-card[href="#${section.id}"]`);
-  const icon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  const symbol = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-  symbol.setAttribute('href', `#icon-${section.id === 'about' ? 'factory' : section.id}`);
-  icon.append(symbol);
+  const playerIcon = player?.querySelector('.player-icon');
+  const icon = playerIcon ? playerIcon.cloneNode(true) : document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  if (!playerIcon) {
+    const symbol = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+    symbol.setAttribute('href', '#icon-factory');
+    icon.append(symbol);
+  }
   section.style.setProperty('--player-color', player?.style.getPropertyValue('--player-color') || '#e8edf0');
   const blob = document.createElement('span');
-  blob.className = 'section-blob';
+  blob.className = playerIcon ? 'section-blob has-player-icon' : 'section-blob';
   blob.setAttribute('aria-hidden', 'true');
   blob.append(icon);
   section.querySelector('.section-heading').prepend(blob);

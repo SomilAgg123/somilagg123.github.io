@@ -330,34 +330,38 @@ a.thesis-company-note:hover{color:var(--accent);text-decoration:underline;text-u
 }
 @media(prefers-reduced-motion:reduce){.game-choice:hover .game-cover{transform:none}}
 
-/* Each chooser illustration plays once on hover or keyboard focus. */
+/* Chooser and section icons share their artwork and one-shot animations. */
 .player-portrait .player-icon{width:40px;height:40px;stroke-width:1.5;overflow:visible}
+.section-blob .player-icon{stroke-width:1.5;overflow:visible;animation:none}
+.section-blob.has-player-icon{transition:transform .2s}
 .player-icon .icon-fill{fill:var(--player-color)}
-.player-portrait .motion-piece{transform-box:view-box;transform-origin:20px 20px}
+.player-icon .motion-piece{transform-box:view-box;transform-origin:20px 20px}
 .player-card:focus-visible{border-color:#9eae91;box-shadow:0 7px 18px #25351a0a}
-.player-portrait .motion-case-lid{--motion:chooser-case-open;transform-origin:20px 18px}
-.player-portrait .motion-case-latch{--motion:chooser-case-unlatch}
-.player-portrait .motion-case-inside{--motion:chooser-case-inside;opacity:0}
-.player-portrait .motion-book-body{--motion:chooser-book-center;--motion-duration:900ms;transform:translateX(-6px)}
-.player-portrait .motion-book-cover{--motion:chooser-book-open;--motion-duration:900ms}
-.player-portrait .motion-book-page{--motion:chooser-page-turn;--motion-duration:900ms;opacity:0}
-.player-portrait .motion-book-lines{--motion:chooser-book-lines;--motion-duration:900ms;opacity:0}
-.player-portrait .motion-chart-line{--motion:chooser-chart-draw;--motion-duration:900ms;stroke-dasharray:1;stroke-dashoffset:0;opacity:.5}
-.player-portrait .motion-chart-coin{--motion:chooser-coin-rise;--motion-duration:900ms;transform:translate(-23px,16px);stroke-width:1.2}
-.player-portrait .motion-block-left{--motion:chooser-block-left;--motion-duration:900ms;transform-origin:14px 27px;transform:translate(-4px,2px) rotate(-8deg)}
-.player-portrait .motion-block-right{--motion:chooser-block-right;--motion-duration:900ms;transform-origin:26px 27px;transform:translate(4px,2px) rotate(8deg)}
-.player-portrait .motion-block-top{--motion:chooser-block-top;--motion-duration:900ms;transform:translateY(-4px) rotate(-8deg)}
-.player-portrait .motion-controller{--motion:chooser-controller-lift}
-.player-portrait .motion-controller-shadow{--motion:chooser-controller-shadow;fill:currentColor;stroke:none;opacity:.12;transform-origin:20px 35px}
-.player-portrait .motion-controller-pad{--motion:chooser-controller-pad;transform-origin:13px 23px}
-.player-portrait .motion-controller-button{--motion:chooser-controller-button;transform-origin:26px 20px}
-.player-portrait .motion-pencil{--motion:chooser-pencil-write;--motion-duration:900ms;transform-origin:8px 29px}
-.player-portrait .motion-pencil-line{--motion:chooser-pencil-line;--motion-duration:900ms;stroke-dasharray:1;stroke-dashoffset:1}
+.player-icon .motion-case-lid{--motion:chooser-case-open;transform-origin:20px 18px}
+.player-icon .motion-case-latch{--motion:chooser-case-unlatch}
+.player-icon .motion-case-inside{--motion:chooser-case-inside;opacity:0}
+.player-icon .motion-book-body{--motion:chooser-book-center;--motion-duration:900ms;transform:translateX(-6px)}
+.player-icon .motion-book-cover{--motion:chooser-book-open;--motion-duration:900ms}
+.player-icon .motion-book-page{--motion:chooser-page-turn;--motion-duration:900ms;opacity:0}
+.player-icon .motion-book-lines{--motion:chooser-book-lines;--motion-duration:900ms;opacity:0}
+.player-icon .motion-chart-line{--motion:chooser-chart-draw;--motion-duration:900ms;stroke-dasharray:1;stroke-dashoffset:0;opacity:.5}
+.player-icon .motion-chart-coin{--motion:chooser-coin-rise;--motion-duration:900ms;transform:translate(-23px,16px);stroke-width:1.2}
+.player-icon .motion-block-left{--motion:chooser-block-left;--motion-duration:900ms;transform-origin:14px 27px;transform:translate(-4px,2px) rotate(-8deg)}
+.player-icon .motion-block-right{--motion:chooser-block-right;--motion-duration:900ms;transform-origin:26px 27px;transform:translate(4px,2px) rotate(8deg)}
+.player-icon .motion-block-top{--motion:chooser-block-top;--motion-duration:900ms;transform:translateY(-4px) rotate(-8deg)}
+.player-icon .motion-controller{--motion:chooser-controller-lift}
+.player-icon .motion-controller-shadow{--motion:chooser-controller-shadow;fill:currentColor;stroke:none;opacity:.12;transform-origin:20px 35px}
+.player-icon .motion-controller-pad{--motion:chooser-controller-pad;transform-origin:13px 23px}
+.player-icon .motion-controller-button{--motion:chooser-controller-button;transform-origin:26px 20px}
+.player-icon .motion-pencil{--motion:chooser-pencil-write;--motion-duration:900ms;transform-origin:8px 29px}
+.player-icon .motion-pencil-line{--motion:chooser-pencil-line;--motion-duration:900ms;stroke-dasharray:1;stroke-dashoffset:1}
 @media(prefers-reduced-motion:no-preference){
-  .player-card:focus-visible .motion-piece{animation:var(--motion) var(--motion-duration,800ms) cubic-bezier(.22,.75,.25,1) both}
+  .player-card:focus-visible .motion-piece,.section-heading:has(.section-link:focus-visible) .motion-piece{animation:var(--motion) var(--motion-duration,800ms) cubic-bezier(.22,.75,.25,1) both}
+  .section-heading:has(.section-link:focus-visible) .has-player-icon{transform:translateY(-4px)}
 }
 @media(hover:hover) and (prefers-reduced-motion:no-preference){
-  .player-card:hover .motion-piece{animation:var(--motion) var(--motion-duration,800ms) cubic-bezier(.22,.75,.25,1) both}
+  .player-card:hover .motion-piece,.section-blob:hover .motion-piece{animation:var(--motion) var(--motion-duration,800ms) cubic-bezier(.22,.75,.25,1) both}
+  .section-blob.has-player-icon:hover{transform:translateY(-4px)}
 }
 @keyframes chooser-case-open{
   0%,20%{transform:none}
