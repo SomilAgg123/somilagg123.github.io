@@ -1,33 +1,30 @@
 // Add real destinations here. A missing URL stays readable, without a dead link.
 const content = {
   currentProjects: [
-    { statement: '...better context management for AI agents', name: 'CustomerMemory', url: 'https://customermemory.dev' },
-    { statement: '...a way to turn existing APIs into approved MCP tools', name: 'agentifyapi', github: 'https://github.com/SomilAgg123/agentifyapi' },
-    { statement: '...a research-backed guide to choosing the right model for each task and budget', name: 'Jagged', github: 'https://github.com/SomilAgg123/jagged' },
-    { statement: '...a new chapter for local newspaper owners', name: 'Sell My Newspaper', url: 'https://www.sellmynewspaper.com/' },
-    { statement: '...custom games that bring people together', name: 'For Happy Hour', url: 'https://forhappyhour.com' },
-    { statement: '...a new variation of poker', name: 'French Poker', url: 'https://frenchpoker.onrender.com' },
+    { statement: 'Better context management for AI agents', name: 'CustomerMemory', url: 'https://customermemory.dev' },
+    { statement: 'Existing APIs, turned into approved MCP tools', name: 'agentifyapi', github: 'https://github.com/SomilAgg123/agentifyapi' },
+    { statement: 'A guide to choosing the right model for each task and budget', name: 'Jagged', github: 'https://github.com/SomilAgg123/jagged' },
+    { statement: 'A new chapter for local newspaper owners', name: 'Sell My Newspaper', url: 'https://www.sellmynewspaper.com/' },
   ],
   pastProjects: [
-    { statement: '...a dating app for friends to set their friends up', name: 'Mutual', url: 'https://somilagg123.github.io/mutual/', github: 'https://github.com/SomilAgg123/mutual' },
-    { statement: '...a data tracking tool for farmers in the field', name: 'Agcess', url: 'https://somilagg123.github.io/agcess/', github: 'https://github.com/SomilAgg123/agcess' },
-    { statement: '...the social platform for watch collectors', name: 'Horlo', url: 'https://somilagg123.github.io/horlo/', github: 'https://github.com/SomilAgg123/horlo' },
+    { statement: 'A dating app for friends to set their friends up', name: 'Mutual', url: 'https://somilagg123.github.io/mutual/', github: 'https://github.com/SomilAgg123/mutual' },
+    { statement: 'A data tracking tool for farmers in the field', name: 'Agcess', url: 'https://somilagg123.github.io/agcess/', github: 'https://github.com/SomilAgg123/agcess' },
+    { statement: 'A social platform for watch collectors', name: 'Horlo', url: 'https://somilagg123.github.io/horlo/', github: 'https://github.com/SomilAgg123/horlo' },
   ],
   articles: readingArticles,
   harness: 'https://github.com/SomilAgg123/agent-shape',
   games: [
-    { name: 'frenchpoker', mark: '♧', url: 'https://frenchpoker.onrender.com', action: 'Play French Poker' },
-    { name: 'forhappyhour', mark: '✷', url: 'https://forhappyhour.com', action: 'Explore Happy Hour' },
+    { name: 'frenchpoker', mark: '♧', description: 'A new variation of poker.', url: 'https://frenchpoker.onrender.com', action: 'Play French Poker' },
+    { name: 'forhappyhour', mark: '✷', description: 'Custom games that bring people together.', url: 'https://forhappyhour.com', action: 'Explore Happy Hour' },
   ],
   writing: [
-    // Short editorial paraphrases, each grounded in the linked article or essay.
-    { statement: '...that AI keeps raising the bar for great products', name: 'the bar gets higher', url: 'https://x.com/Somil_Agg/status/2120989847082979722' },
-    { statement: '...that game design can teach us how to build better agents', name: 'winning games with agents', url: 'https://x.com/Somil_Agg/status/2115888000605343911' },
-    { statement: '...that better memory makes for better AI agents', name: 'The Right to Remember', url: 'https://foundaition.substack.com/p/the-right-to-remember' },
-    { statement: '...that AI safety is an engineering problem, too', name: 'The Gordian Knot of AI Control', url: 'https://foundaition.substack.com/p/the-gordian-knot-of-ai-control' },
-    { statement: '...that AI oversight has to continue after deployment', name: 'Why the Real GenAI Risk Is What Happens After You Deploy', url: 'https://foundaition.substack.com/p/why-the-real-genai-risk-is-what-happens' },
-    { statement: '...that evals should show us where systems break', name: 'What Is an Eval?', url: 'https://foundaition.substack.com/p/what-is-an-eval' },
-    { statement: '...that reading is an act of creativity', name: 'Observations', url: 'https://foundaition.substack.com/p/observations' },
+    { name: 'the bar gets higher', publication: 'X', url: 'https://x.com/Somil_Agg/status/2120989847082979722' },
+    { name: 'winning games with agents', publication: 'X', url: 'https://x.com/Somil_Agg/status/2115888000605343911' },
+    { name: 'The Right to Remember', publication: 'foundAItion · Substack', url: 'https://foundaition.substack.com/p/the-right-to-remember' },
+    { name: 'The Gordian Knot of AI Control', publication: 'foundAItion · Substack', url: 'https://foundaition.substack.com/p/the-gordian-knot-of-ai-control' },
+    { name: 'Why the Real GenAI Risk Is What Happens After You Deploy', publication: 'foundAItion · Substack', url: 'https://foundaition.substack.com/p/why-the-real-genai-risk-is-what-happens' },
+    { name: 'What Is an Eval?', publication: 'foundAItion · Substack', url: 'https://foundaition.substack.com/p/what-is-an-eval' },
+    { name: 'Observations', publication: 'foundAItion · Substack', url: 'https://foundaition.substack.com/p/observations' },
   ],
   investingThesis: [
     { name: 'Corridor', note: 'Acquired by Cognition', noteUrl: 'https://cognition.com/blog/corridor-joining-cognition', url: 'https://www.corridor.dev/' },
@@ -119,15 +116,15 @@ function label(className, value) {
   return element;
 }
 
-function renderStoryList(id, items, previewCount = Infinity) {
+function renderWriting(id, items, previewCount = Infinity) {
   const list = document.getElementById(id);
   items.forEach((item, index) => {
     const li = document.createElement('li');
     if (index >= previewCount) li.dataset.detailOnly = '';
     const row = item.url ? externalLink(item.url) : document.createElement('div');
     row.className = 'story-link';
-    row.append(label('story-statement', item.statement), label('story-source', item.name));
-    if (item.url) row.setAttribute('aria-label', `${item.statement} — ${item.name} (opens in a new tab)`);
+    row.append(label('story-statement', item.name), label('story-source', item.publication));
+    if (item.url) row.setAttribute('aria-label', `${item.name} (opens in a new tab)`);
     li.append(row);
     list.append(li);
   });
@@ -163,7 +160,7 @@ function renderProjects(id, projects) {
 
 renderProjects('current-projects', content.currentProjects);
 renderProjects('past-projects', content.pastProjects);
-renderStoryList('writing-links', content.writing, 2);
+renderWriting('writing-links', content.writing, 2);
 
 function renderBooks(id, articles) {
   const list = document.getElementById(id);
@@ -362,7 +359,7 @@ content.games.forEach(game => {
   tile.className = 'game-tile';
   const mark = label('game-art', game.mark);
   mark.setAttribute('aria-hidden', 'true');
-  tile.append(mark, label('game-name', game.name), label(game.url ? 'visit-label' : 'pending-label', game.url ? (game.action || 'Play the game') : 'Link coming soon'));
+  tile.append(mark, label('game-name', game.name), label('game-description', game.description), label(game.url ? 'visit-label' : 'pending-label', game.url ? (game.action || 'Play the game') : 'Link coming soon'));
   if (game.url) tile.setAttribute('aria-label', `${game.name} (opens in a new tab)`);
   li.append(tile);
   document.getElementById('game-links').append(li);

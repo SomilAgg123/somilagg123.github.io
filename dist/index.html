@@ -26,7 +26,7 @@
 
     <div class="site-shell">
       <header class="site-header">
-        <h1 class="visually-hidden">Somil Aggarwal</h1>
+        <h1 class="site-name"><a href="?view=content" data-all-content>Somil Aggarwal</a></h1>
         <button class="player-trigger" type="button" data-open-players><svg class="icon" aria-hidden="true"><use href="#icon-grid"/></svg>Choose a player</button>
       </header>
 
@@ -38,12 +38,22 @@
             </div>
             <nav class="index-nav" aria-label="Explore my interests">
               <a href="#about"><svg class="icon" aria-hidden="true"><use href="#icon-factory"/></svg>A bit about me</a>
-              <a href="#work"><svg class="icon" aria-hidden="true"><use href="#icon-work"/></svg>Work experience</a>
-              <a href="#library"><svg class="icon" aria-hidden="true"><use href="#icon-library"/></svg>Library</a>
-              <a href="#investing"><svg class="icon" aria-hidden="true"><use href="#icon-investing"/></svg>Investing</a>
-              <a href="#building"><svg class="icon" aria-hidden="true"><use href="#icon-building"/></svg>Building...</a>
-              <a href="#games"><svg class="icon" aria-hidden="true"><use href="#icon-games"/></svg>Games</a>
-              <a href="#writing"><svg class="icon" aria-hidden="true"><use href="#icon-writing"/></svg>Writing</a>
+              <details class="nav-group">
+                <summary><svg class="icon" aria-hidden="true"><use href="#icon-work"/></svg>Work<span class="nav-chevron" aria-hidden="true"></span></summary>
+                <div class="nav-group-links">
+                  <a href="#work">Experience</a>
+                  <a href="#investing">Investing</a>
+                  <a href="#building">Building</a>
+                  <a href="#writing">Writing</a>
+                </div>
+              </details>
+              <details class="nav-group">
+                <summary><svg class="icon" aria-hidden="true"><use href="#icon-games"/></svg>Play<span class="nav-chevron" aria-hidden="true"></span></summary>
+                <div class="nav-group-links">
+                  <a href="#games">Games</a>
+                  <a href="#library">Library</a>
+                </div>
+              </details>
             </nav>
           </aside>
 
@@ -52,12 +62,12 @@
             <section class="content-section" id="about" aria-labelledby="about-title">
               <div class="section-heading"><h2 id="about-title" tabindex="-1"><a href="#about" class="section-link">A bit about me</a></h2></div>
               <div class="about-copy">
-                <p>AI has rekindled my passion for building valuable products. I'm creating <a href="https://customermemory.dev" target="_blank" rel="noopener noreferrer">better knowledge factories for agents</a>, and helping <a href="https://www.sellmynewspaper.com/" target="_blank" rel="noopener noreferrer">owners of local newspapers passed down through generations</a> find the right next chapter for their businesses.</p>
-                <p>Thanks to AI, I've preserved my previous startups as a little digital museum: <a href="https://somilagg123.github.io/agcess/" target="_blank" rel="noopener noreferrer">a data tracking tool for farmers in the field</a>, <a href="https://somilagg123.github.io/mutual/" target="_blank" rel="noopener noreferrer">a dating app for friends to match their friends</a>, and <a href="https://somilagg123.github.io/horlo/" target="_blank" rel="noopener noreferrer">a social platform for watch enthusiasts</a>.</p>
-                <p>I'm a huge software factory stan. Here's <a id="harness-link" href="https://github.com/SomilAgg123/agent-shape" target="_blank" rel="noopener noreferrer">my agent harness</a>.</p>
-                <p>Along the way, I ran into a few common bottlenecks: <a href="https://github.com/SomilAgg123/agentifyapi" target="_blank" rel="noopener noreferrer">turning my existing APIs into MCP tools</a>, and <a href="https://github.com/SomilAgg123/jagged" target="_blank" rel="noopener noreferrer">giving my harness context about which models are best at which tasks</a>, so it can choose the right model without spending more than it needs to.</p>
-                <p>I love reading technical blogs. Here's <a href="#library" data-section-link>what I've read most recently</a>.</p>
-                <p>I'm also a huge game fanatic: board games, strategy games, party games, you name it. I believe we're heading toward a future where <a href="https://forhappyhour.com" target="_blank" rel="noopener noreferrer">games can be easily custom-made</a> to make getting together even more fun.</p>
+                <p class="about-lead">I like understanding how things work, then making something useful or fun with what I learn.</p>
+                <p>That curiosity has taken me through engineering, product, and investing. I've built <a href="https://somilagg123.github.io/agcess/" target="_blank" rel="noopener noreferrer">a data tracking tool for farmers</a>, <a href="https://somilagg123.github.io/mutual/" target="_blank" rel="noopener noreferrer">a dating app for friends to match their friends</a>, and <a href="https://somilagg123.github.io/horlo/" target="_blank" rel="noopener noreferrer">a social platform for watch enthusiasts</a>. They're now preserved in a little digital museum of past projects.</p>
+                <p>AI has made it easier to follow those ideas further. Right now, I'm building <a href="https://customermemory.dev" target="_blank" rel="noopener noreferrer">better knowledge factories for agents</a> and helping <a href="https://www.sellmynewspaper.com/" target="_blank" rel="noopener noreferrer">owners of local newspapers passed down through generations</a> find the right next chapter for their businesses.</p>
+                <p>I'm a huge software factory stan. Working on <a id="harness-link" href="https://github.com/SomilAgg123/agent-shape" target="_blank" rel="noopener noreferrer">my agent harness</a> keeps turning up new things to build: <a href="https://github.com/SomilAgg123/agentifyapi" target="_blank" rel="noopener noreferrer">ways to turn existing APIs into MCP tools</a>, and <a href="https://github.com/SomilAgg123/jagged" target="_blank" rel="noopener noreferrer">a guide to which models work best for different tasks and budgets</a>.</p>
+                <p>Reading is another way I follow that curiosity. I love technical blogs, especially when someone takes the time to explain how they made something work. I keep <a href="#library" data-section-link>a library of pieces I've read and saved</a>.</p>
+                <p>And sometimes the thing I want to make is a better evening with friends. I'm a huge game fanatic: board games, strategy games, party games, you name it. I'm exploring how <a href="https://forhappyhour.com" target="_blank" rel="noopener noreferrer">custom-made games</a> can make getting together even more fun.</p>
               </div>
             </section>
 
@@ -66,22 +76,7 @@
               <div class="work-preview" id="work-preview" data-overview-only></div>
               <div class="experience-layout" id="experience-layout" data-detail-only hidden><div class="experience-tabs" id="experience-tabs" role="tablist" aria-label="Work experience" aria-orientation="vertical"></div><div id="experience-panels"></div></div>
               <a class="text-link" id="experience-link" href="https://www.linkedin.com/in/somil-aggarwal/" target="_blank" rel="noopener noreferrer">Work experience on LinkedIn</a>
-              <a class="section-more" href="#work" data-section-link data-overview-only>View full experience <span aria-hidden="true">→</span></a>
-            </section>
-
-            <section class="content-section" id="library" aria-labelledby="library-title">
-              <div class="section-heading"><h2 id="library-title" tabindex="-1"><a href="#library" class="section-link">Library</a></h2></div>
-              <div class="reading-group" id="favorite-reading" hidden>
-                <h3 class="reading-heading" id="favorites-title">Favorites <span class="reading-count" id="favorites-count"></span></h3>
-                <ul class="library-grid favorites-grid" id="favorite-article-links" aria-labelledby="favorites-title"></ul>
-              </div>
-              <div class="reading-group" id="other-reading" data-detail-only hidden>
-                <h3 class="reading-heading" id="other-reading-title">More reading <span class="reading-count" id="other-reading-count"></span></h3>
-                <div class="reading-filters" id="reading-filters" role="group" aria-label="Filter more reading by category"></div>
-                <p class="visually-hidden" id="reading-status" role="status" aria-live="polite" aria-atomic="true"></p>
-                <ul class="library-grid" id="article-links" aria-labelledby="other-reading-title"></ul>
-              </div>
-              <a class="section-more" href="#library" data-section-link data-overview-only>Explore the library <span aria-hidden="true">→</span></a>
+              <a class="section-more" href="#work" data-section-link data-overview-only>View full experience</a>
             </section>
 
             <section class="content-section" id="investing" aria-labelledby="investing-title">
@@ -98,41 +93,59 @@
                   <p>I started my career at Armory Square Ventures, learning how to invest with a differentiated thesis: identifying opportunities outside the usual venture geographies with the potential for outsized returns.</p>
                 </div>
               </div>
-              <a class="section-more" href="#investing" data-section-link data-overview-only>More investing <span aria-hidden="true">→</span></a>
+              <a class="section-more" href="#investing" data-section-link data-overview-only>More investing</a>
             </section>
 
             <section class="content-section" id="building" aria-labelledby="building-title">
-              <div class="section-heading"><h2 id="building-title" tabindex="-1"><a href="#building" class="section-link">Building...</a></h2></div>
+              <div class="section-heading"><h2 id="building-title" tabindex="-1"><a href="#building" class="section-link">Building</a></h2></div>
+              <h3 class="collection-heading">Current projects</h3>
               <ul class="story-list" id="current-projects"></ul>
               <div data-detail-only>
-                <h3 class="story-subheading">In the past, I've built...</h3>
+                <h3 class="collection-heading past-projects-heading">Past projects</h3>
                 <ul class="story-list" id="past-projects"></ul>
               </div>
-              <a class="section-more" href="#building" data-section-link data-overview-only>View all projects <span aria-hidden="true">→</span></a>
-            </section>
-
-            <section class="content-section" id="games" aria-labelledby="games-title">
-              <div class="section-heading"><h2 id="games-title" tabindex="-1"><a href="#games" class="section-link">Games</a></h2></div>
-              <ul class="game-list" id="game-links"></ul>
+              <a class="section-more" href="#building" data-section-link data-overview-only>View all projects</a>
             </section>
 
             <section class="content-section" id="writing" aria-labelledby="writing-title">
               <div class="section-heading"><h2 id="writing-title" tabindex="-1"><a href="#writing" class="section-link">Writing</a></h2></div>
-              <h3 class="story-subheading writing-intro">I believe...</h3>
+              <p class="section-intro">Notes on what I'm learning, building, and still figuring out.</p>
               <ul class="story-list" id="writing-links"></ul>
               <div class="writing-profiles" data-detail-only><a class="text-link" href="https://foundaition.substack.com" target="_blank" rel="noopener noreferrer">More on Substack</a><a class="text-link" href="https://x.com/Somil_Agg" target="_blank" rel="noopener noreferrer">X</a></div>
-              <a class="section-more" href="#writing" data-section-link data-overview-only>View all writing <span aria-hidden="true">→</span></a>
+              <a class="section-more" href="#writing" data-section-link data-overview-only>View all writing</a>
+            </section>
+
+            <section class="content-section" id="games" aria-labelledby="games-title">
+              <div class="section-heading"><h2 id="games-title" tabindex="-1"><a href="#games" class="section-link">Games</a></h2></div>
+              <p class="section-intro">Building isn't limited to work. These are experiments in making time with friends more fun.</p>
+              <ul class="game-list" id="game-links"></ul>
+            </section>
+
+            <section class="content-section" id="library" aria-labelledby="library-title">
+              <div class="section-heading"><h2 id="library-title" tabindex="-1"><a href="#library" class="section-link">Library</a></h2></div>
+              <p class="section-intro">Essays and technical blogs by other people, read and saved by me.</p>
+              <div class="reading-group" id="favorite-reading" hidden>
+                <h3 class="reading-heading" id="favorites-title">Favorites <span class="reading-count" id="favorites-count"></span></h3>
+                <ul class="library-grid favorites-grid" id="favorite-article-links" aria-labelledby="favorites-title"></ul>
+              </div>
+              <div class="reading-group" id="other-reading" data-detail-only hidden>
+                <h3 class="reading-heading" id="other-reading-title">More reading <span class="reading-count" id="other-reading-count"></span></h3>
+                <div class="reading-filters" id="reading-filters" role="group" aria-label="Filter more reading by category"></div>
+                <p class="visually-hidden" id="reading-status" role="status" aria-live="polite" aria-atomic="true"></p>
+                <ul class="library-grid" id="article-links" aria-labelledby="other-reading-title"></ul>
+              </div>
+              <a class="section-more" href="#library" data-section-link data-overview-only>Explore the library</a>
             </section>
           </div>
         </div>
       </main>
 
-      <footer class="site-footer"><span>Somil Aggarwal</span><a href="#main" data-back-to-top>Back to top</a></footer>
+      <footer class="site-footer"><a href="#main" data-back-to-top>Back to top</a></footer>
     </div>
 
     <dialog id="player-dialog" aria-labelledby="player-title">
       <div class="player-screen">
-        <div class="player-top"><button class="close-player" aria-label="Close player selector" type="button">×</button></div>
+        <div class="player-top"><span class="player-owner">Somil Aggarwal</span><button class="close-player" aria-label="Close player selector" type="button">×</button></div>
         <div class="player-intro"><h2 id="player-title">Choose your <em>player.</em></h2></div>
         <div class="player-grid">
           <a href="#work" class="player-card" style="--player-color:#e8edf8"><span class="player-portrait"><svg aria-hidden="true"><use href="#icon-work"/></svg></span><span class="player-name">The professional</span></a>
