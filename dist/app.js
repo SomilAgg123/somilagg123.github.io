@@ -182,7 +182,7 @@ function renderPaperStack() {
   const edges = document.getElementById('paper-edges');
   const position = document.getElementById('paper-position');
   const status = document.getElementById('paper-status');
-  const offsets = [-2, 3, -4, 2, 4, -3, 1, -1];
+  const offsets = [-1, 1, -1.5, .5, 1.5, -1, .5, 0];
   const choices = [];
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let selected = 0;
@@ -438,7 +438,12 @@ function renderPaperStack() {
     const b = narrow ? -.2 : -.28;
     const c = narrow ? .3 : .55;
     const d = narrow ? .78 : .62;
-    const step = compact ? 17 : 12;
+    const step = narrow ? 36 : compact ? 26 : 24;
+    // Preserve readable letter shapes along the projected spine. The paper rim
+    // retains its perspective, while its label compensates for the shear.
+    const spineScale = Math.hypot(c, d);
+    const labelHeightScale = narrow ? .8 : 1;
+    const labelTransform = `matrix(${1 / spineScale}, 0, ${-d * labelHeightScale / (c * spineScale)}, ${spineScale * labelHeightScale / c}, 0, 0)`;
     const depth = step * (choices.length - 1);
     const slope = c / d;
     const clearance = 20;
@@ -461,6 +466,7 @@ function renderPaperStack() {
       '--pile-step': `${step}px`, '--paper-width-scale': a, '--paper-tilt': b,
       '--paper-skew': c, '--paper-flatten': d,
       '--edge-left': `${left}px`, '--edge-top': `${top}px`, '--edge-height': `${step}px`,
+      '--spine-label-width': `${paperHeight * spineScale - 24}px`, '--spine-label-transform': labelTransform,
       '--face-end-left': `${c * paperHeight}px`, '--face-end-top': `${d * paperHeight}px`,
       '--shadow-width': `${projectedWidth + 24}px`,
       '--scene-height': `${projectedHeight + step * choices.length + 16}px`,
