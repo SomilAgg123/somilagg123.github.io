@@ -217,19 +217,11 @@ function renderPaperStack() {
     const link = externalLink(article.url);
     link.className = 'paper-content';
     link.setAttribute('aria-label', `${article.name} — ${article.source.toLowerCase()} (opens in a new tab)`);
-    const heading = document.createElement('span');
-    heading.className = 'paper-heading';
-    heading.append(label('paper-category', article.category), label('paper-title', article.name), label('paper-author', article.detail));
-    const body = document.createElement('span');
-    body.className = 'paper-body';
-    body.append(label('paper-summary', article.preview));
-    const rules = label('paper-print-lines', '');
-    rules.setAttribute('aria-hidden', 'true');
-    body.append(rules);
+    const heading = label('paper-title', article.name);
     const footer = document.createElement('span');
     footer.className = 'paper-footer';
     footer.append(label('paper-action', article.source));
-    link.append(heading, body, footer);
+    link.append(heading, footer);
     sheet.append(link);
     sheets.append(sheet);
 
@@ -241,7 +233,7 @@ function renderPaperStack() {
     edge.style.setProperty('--paper-index', index);
     edge.setAttribute('aria-controls', sheet.id);
     edge.setAttribute('aria-label', `Preview ${article.name}`);
-    edge.append(label('paper-edge-title', article.detail.split(' / ')[0]));
+    edge.append(label('paper-edge-title', article.name));
     edge.addEventListener('pointerenter', event => {
       if (event.pointerType === 'mouse' || event.pointerType === 'pen') {
         clearTimeout(hoverTimer);
@@ -303,7 +295,6 @@ function renderPaperStack() {
     const left = (width - projectedWidth - pull) / 2 + pull + skew * paperHeight;
     const projectedHeight = tilt * paperWidth + flatten * paperHeight;
     stack.classList.toggle('is-compact', compact);
-    stack.classList.toggle('is-small-sheet', paperWidth < 290);
     const vars = {
       '--page-width': `${paperWidth}px`, '--page-height': `${paperHeight}px`,
       '--pile-left': `${left}px`, '--paper-pull': `${pull}px`,

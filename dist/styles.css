@@ -403,27 +403,22 @@ a.thesis-company-note:hover{color:var(--accent);text-decoration:underline;text-u
 .paper-sheet{--sheet-pull:0px;position:absolute;top:0;left:var(--pile-left);width:var(--page-width);height:var(--page-height);z-index:var(--paper-depth);transform-origin:0 0;transform:translate3d(calc(var(--paper-offset) + var(--sheet-pull)),calc(var(--paper-index) * var(--pile-step)),0) matrix(1,var(--paper-tilt),var(--paper-skew),var(--paper-flatten),0,0);filter:drop-shadow(0 4px 3px #55472d24);transition:none;will-change:transform;backface-visibility:hidden;pointer-events:none}
 .paper-sheet::before{content:'';position:absolute;inset:0;background:url('./assets/paper-grain.svg'),linear-gradient(110deg,#faf7ee,#fdfbf4 35%,#f3eddf 90%,#fcf9f1);clip-path:polygon(.3% .3%,12% .1%,25% .4%,38% 0,53% .3%,68% .1%,83% .4%,99.7% .2%,99.8% 24%,99.6% 47%,100% 73%,99.7% 99.6%,81% 99.8%,63% 99.5%,44% 100%,25% 99.6%,.2% 99.9%,.5% 76%,0 54%,.3% 28%);box-shadow:inset 0 0 32px #a68d6311}
 .paper-sheet::after{content:'';position:absolute;right:1px;bottom:2px;width:25px;height:28px;background:linear-gradient(135deg,transparent 45%,#b9aa8a22 48%,#fcfaf3 56%,#e9e0cc 88%);clip-path:polygon(100% 0,100% 100%,0 100%);pointer-events:none}
-.paper-sheet.is-selected{z-index:20;pointer-events:auto}
-.paper-stack.is-compact .paper-sheet.is-selected{z-index:24}
+/* Keep the original depth so the pile covers a sheet as it emerges. */
+.paper-sheet.is-selected{pointer-events:auto}
 /* Only pulling a sheet out animates; removing this state restores it instantly. */
 .paper-sheet.is-pulled{--sheet-pull:calc(-1 * var(--paper-pull));transition:transform .82s cubic-bezier(.22,.61,.36,1)}
+/* Short pulls need a readable foreground sheet, but only after it has slid out. */
+.paper-stack.is-compact .paper-sheet.is-pulled{z-index:24;transition:transform .82s cubic-bezier(.22,.61,.36,1),z-index 0s .82s}
 .paper-content{--paper-inset:27px;position:relative;z-index:1;display:flex;flex-direction:column;gap:12px;height:100%;padding:22px var(--paper-inset) 58px;color:#38372f}
 .paper-content:focus-visible{outline-offset:5px;border-radius:2px}
-.paper-heading{display:flex;flex-direction:column;gap:9px}
-.paper-category{font-family:var(--sans);font-size:13px;line-height:1.3;color:#77705e}
 .paper-title{display:block;font-family:var(--serif);font-size:var(--paper-title-size,29px);font-weight:450;line-height:1.12;letter-spacing:-.6px;text-wrap:balance}
-.paper-author{font-family:var(--sans);font-size:13px;line-height:1.5;color:#746d5a}
-.paper-body{display:block;border-top:1px solid #9c907750;padding-top:12px}
-.paper-summary{display:block;font-family:var(--serif);font-size:16px;line-height:1.5;color:#655e4f}
-.paper-stack.is-small-sheet .paper-print-lines{display:none}
-.paper-print-lines{display:block;width:94%;height:10px;margin-top:8px;background:repeating-linear-gradient(transparent 0 6px,#71654c12 6px 7px,transparent 7px 10px);clip-path:polygon(0 0,100% 0,100% 40%,92% 40%,92% 75%,68% 75%,68% 100%,0 100%)}
 .paper-footer{position:absolute;right:var(--paper-inset);bottom:20px;display:block;font-family:var(--sans);font-size:14px;line-height:1.5;white-space:nowrap}
 .paper-action{color:#4d6246;text-decoration:underline;text-decoration-color:#7c8a6c80;text-underline-offset:4px}
 .paper-edges{position:absolute;inset:0;z-index:21;pointer-events:none}
 .paper-edge{position:absolute;top:calc(var(--edge-top) + var(--paper-index) * var(--pile-step));left:var(--edge-left);width:var(--page-width);height:var(--edge-height);display:flex;align-items:center;justify-content:flex-end;padding:0 12px;text-align:right;transform-origin:0 0;transform:matrix(1,var(--paper-tilt),0,1,0,0);color:#756b57;isolation:isolate;pointer-events:auto;touch-action:manipulation}
 .paper-edge::before{content:'';position:absolute;inset:0 -2px;z-index:-1;background:url('./assets/paper-grain.svg'),linear-gradient(100deg,#e4dac5,#f7f2e6 35%,#e8dfcd);border-bottom:1px solid #ac9c7e80;clip-path:polygon(.2% 0,100% 0,99.8% 91%,72% 100%,46% 93%,21% 100%,0 94%)}
 .paper-edge:nth-child(even)::before{background-position:80px 120px}
-.paper-edge-title{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:80%;font-family:var(--sans);font-size:12px;line-height:1}
+.paper-edge-title{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;font-family:var(--sans);font-size:12px;line-height:1}
 .paper-edge[aria-pressed="true"]{color:#355130}
 .paper-edge[aria-pressed="true"]::before{border-bottom-color:#768967;background-color:#edf0df;background-blend-mode:multiply}
 .paper-edge:focus-visible{outline-offset:1px;z-index:2}
@@ -450,10 +445,6 @@ a.thesis-company-note:hover{color:var(--accent);text-decoration:underline;text-u
 @container(max-width:740px){
   .reading-stage{padding-top:24px}
   .paper-content{--paper-inset:22px;padding:23px var(--paper-inset) 58px;gap:15px}
-  .paper-heading{gap:9px}
-  .paper-summary{line-height:1.45}
-  .paper-body{padding-top:13px}
-  .paper-print-lines{height:16px;margin-top:12px}
   .paper-touch-controls{display:flex}
   .paper-edge-title{font-size:12px}
   .section-view #library .reading-stage{padding-top:18px;padding-bottom:8px}
@@ -462,6 +453,5 @@ a.thesis-company-note:hover{color:var(--accent);text-decoration:underline;text-u
   #library .reading-hero .section-intro{font-size:18px}
   .paper-content{--paper-inset:18px;padding:21px var(--paper-inset) 58px;gap:13px}
   .paper-title{font-size:24px}
-  .paper-print-lines{display:none}
 }
 @media(max-width:760px){.section-view #library .reading-hero{min-height:calc(100svh - 144px)}}
