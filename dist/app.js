@@ -763,6 +763,85 @@ const navLinks = [...document.querySelectorAll('.index-nav a')];
 const allContentLink = document.querySelector('.back-to-index');
 const sidebar = document.querySelector('.index-sidebar');
 let activeSection;
+let aboutTyping;
+
+function setupAboutTyping() {
+  const title = document.querySelector('#about-title .section-link');
+  const section = title.closest('.content-section');
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const text = title.textContent;
+  // Keep the full title's width and accessible name throughout the reveal.
+  title.setAttribute('aria-label', text);
+  title.classList.add('about-type-title');
+  const letters = Array.from(text, character => {
+    const letter = document.createElement('span');
+    letter.className = 'about-title-character';
+    letter.setAttribute('aria-hidden', 'true');
+    letter.textContent = character;
+    return letter;
+  });
+  title.replaceChildren(...letters);
+  title.dataset.typingState = 'waiting';
+  let index = 0;
+  let startedAt;
+  let frame;
+  let complete = false;
+
+  function finish() {
+    if (complete) return;
+    complete = true;
+    cancelAnimationFrame(frame);
+    letters.forEach(letter => {
+      letter.classList.add('is-revealed');
+      letter.classList.remove('is-cursor');
+    });
+    title.dataset.typingState = 'complete';
+    observer.disconnect();
+    window.removeEventListener('scroll', refresh);
+    document.removeEventListener('visibilitychange', refresh);
+    dialog.removeEventListener('close', refresh);
+    reducedMotion.removeEventListener('change', refresh);
+    window.removeEventListener('beforeprint', finish);
+  }
+
+  function tick(now) {
+    startedAt ??= now;
+    // A short deliberate cadence, like a terminal writing a heading.
+    const next = Math.min(letters.length, Math.max(0, Math.floor((now - startedAt - 180) / 105)));
+    while (index < next) {
+      letters[index].classList.remove('is-cursor');
+      letters[index++].classList.add('is-revealed');
+    }
+    if (index === letters.length) return finish();
+    letters[index].classList.add('is-cursor');
+    frame = requestAnimationFrame(tick);
+  }
+
+  function refresh() {
+    if (complete) return;
+    if (reducedMotion.matches) return finish();
+    const bounds = title.getBoundingClientRect();
+    const visible = !section.hidden && !dialog.open && !document.hidden &&
+      bounds.top < window.innerHeight - 24 && bounds.bottom > 0;
+    if (title.dataset.typingState === 'typing') {
+      // Once seen, the heading stays complete when visitors leave and return.
+      if (!visible) finish();
+    } else if (visible) {
+      title.dataset.typingState = 'typing';
+      frame = requestAnimationFrame(tick);
+    }
+  }
+
+  const observer = new IntersectionObserver(refresh);
+  observer.observe(title);
+  window.addEventListener('scroll', refresh, { passive: true });
+  document.addEventListener('visibilitychange', refresh);
+  dialog.addEventListener('close', refresh);
+  reducedMotion.addEventListener('change', refresh);
+  window.addEventListener('beforeprint', finish);
+  refresh();
+  return { refresh };
+}
 
 // Reuse the chooser artwork so each section has the same icon and motion.
 sections.forEach(section => {
@@ -825,6 +904,7 @@ function showSection(id, { focus = false } = {}) {
     window.scrollTo({ top: 0, behavior: 'instant' });
     heading.focus({ preventScroll: true });
   }
+  aboutTyping?.refresh();
 }
 
 function navigateTo(id, { replace = false } = {}) {
@@ -885,3 +965,4 @@ if (sectionFromUrl()) {
 // Open the chooser on arrival. Explicit content URLs and section links skip it.
 const requestedView = new URLSearchParams(location.search).get('view');
 if (requestedView === 'players' || (requestedView !== 'content' && !location.hash)) openPlayers();
+aboutTyping = setupAboutTyping();
