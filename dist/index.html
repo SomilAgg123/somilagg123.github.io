@@ -76,7 +76,7 @@
                 <p class="about-lead">I'm a tinkerer and a game fanatic. My interests have taken me all over the place, but I'm ultimately motivated by using technology to solve interesting, people-oriented problems.</p>
                 <p>Throughout my career thus far, this has manifested in building <a href="https://somilagg123.github.io/agcess/" target="_blank" rel="noopener noreferrer">a data tracking tool for farmers</a>, <a href="https://somilagg123.github.io/mutual/" target="_blank" rel="noopener noreferrer">a dating app for friends to match their friends</a>, and <a href="https://somilagg123.github.io/horlo/" target="_blank" rel="noopener noreferrer">a social platform for watch enthusiasts</a>. They're now preserved in a little digital museum of past projects.</p>
                 <p>Now, I've turned my attention to AI and how it interfaces with people. I joined Decagon AI to learn how to build and deploy production AI agents at scale.</p>
-                <p>However, like I said, I'm always tinkering. On the side, I am building <a href="https://customermemory.dev/" target="_blank" rel="noopener noreferrer">better knowledge factories for agents</a>. I often spend mornings reading, a habit I’ve rediscovered thanks to Grokbot’s recommendations for <a href="?view=content#library" data-section-link>awesome pieces</a>.</p>
+                <p>However, like I said, I'm always tinkering. On the side, I am building <a href="https://customermemory.dev/" target="_blank" rel="noopener noreferrer">better knowledge factories for agents</a>. I often spend mornings reading, a penchant for which I’ve rediscovered thanks to my Grokbot’s daily recommendations for <a href="?view=content#library" data-section-link>awesome pieces</a>.</p>
                 <p>Outside of work is where I get to invest in being a huge game fanatic: board games, strategy games, party games, you name it. I'm tinkering with AI to build <a href="https://forhappyhour.com/" target="_blank" rel="noopener noreferrer">awesome custom-made games</a> for my friends.</p>
                 <p>I was previously a PM at Schmidt Futures (fmr. Google CEO family office), an early stage VC at Armory Square Ventures, and a SWE at Paypal. I graduated a Merrill Presidential Scholar (top 1% of my college) from Cornell University with an honors degree in computer science. My thesis focused on using machine learning and satellite imagery to better model and map disease risk in vineyards.</p>
               </div>
@@ -163,7 +163,7 @@
                 <div class="reading-hero-heading">
                   <div>
                     <div class="section-heading"><h2 id="library-title" tabindex="-1"><a href="#library" class="section-link">Library</a></h2></div>
-                    <p class="section-intro">A few things worth your time.</p>
+                    <p class="section-intro">a few pieces worth your time</p>
                   </div>
                   <span class="visually-hidden" id="favorites-title">Favorite reading</span>
                 </div>
@@ -172,9 +172,14 @@
                     <div class="paper-sheets" id="paper-sheets"></div>
                     <div class="paper-edges" id="paper-edges" role="group" aria-label="Choose a favorite to preview"></div>
                   </div>
+                  <div class="paper-touch-controls">
+                    <button type="button" class="text-link" id="previous-paper" aria-label="Previous favorite">Previous</button>
+                    <span id="paper-position" aria-hidden="true">1 / 8</span>
+                    <button type="button" class="text-link" id="next-paper" aria-label="Next favorite">Next</button>
+                  </div>
+                  <p class="visually-hidden" id="paper-status" role="status" aria-live="polite" aria-atomic="true"></p>
                 </div>
                 <div class="reading-hero-footer">
-                  <p class="stack-hint"><span class="hover-hint">Run your cursor down the edges.</span><span class="touch-hint">Tap an edge to pull out a paper.</span></p>
                   <a class="text-link" href="#library" data-section-link data-overview-only>Explore the library</a>
                   <button class="browse-reading" type="button" id="browse-reading" data-detail-only>Browse all reading <span class="browse-line" aria-hidden="true"></span></button>
                 </div>

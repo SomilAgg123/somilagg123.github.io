@@ -177,25 +177,31 @@ renderBooks('article-links', content.articles);
 
 function renderPaperStack() {
   const stack = document.getElementById('favorite-paper-stack');
+  const stage = document.getElementById('favorite-reading');
   const sheets = document.getElementById('paper-sheets');
   const edges = document.getElementById('paper-edges');
-  const rotations = [-1.8, 1.1, -.6, 1.7, -1.2, .5, -1.5, .9];
-  const offsets = [-3, 4, -6, 2, 5, -4, 3, -2];
+  const position = document.getElementById('paper-position');
+  const status = document.getElementById('paper-status');
+  const offsets = [-2, 3, -4, 2, 4, -3, 1, -1];
   const choices = [];
-  let selected = -1;
-  stack.style.setProperty('--paper-count', favoriteArticles.length);
+  let selected = 0;
+  let resetTimer;
 
-  function select(index) {
-    if (selected === index) return;
+  function select(index, { pull = true, announce = false } = {}) {
+    clearTimeout(resetTimer);
     selected = index;
+    stack.classList.toggle('is-browsing', pull);
     choices.forEach(({ sheet, edge, link }, i) => {
       const active = i === index;
       sheet.classList.toggle('is-selected', active);
+      sheet.classList.toggle('is-pulled', active && pull);
       sheet.setAttribute('aria-hidden', String(!active));
       sheet.inert = !active;
       link.tabIndex = active ? 0 : -1;
       edge.setAttribute('aria-pressed', String(active));
     });
+    position.textContent = `${index + 1} / ${choices.length}`;
+    if (announce) status.textContent = `${favoriteArticles[index].name}, favorite ${index + 1} of ${choices.length}`;
   }
 
   favoriteArticles.forEach((article, index) => {
@@ -203,36 +209,42 @@ function renderPaperStack() {
     sheet.className = 'paper-sheet';
     sheet.id = `favorite-paper-${index}`;
     sheet.style.setProperty('--paper-index', index);
-    sheet.style.setProperty('--paper-rotation', `${rotations[index % rotations.length]}deg`);
     sheet.style.setProperty('--paper-offset', `${offsets[index % offsets.length]}px`);
     sheet.style.setProperty('--paper-depth', favoriteArticles.length - index);
     const link = externalLink(article.url);
     link.className = 'paper-content';
     link.setAttribute('aria-label', `${article.name} — ${article.source.toLowerCase()} (opens in a new tab)`);
-    const masthead = document.createElement('span');
-    masthead.className = 'paper-masthead';
-    masthead.append(label('paper-category', article.category));
+    const heading = document.createElement('span');
+    heading.className = 'paper-heading';
+    heading.append(label('paper-category', article.category), label('paper-title', article.name), label('paper-author', article.detail));
+    const body = document.createElement('span');
+    body.className = 'paper-body';
+    body.append(label('paper-summary', article.preview));
+    const rules = label('paper-print-lines', '');
+    rules.setAttribute('aria-hidden', 'true');
+    body.append(rules);
     const footer = document.createElement('span');
     footer.className = 'paper-footer';
-    footer.append(label('paper-author', article.detail), label('paper-action', article.source));
-    link.append(masthead, label('paper-title', article.name), footer);
+    footer.append(label('paper-action', article.source));
+    link.append(heading, body, footer);
     sheet.append(link);
     sheets.append(sheet);
 
-    // Edges have fixed hit areas, independent of the moving paper surfaces.
+    // These stationary edge targets follow the pile's projection, not the
+    // selected sheet. A pull never moves a target out from under the cursor.
     const edge = document.createElement('button');
     edge.type = 'button';
     edge.className = 'paper-edge';
-    edge.style.setProperty('--edge-offset', `${offsets[index % offsets.length]}px`);
+    edge.style.setProperty('--paper-index', index);
     edge.setAttribute('aria-controls', sheet.id);
     edge.setAttribute('aria-label', `Preview ${article.name}`);
     edge.title = article.name;
-    edge.append(label('paper-edge-title', article.name));
+    edge.append(label('paper-edge-title', article.detail.split(' / ')[0]));
     edge.addEventListener('pointerenter', event => {
       if (event.pointerType === 'mouse' || event.pointerType === 'pen') select(index);
     });
     edge.addEventListener('focus', () => select(index));
-    edge.addEventListener('click', () => select(index));
+    edge.addEventListener('click', () => select(index, { announce: true }));
     edge.addEventListener('keydown', event => {
       let next;
       if (event.key === 'ArrowDown' || event.key === 'ArrowRight') next = (index + 1) % choices.length;
@@ -242,6 +254,9 @@ function renderPaperStack() {
       if (event.key === 'Enter') {
         event.preventDefault();
         choices[index].link.click();
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        select(0, { pull: false });
       } else if (next !== undefined) {
         event.preventDefault();
         choices[next].edge.focus({ preventScroll: true });
@@ -250,7 +265,45 @@ function renderPaperStack() {
     edges.append(edge);
     choices.push({ sheet, edge, link });
   });
-  select(0);
+
+  document.getElementById('previous-paper').addEventListener('click', () => select((selected - 1 + choices.length) % choices.length, { announce: true }));
+  document.getElementById('next-paper').addEventListener('click', () => select((selected + 1) % choices.length, { announce: true }));
+  stage.addEventListener('pointerenter', () => clearTimeout(resetTimer));
+  stage.addEventListener('pointerleave', event => {
+    if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
+    if (stage.querySelector(':focus-visible')) return;
+    resetTimer = setTimeout(() => select(0, { pull: false }), 180);
+  });
+
+  function layout() {
+    const width = stack.clientWidth;
+    if (!width) return;
+    const compact = width < 740;
+    const paperWidth = compact ? Math.min(280, width * .73) : Math.min(330, (width - 90) / 2.15);
+    const paperHeight = compact ? (width < 330 ? 448 : 400) : 384;
+    const skew = compact ? .14 : .28;
+    const tilt = compact ? .09 : .16;
+    const flatten = compact ? .84 : .68;
+    const step = compact ? 17 : 12;
+    const projectedWidth = paperWidth + skew * paperHeight;
+    const pull = compact ? Math.max(16, Math.min(48, width - projectedWidth - 24)) : paperWidth + 16;
+    const left = (width - projectedWidth - pull) / 2 + pull + skew * paperHeight;
+    const projectedHeight = tilt * paperWidth + flatten * paperHeight;
+    const vars = {
+      '--page-width': `${paperWidth}px`, '--page-height': `${paperHeight}px`,
+      '--pile-left': `${left}px`, '--paper-pull': `${pull}px`,
+      '--pile-step': `${step}px`, '--paper-tilt': tilt, '--paper-skew': -skew,
+      '--paper-flatten': flatten, '--edge-left': `${left - skew * paperHeight}px`,
+      '--edge-top': `${flatten * paperHeight}px`, '--edge-height': `${step}px`,
+      '--scene-height': `${projectedHeight + step * (choices.length - 1) + 16}px`,
+      '--paper-title-size': `${paperWidth < 260 ? 25 : 27}px`,
+    };
+    Object.entries(vars).forEach(([key, value]) => stack.style.setProperty(key, value));
+  }
+  new ResizeObserver(layout).observe(stack);
+  window.addEventListener('resize', layout, { passive: true });
+  select(0, { pull: false });
+  layout();
 }
 renderPaperStack();
 

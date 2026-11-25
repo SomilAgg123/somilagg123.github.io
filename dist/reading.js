@@ -102,6 +102,7 @@ const readingArticles = [
   {
     "name": "A Story About A Tree",
     "favorite": true,
+    "preview": "A memorial in a virtual world reveals how friendship, grief, and the communities we build online become real.",
     "url": "https://www.raphkoster.com/games/essays/a-story-about-a-tree/",
     "detail": "Raph Koster",
     "source": "Read article",
@@ -124,6 +125,7 @@ const readingArticles = [
   {
     "name": "On choice architectures",
     "favorite": true,
+    "preview": "What makes a choice meaningful? An exploration of agency, narrative, and the systems that shape what players can do.",
     "url": "https://www.raphkoster.com/2013/04/24/on-choice-architectures/",
     "detail": "Raph Koster",
     "source": "Read article",
@@ -132,6 +134,7 @@ const readingArticles = [
   {
     "name": "\"Hi @s\": How we built our company agent harness",
     "favorite": true,
+    "preview": "Inside Sanity’s company agent: shared knowledge, tools, and a custom harness that lets teams build agents from documents.",
     "url": "https://www.sanity.io/engineering/how-we-built-our-company-agent-harness",
     "detail": "Sanity",
     "source": "Read article",
@@ -140,6 +143,7 @@ const readingArticles = [
   {
     "name": "Building Laminar, Ramp's in-house agent harness",
     "favorite": true,
+    "preview": "An engineering account of building Laminar, Ramp’s own platform for managed agents.",
     "url": "https://engineering.ramp.com/post/building-laminar",
     "detail": "Ramp",
     "source": "Read article",
@@ -155,6 +159,7 @@ const readingArticles = [
   {
     "name": "Free the models: harness design at the frontier",
     "favorite": true,
+    "preview": "Replit explores giving models more freedom to choose how hard to think, when to delegate, and which agents to use.",
     "url": "https://replit.com/blog/free-the-models",
     "detail": "Replit",
     "source": "Read article",
@@ -191,6 +196,7 @@ const readingArticles = [
   {
     "name": "How the Claude Code team does code review",
     "favorite": true,
+    "preview": "How the Claude Code team combines automated checks and human judgment to review an increasing volume of agent-written code.",
     "url": "https://claude.dev/blog/solving-code-review-at-anthropic/",
     "detail": "Anthropic",
     "source": "Read article",
@@ -213,6 +219,7 @@ const readingArticles = [
   {
     "name": "Instinct: The Personal Agent",
     "favorite": true,
+    "preview": "A conversation with Noah Shinn about personal agents, earning users’ trust, and software that becomes a single interface.",
     "url": "https://colossus.com/episode/instinct-the-personal-agent/",
     "detail": "Patrick O’Shaughnessy / Colossus",
     "source": "Listen / read",
@@ -222,6 +229,7 @@ const readingArticles = [
   {
     "name": "The Making of a Market Maker",
     "favorite": true,
+    "preview": "Thomas Peterffy’s journey from Hungary to the machines that changed the trading floor and the business behind Interactive Brokers.",
     "url": "https://colossus.com/article/thomas-peterffy-market-maker/",
     "detail": "Dom Cooke / Colossus",
     "source": "Read article",
