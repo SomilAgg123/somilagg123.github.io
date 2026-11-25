@@ -398,6 +398,7 @@ a.thesis-company-note:hover{color:var(--accent);text-decoration:underline;text-u
 .section-view .sidebar-column{display:none}
 #library{container-type:inline-size;grid-column:1 / -1;justify-self:center;width:100%;max-width:1000px;margin-inline:auto}
 body:not(.section-view) .index-layout{row-gap:40px}
+body:not(.section-view) #library{justify-self:start;margin-inline:0}
 body:not(.section-view) .content-sections > .content-section:last-child{margin-bottom:0}
 @media(max-width:760px){body:not(.section-view) #library{margin-top:32px}}
 /* Printed papers share an oblique tabletop projection, including their text. */
@@ -436,7 +437,8 @@ body:not(.section-view) .content-sections > .content-section:last-child{margin-b
 .paper-sheet.is-selected .paper-rim::before{border-bottom-color:#768967;background-color:#edf0df;background-blend-mode:multiply}
 /* Transparent targets move with the rims; movement alone never changes selection. */
 .paper-edges{position:absolute;inset:0;z-index:21;pointer-events:none}
-.paper-edge{position:absolute;top:calc(var(--edge-top) + var(--paper-index) * var(--pile-step));left:calc(var(--edge-left) + var(--paper-offset));width:var(--page-height);height:var(--edge-height);padding:0;transform-origin:0 0;transform:matrix(var(--paper-skew),var(--paper-flatten),0,1,0,0);will-change:transform;pointer-events:auto;touch-action:manipulation}
+.paper-edge{position:absolute;top:calc(var(--edge-top) + var(--paper-index) * var(--pile-step));left:calc(var(--edge-left) + var(--paper-offset));width:var(--page-height);height:var(--edge-height);padding:0;overflow:visible;transform-origin:0 0;transform:matrix(var(--paper-skew),var(--paper-flatten),0,1,0,0);will-change:transform;pointer-events:auto;touch-action:manipulation}
+.paper-end-target{position:absolute;top:0;left:100%;width:var(--page-width);height:100%;transform-origin:0 0;transform:matrix(var(--end-target-scale),var(--end-target-tilt),0,1,0,0);pointer-events:auto}
 .paper-edge:focus-visible{outline-offset:1px;z-index:2}
 .paper-touch-controls{display:none;align-items:center;justify-content:center;gap:24px;margin-top:8px}
 .paper-touch-controls button{min-height:44px;min-width:64px}

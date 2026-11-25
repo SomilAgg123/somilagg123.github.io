@@ -370,7 +370,7 @@ function renderPaperStack() {
     sheet.append(face, end, rim);
     sheets.append(sheet);
 
-    // Targets follow their visible rims; only real pointer movement selects them.
+    // One button covers both visible edges; its end target shares the same motion.
     const edge = document.createElement('button');
     edge.type = 'button';
     edge.className = 'paper-edge';
@@ -378,6 +378,10 @@ function renderPaperStack() {
     edge.style.setProperty('--paper-offset', `${offsets[index % offsets.length]}px`);
     edge.setAttribute('aria-controls', sheet.id);
     edge.setAttribute('aria-label', `Preview ${article.name}`);
+    const endTarget = document.createElement('span');
+    endTarget.className = 'paper-end-target';
+    endTarget.setAttribute('aria-hidden', 'true');
+    edge.append(endTarget);
     edge.addEventListener('focus', () => select(index));
     edge.addEventListener('click', () => select(index, { announce: true }));
     edge.addEventListener('keydown', event => {
@@ -468,6 +472,8 @@ function renderPaperStack() {
       '--edge-left': `${left}px`, '--edge-top': `${top}px`, '--edge-height': `${step}px`,
       '--spine-label-width': `${paperHeight * spineScale - 24}px`, '--spine-label-transform': labelTransform,
       '--face-end-left': `${c * paperHeight}px`, '--face-end-top': `${d * paperHeight}px`,
+      // Undo the button's spine projection, then project its child along the short edge.
+      '--end-target-scale': a / c, '--end-target-tilt': b - d * a / c,
       '--shadow-width': `${projectedWidth + 24}px`,
       '--scene-height': `${projectedHeight + step * choices.length + 16}px`,
       '--paper-title-size': `${narrow ? 22 : paperWidth < 250 ? 24 : 27}px`,
