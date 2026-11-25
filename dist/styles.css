@@ -398,17 +398,18 @@ a.thesis-company-note:hover{color:var(--accent);text-decoration:underline;text-u
 #library .reading-hero .section-heading{margin-bottom:6px;min-height:0}
 #library .reading-hero .section-intro{margin:0;font-size:20px}
 .reading-stage{display:flex;flex-direction:column;justify-content:center;align-items:center;isolation:isolate;padding:22px 0 10px}
-.paper-stack{--page-width:300px;--page-height:410px;--pile-left:440px;--pile-step:14px;--paper-pull:316px;--paper-tilt:.16;--paper-skew:-.28;--paper-flatten:.68;--scene-height:440px;position:relative;width:100%;max-width:900px;height:var(--scene-height);isolation:isolate}
+.paper-stack{--pull-progress:0;--stack-settle:0;--page-width:300px;--page-height:410px;--pile-left:440px;--pile-step:14px;--paper-pull:316px;--paper-tilt:.16;--paper-skew:-.28;--paper-flatten:.68;--scene-height:440px;position:relative;width:100%;max-width:900px;height:var(--scene-height);isolation:isolate}
 .paper-stack::before{content:'';position:absolute;top:38%;left:calc(var(--pile-left) - 150px);width:calc(var(--page-width) + 95px);height:60%;background:radial-gradient(ellipse,#56452a1c,transparent 68%);filter:blur(13px);z-index:-1;pointer-events:none}
 /* Translation belongs to the whole sheet; only the face uses the tabletop projection. */
-.paper-sheet{--sheet-pull:0px;position:absolute;top:0;left:var(--pile-left);width:var(--page-width);height:var(--page-height);z-index:var(--paper-depth);transform:translate3d(calc(var(--paper-offset) + var(--sheet-pull)),calc(var(--paper-index) * var(--pile-step)),0);filter:drop-shadow(0 4px 3px #55472d24);transition:none;will-change:transform;backface-visibility:hidden;pointer-events:none}
+.paper-sheet{--sheet-pull:0px;--sheet-drop:0px;position:absolute;top:0;left:var(--pile-left);width:var(--page-width);height:var(--page-height);z-index:var(--paper-depth);transform:translate3d(calc(var(--paper-offset) + var(--sheet-pull)),calc(var(--paper-index) * var(--pile-step) + var(--sheet-drop)),0);filter:drop-shadow(0 4px 3px #55472d24);transition:none;will-change:transform;backface-visibility:hidden;pointer-events:none}
 .paper-face{position:absolute;inset:0;transform-origin:0 0;transform:matrix(1,var(--paper-tilt),var(--paper-skew),var(--paper-flatten),0,0);pointer-events:none}
 .paper-face::before{content:'';position:absolute;inset:0;background:url('./assets/paper-grain.svg'),linear-gradient(110deg,#faf7ee,#fdfbf4 35%,#f3eddf 90%,#fcf9f1);clip-path:polygon(.3% .3%,12% .1%,25% .4%,38% 0,53% .3%,68% .1%,83% .4%,99.7% .2%,99.8% 24%,99.6% 47%,100% 73%,99.7% 99.6%,81% 99.8%,63% 99.5%,44% 100%,25% 99.6%,.2% 99.9%,.5% 76%,0 54%,.3% 28%);box-shadow:inset 0 0 32px #a68d6311}
 .paper-face::after{content:'';position:absolute;right:1px;bottom:2px;width:25px;height:28px;background:linear-gradient(135deg,transparent 45%,#b9aa8a22 48%,#fcfaf3 56%,#e9e0cc 88%);clip-path:polygon(100% 0,100% 100%,0 100%);pointer-events:none}
-/* Keep the original depth and slot while a lower sheet emerges. Returns are instant. */
-.paper-sheet.is-pulled{--sheet-pull:calc(-1 * var(--paper-pull));transition:transform .82s cubic-bezier(.22,.61,.36,1)}
-/* Short pulls need a readable foreground sheet, but only after it has slid out. */
-.paper-stack.is-compact .paper-sheet.is-pulled{z-index:24;transition:transform .82s cubic-bezier(.22,.61,.36,1),z-index 0s .82s}
+/* A single motion clock moves the extracted sheet and the upper group separately. */
+.paper-sheet.is-pulled,.paper-edge.is-pulled{--sheet-pull:calc(-1 * var(--paper-pull) * var(--pull-progress))}
+.paper-sheet.is-above-gap,.paper-edge.is-above-gap{--sheet-drop:calc(var(--pile-step) * var(--stack-settle))}
+/* A compact preview rises only after its outward motion has finished. */
+.paper-stack.is-compact.is-cleared .paper-sheet.is-pulled{z-index:24}
 .paper-content{--paper-inset:27px;position:relative;z-index:1;display:flex;flex-direction:column;gap:14px;height:100%;padding:22px var(--paper-inset) 58px;color:#38372f;pointer-events:none}
 .paper-sheet:is(.is-selected,.is-exposed) .paper-content{pointer-events:auto}
 .paper-content:focus-visible{outline-offset:5px;border-radius:2px}
@@ -423,9 +424,9 @@ a.thesis-company-note:hover{color:var(--accent);text-decoration:underline;text-u
 .paper-edge-title{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;font-family:var(--sans);font-size:12px;line-height:1}
 .paper-sheet.is-selected .paper-rim{color:#355130}
 .paper-sheet.is-selected .paper-rim::before{border-bottom-color:#768967;background-color:#edf0df;background-blend-mode:multiply}
-/* Invisible stationary targets cannot paint over the exposed face or reading link. */
+/* Transparent targets move with the rims; movement alone never changes selection. */
 .paper-edges{position:absolute;inset:0;z-index:21;pointer-events:none}
-.paper-edge{position:absolute;top:calc(var(--edge-top) + var(--paper-index) * var(--pile-step));left:calc(var(--edge-left) + var(--paper-offset));width:var(--page-width);height:var(--edge-height);padding:0;transform-origin:0 0;transform:matrix(1,var(--paper-tilt),0,1,0,0);pointer-events:auto;touch-action:manipulation}
+.paper-edge{--sheet-pull:0px;--sheet-drop:0px;position:absolute;top:calc(var(--edge-top) + var(--paper-index) * var(--pile-step));left:calc(var(--edge-left) + var(--paper-offset));width:var(--page-width);height:var(--edge-height);padding:0;transform-origin:0 0;transform:translate3d(var(--sheet-pull),var(--sheet-drop),0) matrix(1,var(--paper-tilt),0,1,0,0);pointer-events:auto;touch-action:manipulation}
 .paper-edge:focus-visible{outline-offset:1px;z-index:2}
 .paper-touch-controls{display:none;align-items:center;justify-content:center;gap:24px;margin-top:8px}
 .paper-touch-controls button{min-height:44px;min-width:64px}

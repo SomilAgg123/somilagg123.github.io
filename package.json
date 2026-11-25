@@ -4,6 +4,6 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "python3 -m http.server 4173 --bind 127.0.0.1 --directory dist",
-    "check": "node --check dist/app.js && node --check dist/reading.js"
+    "check": "node --check dist/app.js && node --check dist/reading.js && node --check dist/paper-motion.js && node --test tests/paper-motion.test.cjs"
   }
 }

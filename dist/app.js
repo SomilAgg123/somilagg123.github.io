@@ -184,31 +184,62 @@ function renderPaperStack() {
   const status = document.getElementById('paper-status');
   const offsets = [-2, 3, -4, 2, 4, -3, 1, -1];
   const choices = [];
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let selected = 0;
+  let motion;
+  let lastActive = -1;
+  let lastRequested = -1;
+  let lastPhase;
   let resetTimer;
   let hoverTimer;
+  let hoverIndex = -1;
+  let lastPointer;
+
+  function clearHover() {
+    clearTimeout(hoverTimer);
+    hoverIndex = -1;
+  }
+
+  function renderMotion(state) {
+    stack.style.setProperty('--pull-progress', state.pull);
+    stack.style.setProperty('--stack-settle', state.settle);
+    stack.classList.toggle('is-cleared', state.pull === 1 && state.active > 0);
+    if (lastPhase !== state.phase) {
+      stack.dataset.motion = state.phase;
+      lastPhase = state.phase;
+    }
+    if (lastActive !== state.active) {
+      stack.classList.toggle('is-browsing', state.active > 0);
+      stack.dataset.extracted = state.active;
+      choices.forEach(({ sheet, edge, link }, i) => {
+        const active = i === state.active;
+        const exposed = i === 0;
+        const pulled = active && state.active > 0;
+        sheet.classList.toggle('is-selected', active);
+        sheet.classList.toggle('is-exposed', exposed);
+        sheet.classList.toggle('is-pulled', pulled);
+        edge.classList.toggle('is-pulled', pulled);
+        sheet.classList.toggle('is-above-gap', i < state.active);
+        edge.classList.toggle('is-above-gap', i < state.active);
+        sheet.setAttribute('aria-hidden', String(!active && !exposed));
+        sheet.inert = !active && !exposed;
+        link.tabIndex = active || exposed ? 0 : -1;
+      });
+      lastActive = state.active;
+    }
+    if (lastRequested !== state.requested) {
+      choices.forEach(({ edge }, i) => edge.setAttribute('aria-pressed', String(i === state.requested)));
+      position.textContent = `${state.requested + 1} / ${choices.length}`;
+      lastRequested = state.requested;
+    }
+  }
 
   function select(index, { pull = true, announce = false } = {}) {
     clearTimeout(resetTimer);
-    clearTimeout(hoverTimer);
-    // The top article stays on the pile; selecting it simply returns to rest.
-    pull = pull && index !== 0;
-    selected = index;
-    stack.classList.toggle('is-browsing', pull);
-    choices.forEach((choice, i) => {
-      const { sheet, edge, link } = choice;
-      const active = i === index;
-      const exposed = i === 0;
-      sheet.classList.toggle('is-selected', active);
-      sheet.classList.toggle('is-exposed', exposed);
-      sheet.classList.toggle('is-pulled', active && pull);
-      sheet.setAttribute('aria-hidden', String(!active && !exposed));
-      sheet.inert = !active && !exposed;
-      link.tabIndex = active || exposed ? 0 : -1;
-      edge.setAttribute('aria-pressed', String(active));
-    });
-    position.textContent = `${index + 1} / ${choices.length}`;
-    if (announce) status.textContent = `${favoriteArticles[index].name}, favorite ${index + 1} of ${choices.length}`;
+    clearHover();
+    selected = pull ? index : 0;
+    motion.select(selected);
+    if (announce) status.textContent = `${favoriteArticles[selected].name}, favorite ${selected + 1} of ${choices.length}`;
   }
 
   favoriteArticles.forEach((article, index) => {
@@ -243,7 +274,7 @@ function renderPaperStack() {
     footer.append(label('paper-action', article.source));
     link.append(heading, metadata, footer);
     face.append(link);
-    // The physical edge travels with its face. Pointer targets below remain fixed.
+    // The face, rim, and matching pointer target share the same displacement.
     const rim = document.createElement('span');
     rim.className = 'paper-rim';
     rim.setAttribute('aria-hidden', 'true');
@@ -251,8 +282,7 @@ function renderPaperStack() {
     sheet.append(face, rim);
     sheets.append(sheet);
 
-    // These stationary edge targets follow the pile's projection, not the
-    // selected sheet. A pull never moves a target out from under the cursor.
+    // Targets follow their visible rims; only real pointer movement selects them.
     const edge = document.createElement('button');
     edge.type = 'button';
     edge.className = 'paper-edge';
@@ -260,13 +290,6 @@ function renderPaperStack() {
     edge.style.setProperty('--paper-offset', `${offsets[index % offsets.length]}px`);
     edge.setAttribute('aria-controls', sheet.id);
     edge.setAttribute('aria-label', `Preview ${article.name}`);
-    edge.addEventListener('pointerenter', event => {
-      if (event.pointerType === 'mouse' || event.pointerType === 'pen') {
-        clearTimeout(hoverTimer);
-        hoverTimer = setTimeout(() => select(index), 65);
-      }
-    });
-    edge.addEventListener('pointerleave', () => clearTimeout(hoverTimer));
     edge.addEventListener('focus', () => select(index));
     edge.addEventListener('click', () => select(index, { announce: true }));
     edge.addEventListener('keydown', event => {
@@ -290,13 +313,28 @@ function renderPaperStack() {
     choices.push({ sheet, edge, link });
   });
 
+  motion = createPaperStackMotion({ count: choices.length, onChange: renderMotion, reducedMotion: reducedMotion.matches });
+  reducedMotion.addEventListener('change', event => motion.setReducedMotion(event.matches));
   document.getElementById('previous-paper').addEventListener('click', () => select((selected - 1 + choices.length) % choices.length, { announce: true }));
   document.getElementById('next-paper').addEventListener('click', () => select((selected + 1) % choices.length, { announce: true }));
   stage.addEventListener('pointerenter', () => clearTimeout(resetTimer));
+  stage.addEventListener('pointermove', event => {
+    if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
+    if (lastPointer?.x === event.clientX && lastPointer?.y === event.clientY) return;
+    lastPointer = { x: event.clientX, y: event.clientY };
+    const target = event.target.closest('.paper-edge');
+    const index = choices.findIndex(({ edge }) => edge === target);
+    if (index < 0 || index === selected) return clearHover();
+    if (index === hoverIndex) return;
+    clearHover();
+    hoverIndex = index;
+    hoverTimer = setTimeout(() => select(index), 65);
+  });
   stage.addEventListener('pointerleave', event => {
     if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
+    clearHover();
+    lastPointer = null;
     if (stage.querySelector(':focus-visible')) return;
-    clearTimeout(hoverTimer);
     resetTimer = setTimeout(() => select(0, { pull: false }), 280);
   });
 
