@@ -121,7 +121,7 @@ body:not(.section-view) .writing-grid .book-card{min-height:220px}
 .library-grid li:nth-child(6n) .book-card{background:#f3eee0;border-color:#e7e0cf;border-left-color:#ddd2b7}
 .book-card:hover{transform:translateY(-4px);box-shadow:0 8px 18px #2527220a}
 .book-title{font-family:var(--serif);font-size:26px;font-style:italic;line-height:1.25;letter-spacing:-.35px;overflow-wrap:anywhere}
-/* First Writing-title study: a shared, pressure-weighted cursive treatment. */
+/* Shared Writing titles: pressure-weighted cursive with a synchronized nib. */
 .writing-ink-title{position:relative;display:block;--writing-ink:#304237}
 .writing-printed-title{display:block;transition:opacity .16s ease}
 svg.writing-ink{position:absolute;inset:0 auto auto 0;display:block;width:100%;overflow:visible;fill:none;stroke:none;stroke-width:0;opacity:0;pointer-events:none;transition:opacity .16s ease}
