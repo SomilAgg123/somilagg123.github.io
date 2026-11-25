@@ -97,12 +97,117 @@ function sampleWritingTimeline(timeline, elapsed) {
 
 let writingInkSequence = 0;
 const writingInkOutlineCache = new Map();
+let writingTouchController;
+
+// One shared dwell timer: a settled viewport chooses one title, never a queue.
+function createWritingTouchController({ view = window, doc = document } = {}) {
+  const touch = view.matchMedia('(hover: none), (pointer: coarse)');
+  const reduced = view.matchMedia('(prefers-reduced-motion: reduce)');
+  const entries = new Map();
+  const played = new WeakSet();
+  const pointers = new Set();
+  let timer = null;
+  let active = null;
+
+  function finishActive() {
+    if (active) active.finish();
+    active = null;
+  }
+
+  function clearDwell() {
+    if (timer !== null) view.clearTimeout(timer);
+    timer = null;
+  }
+
+  function available() {
+    return touch.matches && !doc.hidden && !doc.querySelector('dialog[open]') && !pointers.size;
+  }
+
+  function settle() {
+    timer = null;
+    if (!available()) return;
+    const viewport = view.visualViewport;
+    const top = (viewport?.offsetTop || 0) + 16;
+    const bottom = top + (viewport?.height || view.innerHeight) - 32;
+    const left = viewport?.offsetLeft || 0;
+    const right = left + (viewport?.width || view.innerWidth);
+    let nearest = null, distance = Infinity;
+    entries.forEach(entry => {
+      const rect = entry.title.getBoundingClientRect();
+      if (!entry.ready() || !rect.width || !rect.height) return;
+      const visibleHeight = Math.max(0, Math.min(rect.bottom, bottom) - Math.max(rect.top, top));
+      const visibleWidth = Math.max(0, Math.min(rect.right, right) - Math.max(rect.left, left));
+      if (visibleHeight < Math.min(rect.height, bottom - top) * .85 || visibleWidth < rect.width * .85) return;
+      if (reduced.matches) {
+        played.add(entry.card);
+        entry.finish();
+      }
+      const nextDistance = Math.abs((rect.top + rect.bottom - top - bottom) / 2);
+      if (nextDistance < distance) { nearest = entry; distance = nextDistance; }
+    });
+    if (active && active !== nearest) finishActive();
+    if (!nearest || played.has(nearest.card)) return;
+    played.add(nearest.card);
+    active = nearest;
+    nearest.start();
+  }
+
+  function schedule() {
+    clearDwell();
+    if (available()) timer = view.setTimeout(settle, reduced.matches ? 0 : 500);
+  }
+
+  function interrupt() {
+    finishActive();
+    schedule();
+  }
+
+  const observer = view.IntersectionObserver ? new view.IntersectionObserver(changes => {
+    if (active && changes.some(change => change.target === active.title && !change.isIntersecting)) finishActive();
+    schedule();
+  }, { threshold: [0, .85, 1] }) : null;
+  view.addEventListener('scroll', interrupt, { passive: true });
+  view.addEventListener('resize', interrupt, { passive: true });
+  view.visualViewport?.addEventListener('scroll', interrupt, { passive: true });
+  view.visualViewport?.addEventListener('resize', interrupt, { passive: true });
+  doc.addEventListener('pointerdown', event => {
+    if (event.pointerType !== 'touch') return;
+    pointers.add(event.pointerId);
+    clearDwell();
+  }, { passive: true });
+  const release = event => { pointers.delete(event.pointerId); schedule(); };
+  doc.addEventListener('pointerup', release, { passive: true });
+  doc.addEventListener('pointercancel', release, { passive: true });
+  doc.addEventListener('visibilitychange', () => { pointers.clear(); interrupt(); });
+  view.addEventListener('pagehide', () => { clearDwell(); finishActive(); });
+  view.addEventListener('pageshow', schedule);
+  // Routing and the chooser can hide a card without scrolling the document.
+  doc.addEventListener('close', schedule, true);
+  doc.addEventListener('toggle', interrupt, true);
+  touch.addEventListener('change', () => {
+    interrupt();
+    entries.forEach(entry => entry.reset());
+  });
+  reduced.addEventListener('change', interrupt);
+
+  return {
+    get enabled() { return touch.matches; },
+    hasPlayed(card) { return played.has(card); },
+    layoutChanged: schedule,
+    add(entry) {
+      entries.set(entry.title, entry);
+      observer?.observe(entry.title);
+      schedule();
+    },
+  };
+}
 
 function attachWritingInk(card, title, text) {
   if (!layoutWritingStrokes(text, 300)) return;
   const ns = 'http://www.w3.org/2000/svg';
   const id = `writing-ink-${++writingInkSequence}`;
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const touch = writingTouchController ||= createWritingTouchController();
   function svgElement(tag, attributes = {}) {
     const element = document.createElementNS(ns, tag);
     Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
@@ -177,12 +282,14 @@ function attachWritingInk(card, title, text) {
   }
 
   function stop() {
+    if (touch.enabled && touch.hasPlayed(card)) return finish();
     cancelFrame();
     isActive = false;
     card.dataset.inkState = 'idle';
   }
 
   function finish() {
+    cancelFrame();
     strokes.forEach(stroke => { stroke.path.style.strokeDashoffset = '0'; });
     completed = strokes.length - 1;
     card.dataset.inkState = 'complete';
@@ -227,7 +334,7 @@ function attachWritingInk(card, title, text) {
 
   function layout() {
     const width = title.clientWidth;
-    if (!width) { currentWidth = 0; stop(); return; }
+    if (!width) { currentWidth = 0; stop(); touch.layoutChanged(); return; }
     if (Math.abs(width - currentWidth) < .5) return;
     currentWidth = width;
     stop();
@@ -256,15 +363,18 @@ function attachWritingInk(card, title, text) {
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     svg.style.height = `${height}px`;
     timeline = buildWritingTimeline(strokes, plan.duration);
+    if (touch.enabled && (touch.hasPlayed(card) || reducedMotion.matches)) finish();
+    touch.layoutChanged();
   }
 
-  card.addEventListener('pointerenter', event => { if (event.pointerType !== 'touch') start(); });
-  card.addEventListener('pointerleave', () => { if (!card.matches(':focus-visible')) stop(); });
-  card.addEventListener('focus', () => { if (card.matches(':focus-visible')) start(); });
+  touch.add({ card, title, start, finish, reset: stop, ready: () => currentWidth > 0 && strokes.length > 0 });
+  card.addEventListener('pointerenter', event => { if (!touch.enabled && event.pointerType !== 'touch') start(); });
+  card.addEventListener('pointerleave', () => { if (!touch.enabled && !card.matches(':focus-visible')) stop(); });
+  card.addEventListener('focus', () => { if (!touch.enabled && card.matches(':focus-visible')) start(); });
   card.addEventListener('blur', () => { if (!card.matches(':hover')) stop(); });
   reducedMotion.addEventListener('change', () => { if (isActive) { cancelFrame(); finish(); } });
   document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
   new ResizeObserver(layout).observe(title);
 }
 
-if (typeof module !== 'undefined' && module.exports) module.exports = { buildWritingTimeline, sampleWritingTimeline, layoutWritingStrokes };
+if (typeof module !== 'undefined' && module.exports) module.exports = { buildWritingTimeline, sampleWritingTimeline, layoutWritingStrokes, createWritingTouchController };

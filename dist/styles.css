@@ -126,6 +126,7 @@ body:not(.section-view) .writing-grid .book-card{min-height:220px}
 .writing-printed-title{display:block;transition:opacity .16s ease}
 svg.writing-ink{position:absolute;inset:0 auto auto 0;display:block;width:100%;overflow:visible;fill:none;stroke:none;stroke-width:0;opacity:0;pointer-events:none;transition:opacity .16s ease}
 .writing-guide{fill:var(--writing-ink);opacity:.15}
+@media(hover:none),(pointer:coarse){.writing-guide{opacity:.75}.writing-grid .book-card:hover{transform:none;box-shadow:0 3px 0 #25272204}}
 .writing-stroke{fill:var(--writing-ink)}
 .writing-nib{opacity:0;filter:drop-shadow(1px 2px 1px #34291930);transition:opacity .12s ease}
 .has-writing-ink:is([data-ink-state="writing"],[data-ink-state="complete"]) .writing-printed-title{opacity:0}
