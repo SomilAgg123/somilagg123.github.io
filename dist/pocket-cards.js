@@ -240,7 +240,6 @@
       const left = navVisible ? nav.getBoundingClientRect().left + parseFloat(getComputedStyle(nav).paddingLeft) - size / 6 : 12;
       root.style.setProperty('--pocket-size', `${size}px`);
       root.style.setProperty('--pocket-left', `${left}px`);
-      root.style.setProperty('--pocket-note-bottom', `${Math.min(30, Math.max(0, size * 132 / 180 - 75))}px`);
       const dock = { left, right: left + root.offsetWidth, bottom: innerHeight - 20,
         top: innerHeight - 20 - root.offsetHeight - 14 };
       const libraryVisible = !library.hidden && library.getClientRects().length > 0;
