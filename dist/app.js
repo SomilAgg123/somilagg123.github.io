@@ -161,24 +161,106 @@ function renderBooks(id, articles, previewCount = Infinity) {
     card.className = 'book-card';
     card.setAttribute('aria-label', `${article.name} (opens in a new tab)`);
     card.append(label('book-title', article.name), label('book-author', article.detail || article.publication));
+    if (id === 'article-links' && article.favorite) {
+      card.classList.add('is-favorite');
+      card.append(label('catalogue-favorite', 'Favorite'));
+    }
     li.append(card);
     list.append(li);
   });
 }
 
 const favoriteArticles = content.articles.filter(article => article.favorite);
-const otherArticles = content.articles.filter(article => !article.favorite);
-[
-  ['favorite-reading', 'favorite-article-links', 'favorites-count', favoriteArticles],
-  ['other-reading', 'article-links', 'other-reading-count', otherArticles],
-].forEach(([groupId, listId, countId, articles]) => {
-  if (!articles.length) return;
-  document.getElementById(groupId).hidden = false;
-  document.getElementById(countId).textContent = articles.length;
-  renderBooks(listId, articles);
+document.getElementById('other-reading').hidden = false;
+document.getElementById('other-reading-count').textContent = content.articles.length;
+renderBooks('article-links', content.articles);
+
+function renderPaperStack() {
+  const stack = document.getElementById('favorite-paper-stack');
+  const sheets = document.getElementById('paper-sheets');
+  const edges = document.getElementById('paper-edges');
+  const rotations = [-1.8, 1.1, -.6, 1.7, -1.2, .5, -1.5, .9];
+  const offsets = [-3, 4, -6, 2, 5, -4, 3, -2];
+  const choices = [];
+  let selected = -1;
+  stack.style.setProperty('--paper-count', favoriteArticles.length);
+
+  function select(index) {
+    if (selected === index) return;
+    selected = index;
+    choices.forEach(({ sheet, edge, link }, i) => {
+      const active = i === index;
+      sheet.classList.toggle('is-selected', active);
+      sheet.setAttribute('aria-hidden', String(!active));
+      sheet.inert = !active;
+      link.tabIndex = active ? 0 : -1;
+      edge.setAttribute('aria-pressed', String(active));
+    });
+  }
+
+  favoriteArticles.forEach((article, index) => {
+    const sheet = document.createElement('div');
+    sheet.className = 'paper-sheet';
+    sheet.id = `favorite-paper-${index}`;
+    sheet.style.setProperty('--paper-index', index);
+    sheet.style.setProperty('--paper-rotation', `${rotations[index % rotations.length]}deg`);
+    sheet.style.setProperty('--paper-offset', `${offsets[index % offsets.length]}px`);
+    sheet.style.setProperty('--paper-depth', favoriteArticles.length - index);
+    const link = externalLink(article.url);
+    link.className = 'paper-content';
+    link.setAttribute('aria-label', `${article.name} — ${article.source.toLowerCase()} (opens in a new tab)`);
+    const masthead = document.createElement('span');
+    masthead.className = 'paper-masthead';
+    masthead.append(label('paper-category', article.category));
+    const footer = document.createElement('span');
+    footer.className = 'paper-footer';
+    footer.append(label('paper-author', article.detail), label('paper-action', article.source));
+    link.append(masthead, label('paper-title', article.name), footer);
+    sheet.append(link);
+    sheets.append(sheet);
+
+    // Edges have fixed hit areas, independent of the moving paper surfaces.
+    const edge = document.createElement('button');
+    edge.type = 'button';
+    edge.className = 'paper-edge';
+    edge.style.setProperty('--edge-offset', `${offsets[index % offsets.length]}px`);
+    edge.setAttribute('aria-controls', sheet.id);
+    edge.setAttribute('aria-label', `Preview ${article.name}`);
+    edge.title = article.name;
+    edge.append(label('paper-edge-title', article.name));
+    edge.addEventListener('pointerenter', event => {
+      if (event.pointerType === 'mouse' || event.pointerType === 'pen') select(index);
+    });
+    edge.addEventListener('focus', () => select(index));
+    edge.addEventListener('click', () => select(index));
+    edge.addEventListener('keydown', event => {
+      let next;
+      if (event.key === 'ArrowDown' || event.key === 'ArrowRight') next = (index + 1) % choices.length;
+      if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') next = (index - 1 + choices.length) % choices.length;
+      if (event.key === 'Home') next = 0;
+      if (event.key === 'End') next = choices.length - 1;
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        choices[index].link.click();
+      } else if (next !== undefined) {
+        event.preventDefault();
+        choices[next].edge.focus({ preventScroll: true });
+      }
+    });
+    edges.append(edge);
+    choices.push({ sheet, edge, link });
+  });
+  select(0);
+}
+renderPaperStack();
+
+document.getElementById('browse-reading').addEventListener('click', () => {
+  const catalogue = document.getElementById('other-reading');
+  document.getElementById('other-reading-title').focus({ preventScroll: true });
+  catalogue.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
 });
 
-const readingCategories = ['All', 'Agents', 'Knowledge factories', 'Engineering', 'Game design'];
+const readingCategories = ['All', 'Agents', 'Knowledge factories', 'Engineering', 'Game design', 'Business'];
 const readingFilters = document.getElementById('reading-filters');
 readingCategories.forEach(category => {
   const button = document.createElement('button');
@@ -186,14 +268,14 @@ readingCategories.forEach(category => {
   button.dataset.readingCategory = category;
   button.setAttribute('aria-controls', 'article-links');
   button.setAttribute('aria-pressed', String(category === 'All'));
-  const count = category === 'All' ? otherArticles.length : otherArticles.filter(article => article.category === category).length;
+  const count = category === 'All' ? content.articles.length : content.articles.filter(article => article.category === category).length;
   button.append(document.createTextNode(category), label('filter-count', count));
   button.addEventListener('click', () => {
-    const filtered = category === 'All' ? otherArticles : otherArticles.filter(article => article.category === category);
+    const filtered = category === 'All' ? content.articles : content.articles.filter(article => article.category === category);
     [...readingFilters.children].forEach(filter => filter.setAttribute('aria-pressed', String(filter === button)));
     document.getElementById('other-reading-count').textContent = filtered.length;
     renderBooks('article-links', filtered);
-    document.getElementById('reading-status').textContent = `${filtered.length} articles${category === 'All' ? '' : ` in ${category}`}`;
+    document.getElementById('reading-status').textContent = `${filtered.length} ${filtered.length === 1 ? 'item' : 'items'}${category === 'All' ? '' : ` in ${category}`}`;
   });
   readingFilters.append(button);
 });

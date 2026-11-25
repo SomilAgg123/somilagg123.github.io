@@ -76,7 +76,7 @@
                 <p class="about-lead">I'm a tinkerer and a game fanatic. My interests have taken me all over the place, but I'm ultimately motivated by using technology to solve interesting, people-oriented problems.</p>
                 <p>Throughout my career thus far, this has manifested in building <a href="https://somilagg123.github.io/agcess/" target="_blank" rel="noopener noreferrer">a data tracking tool for farmers</a>, <a href="https://somilagg123.github.io/mutual/" target="_blank" rel="noopener noreferrer">a dating app for friends to match their friends</a>, and <a href="https://somilagg123.github.io/horlo/" target="_blank" rel="noopener noreferrer">a social platform for watch enthusiasts</a>. They're now preserved in a little digital museum of past projects.</p>
                 <p>Now, I've turned my attention to AI and how it interfaces with people. I joined Decagon AI to learn how to build and deploy production AI agents at scale.</p>
-                <p>However, like I said, I'm always tinkering. On the side, I am building <a href="https://customermemory.dev/" target="_blank" rel="noopener noreferrer">better knowledge factories for agents</a>. I often spend mornings reading, my penchant for which has resurfaced with the rise of <a href="?view=content#library" data-section-link>awesome technical blogs</a>.</p>
+                <p>However, like I said, I'm always tinkering. On the side, I am building <a href="https://customermemory.dev/" target="_blank" rel="noopener noreferrer">better knowledge factories for agents</a>. I often spend mornings reading, a habit I’ve rediscovered thanks to Grokbot’s recommendations for <a href="?view=content#library" data-section-link>awesome pieces</a>.</p>
                 <p>Outside of work is where I get to invest in being a huge game fanatic: board games, strategy games, party games, you name it. I'm tinkering with AI to build <a href="https://forhappyhour.com/" target="_blank" rel="noopener noreferrer">awesome custom-made games</a> for my friends.</p>
                 <p>I was previously a PM at Schmidt Futures (fmr. Google CEO family office), an early stage VC at Armory Square Ventures, and a SWE at Paypal. I graduated a Merrill Presidential Scholar (top 1% of my college) from Cornell University with an honors degree in computer science. My thesis focused on using machine learning and satellite imagery to better model and map disease risk in vineyards.</p>
               </div>
@@ -159,19 +159,32 @@
             </section>
 
             <section class="content-section" id="library" aria-labelledby="library-title">
-              <div class="section-heading"><h2 id="library-title" tabindex="-1"><a href="#library" class="section-link">Library</a></h2></div>
-              <p class="section-intro">Technical pieces I think are worth reading</p>
-              <div class="reading-group" id="favorite-reading" hidden>
-                <h3 class="reading-heading" id="favorites-title">Favorites <span class="reading-count" id="favorites-count"></span></h3>
-                <ul class="library-grid favorites-grid" id="favorite-article-links" aria-labelledby="favorites-title"></ul>
+              <div class="reading-hero">
+                <div class="reading-hero-heading">
+                  <div>
+                    <div class="section-heading"><h2 id="library-title" tabindex="-1"><a href="#library" class="section-link">Library</a></h2></div>
+                    <p class="section-intro">A few things worth your time.</p>
+                  </div>
+                  <span class="visually-hidden" id="favorites-title">Favorite reading</span>
+                </div>
+                <div class="reading-stage" id="favorite-reading">
+                  <div class="paper-stack" id="favorite-paper-stack" aria-labelledby="favorites-title">
+                    <div class="paper-sheets" id="paper-sheets"></div>
+                    <div class="paper-edges" id="paper-edges" role="group" aria-label="Choose a favorite to preview"></div>
+                  </div>
+                </div>
+                <div class="reading-hero-footer">
+                  <p class="stack-hint"><span class="hover-hint">Run your cursor down the edges.</span><span class="touch-hint">Tap an edge to pull out a paper.</span></p>
+                  <a class="text-link" href="#library" data-section-link data-overview-only>Explore the library</a>
+                  <button class="browse-reading" type="button" id="browse-reading" data-detail-only>Browse all reading <span class="browse-line" aria-hidden="true"></span></button>
+                </div>
               </div>
               <div class="reading-group" id="other-reading" data-detail-only hidden>
-                <h3 class="reading-heading" id="other-reading-title">More reading <span class="reading-count" id="other-reading-count"></span></h3>
-                <div class="reading-filters" id="reading-filters" role="group" aria-label="Filter more reading by category"></div>
+                <h3 class="reading-heading" id="other-reading-title" tabindex="-1">The full collection <span class="reading-count" id="other-reading-count"></span></h3>
+                <div class="reading-filters" id="reading-filters" role="group" aria-label="Filter reading by category"></div>
                 <p class="visually-hidden" id="reading-status" role="status" aria-live="polite" aria-atomic="true"></p>
                 <ul class="library-grid" id="article-links" aria-labelledby="other-reading-title"></ul>
               </div>
-              <a class="section-more" href="#library" data-section-link data-overview-only>Explore the library</a>
             </section>
           </div>
         </div>

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320">
+  <filter id="fibres" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency=".026 .085" numOctaves="3" seed="17" stitchTiles="stitch"/>
+    <feDiffuseLighting lighting-color="#fff" surfaceScale="2" diffuseConstant="1">
+      <feDistantLight azimuth="225" elevation="55"/>
+    </feDiffuseLighting>
+  </filter>
+  <filter id="grain" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency=".78" numOctaves="3" seed="6" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+  </filter>
+  <rect width="320" height="320" filter="url(#fibres)" opacity=".26"/>
+  <rect width="320" height="320" filter="url(#grain)" opacity=".13"/>
+</svg>

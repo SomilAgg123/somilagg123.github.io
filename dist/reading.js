@@ -1,4 +1,4 @@
-// Snapshot of articles marked Read in Somil's Notion Reading Log, 23 November 2026.
+// Reading Log snapshot from 23 November 2026, with favorites added by Somil on 25 November.
 // Public article metadata only. Favorites confirmed by Somil; no private notes.
 const readingArticles = [
   {
@@ -101,6 +101,7 @@ const readingArticles = [
   },
   {
     "name": "A Story About A Tree",
+    "favorite": true,
     "url": "https://www.raphkoster.com/games/essays/a-story-about-a-tree/",
     "detail": "Raph Koster",
     "source": "Read article",
@@ -122,6 +123,7 @@ const readingArticles = [
   },
   {
     "name": "On choice architectures",
+    "favorite": true,
     "url": "https://www.raphkoster.com/2013/04/24/on-choice-architectures/",
     "detail": "Raph Koster",
     "source": "Read article",
@@ -207,6 +209,23 @@ const readingArticles = [
     "detail": "uber.com",
     "source": "Read article",
     "category": "Engineering"
+  },
+  {
+    "name": "Instinct: The Personal Agent",
+    "favorite": true,
+    "url": "https://colossus.com/episode/instinct-the-personal-agent/",
+    "detail": "Patrick O’Shaughnessy / Colossus",
+    "source": "Listen / read",
+    "format": "Podcast & transcript",
+    "category": "Agents"
+  },
+  {
+    "name": "The Making of a Market Maker",
+    "favorite": true,
+    "url": "https://colossus.com/article/thomas-peterffy-market-maker/",
+    "detail": "Dom Cooke / Colossus",
+    "source": "Read article",
+    "category": "Business"
   },
   {
     "name": "Anatomy of a bug-fixing agent",
