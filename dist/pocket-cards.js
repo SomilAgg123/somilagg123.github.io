@@ -29,6 +29,11 @@
       obstacles.some(rect => overlaps(dock, rect));
   }
 
+  function choosePlacement(candidates, obstacles, width, height) {
+    return candidates.find(({ rect }) => rect.left >= 12 && rect.right <= width - 12 &&
+      rect.top >= 12 && rect.bottom <= height - 12 && !obstacles.some(other => overlaps(rect, other)))?.name;
+  }
+
   function mount(root) {
     if (!root) return;
     const canvas = root.querySelector('canvas');
@@ -39,6 +44,8 @@
     const caption = root.querySelector('.pocket-cards-caption');
     const restore = root.querySelector('.pocket-cards-restore');
     const status = root.querySelector('[role="status"]');
+    const note = root.querySelector('.pocket-reaction');
+    const reactions = window.PocketReactions;
     const library = document.getElementById('library');
     const desktop = matchMedia('(min-width: 1280px) and (hover: hover) and (pointer: fine)');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
@@ -59,6 +66,39 @@
     let frame = 0, visibilityFrame = 0, running = null;
     const clamp = value => Math.max(0, Math.min(1, value));
     const ease = t => 1 - Math.pow(1 - t, 3);
+    const sequence = reactions.createSequence({
+      show(reaction) {
+        if (root.dataset.available !== 'true' || state.tucked || !state.faceUp) return false;
+        note.dataset.tier = reaction.tier;
+        note.querySelector('.pocket-reaction-text').textContent = reaction.text;
+        if (!placeReaction()) return false;
+        note.dataset.visible = 'true';
+        return true;
+      },
+      hide() { note.dataset.visible = 'false'; },
+      announce(text) { status.textContent = text; }
+    });
+
+    function sceneObstacles() {
+      return [...document.querySelectorAll('[data-pocket-cards-avoid], .writing-ink-title, .section-blob, .game-cover')]
+        .map(element => element.getBoundingClientRect());
+    }
+
+    function placeReaction() {
+      // Keep the note away from controls and other illustrations. It never
+      // expands the dock's layout box or pushes the page around.
+      const obstacles = sceneObstacles().concat([...document.querySelectorAll('a, button, input, select, textarea')]
+        .filter(element => !root.contains(element)).map(element => element.getBoundingClientRect()));
+      const candidates = ['right', 'above'].map(name => {
+        note.dataset.placement = name;
+        const rect = note.getBoundingClientRect();
+        return { name, rect };
+      });
+      const placement = choosePlacement(candidates, obstacles, innerWidth, innerHeight);
+      if (!placement) return false;
+      note.dataset.placement = placement;
+      return true;
+    }
 
     function cardAt(index) {
       const id = state.cards[index];
@@ -156,6 +196,7 @@
     function interact() {
       if (busy) return;
       settleAnimation();
+      sequence.cancel(); status.textContent = '';
       busy = true;
       const redeal = state.faceUp;
       let dealt = false;
@@ -170,7 +211,10 @@
       animate(redeal ? 680 : 750, update, () => {
         state.faceUp = !redeal; busy = false; hover = hoverTarget;
         labels(); save();
-        status.textContent = state.faceUp ? `Your hand: ${describe(cardAt(0))} and ${describe(cardAt(1))}.` : 'Two new cards, face down.';
+        if (root.dataset.available !== 'true' || state.tucked) return;
+        if (state.faceUp) sequence.reveal(reactions.reactionFor(state.cards),
+          `Your hand: ${describe(cardAt(0))} and ${describe(cardAt(1))}.`);
+        else status.textContent = 'Two new cards, face down.';
       });
     }
 
@@ -184,11 +228,20 @@
 
     function refreshVisibility() {
       visibilityFrame = 0;
-      // Scale into the existing gutter rather than covering section-page text.
       const shell = document.querySelector('.site-shell');
       const gutter = shell.getBoundingClientRect().left + parseFloat(getComputedStyle(shell).paddingLeft);
-      root.style.setProperty('--pocket-size', `${Math.min(144, Math.max(96, gutter - 24))}px`);
-      const dock = { left: 12, right: 12 + root.offsetWidth, bottom: innerHeight - 20,
+      const nav = document.querySelector('.index-nav a');
+      const navVisible = nav.getClientRects().length > 0;
+      const sidebarBottom = document.querySelector('.index-sidebar').getBoundingClientRect().bottom;
+      const size = navVisible ? Math.min(144, Math.max(96, Math.floor((innerHeight - sidebarBottom - 72) * 180 / 132)))
+        : Math.min(144, Math.max(96, gutter - 24));
+      // The canvas has transparent margins: align the drawn cards with the
+      // navigation icons. Detail pages reclaim that column, so use their gutter.
+      const left = navVisible ? nav.getBoundingClientRect().left + parseFloat(getComputedStyle(nav).paddingLeft) - size / 6 : 12;
+      root.style.setProperty('--pocket-size', `${size}px`);
+      root.style.setProperty('--pocket-left', `${left}px`);
+      root.style.setProperty('--pocket-note-bottom', `${Math.min(30, Math.max(0, size * 132 / 180 - 75))}px`);
+      const dock = { left, right: left + root.offsetWidth, bottom: innerHeight - 20,
         top: innerHeight - 20 - root.offsetHeight - 14 };
       const libraryVisible = !library.hidden && library.getClientRects().length > 0;
       const unavailable = shouldYield({
@@ -196,15 +249,16 @@
         libraryPage: document.body.classList.contains('section-view') && libraryVisible,
         library: libraryVisible ? library.getBoundingClientRect() : null, viewportHeight: innerHeight, dock,
         // New scenes can reserve their footprint with data-pocket-cards-avoid.
-        obstacles: [...document.querySelectorAll('[data-pocket-cards-avoid], .writing-ink-title, .section-blob, .game-cover')]
-          .map(element => element.getBoundingClientRect())
+        obstacles: sceneObstacles()
       });
       root.dataset.available = String(!unavailable);
       if (unavailable) {
         if (root.contains(document.activeElement)) document.getElementById('main').focus({ preventScroll: true });
         settleAnimation(); hover = 0; hoverTarget = 0; draw();
+        sequence.cancel();
       }
       root.inert = unavailable;
+      if (!unavailable && note.dataset.visible === 'true' && !placeReaction()) sequence.cancel();
     }
 
     function queueVisibility() {
@@ -218,7 +272,7 @@
     deal.addEventListener('focus', () => setHover(1));
     deal.addEventListener('blur', () => setHover(0));
     root.querySelector('.pocket-cards-hide').addEventListener('click', () => {
-      settleAnimation(); state.tucked = true; labels(); save(); restore.focus(); queueVisibility();
+      settleAnimation(); sequence.cancel(); state.tucked = true; labels(); save(); restore.focus(); queueVisibility();
     });
     restore.addEventListener('click', () => {
       state.tucked = false; labels(); save(); refreshVisibility();
@@ -226,7 +280,7 @@
     });
     window.addEventListener('scroll', () => { if (desktop.matches) queueVisibility(); }, { passive: true });
     window.addEventListener('resize', queueVisibility);
-    window.addEventListener('site:viewchange', refreshVisibility);
+    window.addEventListener('site:viewchange', () => { settleAnimation(); sequence.cancel(); refreshVisibility(); });
     document.addEventListener('visibilitychange', refreshVisibility);
     document.addEventListener('animationstart', queueVisibility, true);
     document.addEventListener('transitionrun', queueVisibility, true);
@@ -240,5 +294,5 @@
     labels(); draw(); root.dataset.ready = 'true'; refreshVisibility();
   }
 
-  return { dealPair, overlaps, shouldYield, mount };
+  return { dealPair, overlaps, shouldYield, choosePlacement, mount };
 });
