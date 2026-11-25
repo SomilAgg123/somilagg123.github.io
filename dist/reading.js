@@ -233,5 +233,13 @@ const readingArticles = [
     "detail": "Hugging Face",
     "source": "Read article",
     "category": "Agents"
+  },
+  {
+    "name": "The Company We Keep",
+    "favorite": true,
+    "url": "https://www.thriveholdings.com/the-company-we-keep",
+    "detail": "Thrive Holdings",
+    "source": "Read article",
+    "category": "Business"
   }
 ];
