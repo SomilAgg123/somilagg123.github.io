@@ -184,15 +184,28 @@ function renderPaperStack() {
   const status = document.getElementById('paper-status');
   const offsets = [-2, 3, -4, 2, 4, -3, 1, -1];
   const choices = [];
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let selected = 0;
   let resetTimer;
+  let hoverTimer;
 
   function select(index, { pull = true, announce = false } = {}) {
     clearTimeout(resetTimer);
+    clearTimeout(hoverTimer);
     selected = index;
     stack.classList.toggle('is-browsing', pull);
-    choices.forEach(({ sheet, edge, link }, i) => {
+    choices.forEach((choice, i) => {
+      const { sheet, edge, link } = choice;
       const active = i === index;
+      if (sheet.classList.contains('is-pulled') && !(active && pull) && !reducedMotion.matches) {
+        sheet.classList.add('is-returning');
+        clearTimeout(choice.returnTimer);
+        choice.returnTimer = setTimeout(() => sheet.classList.remove('is-returning'), 900);
+      }
+      if (active && pull) {
+        clearTimeout(choice.returnTimer);
+        sheet.classList.remove('is-returning');
+      }
       sheet.classList.toggle('is-selected', active);
       sheet.classList.toggle('is-pulled', active && pull);
       sheet.setAttribute('aria-hidden', String(!active));
@@ -238,11 +251,14 @@ function renderPaperStack() {
     edge.style.setProperty('--paper-index', index);
     edge.setAttribute('aria-controls', sheet.id);
     edge.setAttribute('aria-label', `Preview ${article.name}`);
-    edge.title = article.name;
     edge.append(label('paper-edge-title', article.detail.split(' / ')[0]));
     edge.addEventListener('pointerenter', event => {
-      if (event.pointerType === 'mouse' || event.pointerType === 'pen') select(index);
+      if (event.pointerType === 'mouse' || event.pointerType === 'pen') {
+        clearTimeout(hoverTimer);
+        hoverTimer = setTimeout(() => select(index), 65);
+      }
     });
+    edge.addEventListener('pointerleave', () => clearTimeout(hoverTimer));
     edge.addEventListener('focus', () => select(index));
     edge.addEventListener('click', () => select(index, { announce: true }));
     edge.addEventListener('keydown', event => {
@@ -263,32 +279,51 @@ function renderPaperStack() {
       }
     });
     edges.append(edge);
-    choices.push({ sheet, edge, link });
+    const choice = { sheet, edge, link };
+    choices.push(choice);
+    sheet.addEventListener('transitionend', event => {
+      if (event.propertyName !== 'transform' || sheet.classList.contains('is-pulled')) return;
+      clearTimeout(choice.returnTimer);
+      sheet.classList.remove('is-returning');
+    });
   });
 
   document.getElementById('previous-paper').addEventListener('click', () => select((selected - 1 + choices.length) % choices.length, { announce: true }));
   document.getElementById('next-paper').addEventListener('click', () => select((selected + 1) % choices.length, { announce: true }));
+  reducedMotion.addEventListener('change', () => choices.forEach(choice => {
+    clearTimeout(choice.returnTimer);
+    choice.sheet.classList.remove('is-returning');
+  }));
   stage.addEventListener('pointerenter', () => clearTimeout(resetTimer));
   stage.addEventListener('pointerleave', event => {
     if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
     if (stage.querySelector(':focus-visible')) return;
-    resetTimer = setTimeout(() => select(0, { pull: false }), 180);
+    clearTimeout(hoverTimer);
+    resetTimer = setTimeout(() => select(0, { pull: false }), 280);
   });
 
   function layout() {
     const width = stack.clientWidth;
     if (!width) return;
     const compact = width < 740;
-    const paperWidth = compact ? Math.min(280, width * .73) : Math.min(330, (width - 90) / 2.15);
     const paperHeight = compact ? (width < 330 ? 448 : 400) : 384;
     const skew = compact ? .14 : .28;
     const tilt = compact ? .09 : .16;
     const flatten = compact ? .84 : .68;
     const step = compact ? 17 : 12;
+    const depth = step * (choices.length - 1);
+    // Parallel projected edges need more clearance for deeper sheets. Reserve
+    // that distance plus a small gap, instead of pulling by the flat page width.
+    const edgeSlope = skew / flatten;
+    const clearance = 20;
+    const fittedWidth = (width - 32 - skew * paperHeight - edgeSlope * depth - clearance) / (2 + edgeSlope * tilt);
+    const paperWidth = compact ? Math.min(280, width * .73) : Math.min(330, fittedWidth);
     const projectedWidth = paperWidth + skew * paperHeight;
-    const pull = compact ? Math.max(16, Math.min(48, width - projectedWidth - 24)) : paperWidth + 16;
+    const pull = compact ? Math.max(16, Math.min(48, width - projectedWidth - 24)) : paperWidth * (1 + edgeSlope * tilt) + edgeSlope * depth + clearance;
     const left = (width - projectedWidth - pull) / 2 + pull + skew * paperHeight;
     const projectedHeight = tilt * paperWidth + flatten * paperHeight;
+    stack.classList.toggle('is-compact', compact);
+    stack.classList.toggle('is-small-sheet', paperWidth < 290);
     const vars = {
       '--page-width': `${paperWidth}px`, '--page-height': `${paperHeight}px`,
       '--pile-left': `${left}px`, '--paper-pull': `${pull}px`,
@@ -296,7 +331,7 @@ function renderPaperStack() {
       '--paper-flatten': flatten, '--edge-left': `${left - skew * paperHeight}px`,
       '--edge-top': `${flatten * paperHeight}px`, '--edge-height': `${step}px`,
       '--scene-height': `${projectedHeight + step * (choices.length - 1) + 16}px`,
-      '--paper-title-size': `${paperWidth < 260 ? 25 : 27}px`,
+      '--paper-title-size': `${paperWidth < 290 ? 25 : 27}px`,
     };
     Object.entries(vars).forEach(([key, value]) => stack.style.setProperty(key, value));
   }
