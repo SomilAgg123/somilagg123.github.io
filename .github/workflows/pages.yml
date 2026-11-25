@@ -33,7 +33,7 @@ jobs:
 
           index = Path('dist/index.html')
           html = index.read_text()
-          for asset in ('app.js', 'reading.js', 'paper-motion.js', 'paper-layout.js', 'writing-ink.js', 'styles.css'):
+          for asset in ('app.js', 'reading.js', 'paper-motion.js', 'paper-layout.js', 'writing-ink.js', 'pocket-cards.js', 'styles.css'):
               version = hashlib.sha256(Path('dist', asset).read_bytes()).hexdigest()[:12]
               html = html.replace(f'./{asset}"', f'./{asset}?v={version}"')
           index.write_text(html)

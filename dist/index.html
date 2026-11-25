@@ -13,6 +13,7 @@
     <script src="./paper-layout.js" defer></script>
     <script src="./writing-ink.js" defer></script>
     <script src="./app.js" defer></script>
+    <script src="./pocket-cards.js" defer></script>
   </head>
   <body>
     <a class="a11y-skip" href="#main">Skip to content</a>
@@ -36,7 +37,7 @@
       <main id="main" tabindex="-1">
         <div class="index-layout">
           <div class="sidebar-column">
-            <aside class="index-sidebar">
+            <aside class="index-sidebar" data-pocket-cards-avoid>
               <div class="profile-photo">
                 <img src="./assets/somil-portrait.jpg" alt="Somil Aggarwal" width="693" height="924">
               </div>
@@ -258,5 +259,16 @@
         <button class="skip-player" type="button">Skip to content</button>
       </div>
     </dialog>
+    <aside class="pocket-cards" id="pocket-cards" aria-label="A little poker break" data-available="false" inert>
+      <div class="pocket-cards-hand">
+        <button class="pocket-cards-hide" type="button" aria-label="Tuck the cards away">hide</button>
+        <button class="pocket-cards-deal" type="button" aria-label="Flip your two cards face up">
+          <canvas width="360" height="264" aria-hidden="true"></canvas>
+        </button>
+        <button class="pocket-cards-caption" type="button">a little luck?</button>
+      </div>
+      <button class="pocket-cards-restore" type="button" hidden>play a hand</button>
+      <p class="visually-hidden" role="status" aria-live="polite"></p>
+    </aside>
   </body>
 </html>

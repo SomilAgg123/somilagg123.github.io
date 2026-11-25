@@ -905,6 +905,7 @@ function showSection(id, { focus = false } = {}) {
     heading.focus({ preventScroll: true });
   }
   aboutTyping?.refresh();
+  window.dispatchEvent(new Event('site:viewchange'));
 }
 
 function navigateTo(id, { replace = false } = {}) {

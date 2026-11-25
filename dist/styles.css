@@ -499,3 +499,18 @@ body:not(.section-view) .content-sections > .content-section:last-child{margin-b
   .paper-content{--paper-inset:18px;padding:21px var(--paper-inset) 58px;gap:13px}
 }
 @media(max-width:760px){.section-view #library .reading-hero{min-height:calc(100svh - 144px)}}
+
+/* A quiet pair of sketched cards in the desktop's left margin. */
+.pocket-cards{display:none;position:fixed;left:12px;bottom:20px;width:var(--pocket-size,144px);z-index:3;color:#45483e;opacity:0;visibility:hidden;transform:translateY(10px);pointer-events:none;transition:opacity .18s ease,transform .22s ease,visibility 0s .22s}
+@media(min-width:1280px) and (hover:hover) and (pointer:fine){.pocket-cards[data-ready]{display:block}}
+.pocket-cards[data-available="true"]{opacity:1;visibility:visible;transform:none;pointer-events:auto;transition:opacity .18s ease,transform .22s ease,visibility 0s}
+.pocket-cards-hand{position:relative;display:flex;flex-direction:column;align-items:center}
+.pocket-cards-deal{display:block;width:100%;aspect-ratio:180/132;padding:0;border-radius:8px}
+.pocket-cards canvas{display:block;width:100%;height:100%;pointer-events:none}
+.pocket-cards-caption,.pocket-cards-restore{padding:3px 6px;min-height:28px;font:400 .875rem/1.5 'Bradley Hand','Comic Sans MS',cursive;color:var(--muted)}
+.pocket-cards-caption{transform:rotate(-4deg)}
+.pocket-cards-caption:hover,.pocket-cards-restore:hover{color:var(--ink)}
+.pocket-cards-hide{position:absolute;right:2px;top:-14px;z-index:1;padding:6px;font-size:.75rem;color:var(--muted);opacity:0;transition:opacity .15s}
+.pocket-cards:hover .pocket-cards-hide,.pocket-cards:focus-within .pocket-cards-hide{opacity:1}
+.pocket-cards-restore{display:block;margin:0 auto}
+@media print{.pocket-cards{display:none!important}}
