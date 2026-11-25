@@ -51,7 +51,7 @@
     const top = (Math.ceil(rank.top * 10) / 10).toFixed(1).replace(/\.0$/, '');
     const text = {
       rough: rank.percentile === 0 ? 'Oof. Nowhere to go but up!' : `Oof. Ahead of only ${ahead}% of hands.`,
-      ordinary: `We can work with this. Ahead of ${ahead}% of hands.`,
+      ordinary: `${rank.percentile < 50 ? 'Could be a bluff.' : 'We can work with this.'} Ahead of ${ahead}% of hands.`,
       good: `Hey, pretty good! Ahead of ${ahead}% of hands.`,
       great: `Now we’re talking. Top ${top}%.`,
       premium: `Top ${top}%. The price is going up!`
