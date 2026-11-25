@@ -102,6 +102,7 @@ const readingArticles = [
   {
     "name": "A Story About A Tree",
     "favorite": true,
+    "publishedDate": "1998-05-05",
     "url": "https://www.raphkoster.com/games/essays/a-story-about-a-tree/",
     "detail": "Raph Koster",
     "source": "Read article",
@@ -124,6 +125,7 @@ const readingArticles = [
   {
     "name": "On choice architectures",
     "favorite": true,
+    "publishedDate": "2013-04-24",
     "url": "https://www.raphkoster.com/2013/04/24/on-choice-architectures/",
     "detail": "Raph Koster",
     "source": "Read article",
@@ -132,6 +134,7 @@ const readingArticles = [
   {
     "name": "\"Hi @s\": How we built our company agent harness",
     "favorite": true,
+    "publishedDate": "2026-10-20",
     "url": "https://www.sanity.io/engineering/how-we-built-our-company-agent-harness",
     "detail": "Sanity",
     "source": "Read article",
@@ -140,6 +143,7 @@ const readingArticles = [
   {
     "name": "Building Laminar, Ramp's in-house agent harness",
     "favorite": true,
+    "publishedDate": "2026-10-20",
     "url": "https://engineering.ramp.com/post/building-laminar",
     "detail": "Ramp",
     "source": "Read article",
@@ -155,6 +159,7 @@ const readingArticles = [
   {
     "name": "Free the models: harness design at the frontier",
     "favorite": true,
+    "publishedDate": "2026-09-29",
     "url": "https://replit.com/blog/free-the-models",
     "detail": "Replit",
     "source": "Read article",
@@ -191,6 +196,7 @@ const readingArticles = [
   {
     "name": "How the Claude Code team does code review",
     "favorite": true,
+    "publishedDate": "2026-10-15",
     "url": "https://claude.dev/blog/solving-code-review-at-anthropic/",
     "detail": "Anthropic",
     "source": "Read article",
@@ -213,6 +219,7 @@ const readingArticles = [
   {
     "name": "Instinct: The Personal Agent",
     "favorite": true,
+    "publishedDate": "2026-09-28",
     "url": "https://colossus.com/episode/instinct-the-personal-agent/",
     "detail": "Patrick O’Shaughnessy / Colossus",
     "source": "Listen / read",
@@ -222,6 +229,7 @@ const readingArticles = [
   {
     "name": "The Making of a Market Maker",
     "favorite": true,
+    "publishedDate": "2025-09",
     "url": "https://colossus.com/article/thomas-peterffy-market-maker/",
     "detail": "Dom Cooke / Colossus",
     "source": "Read article",
@@ -237,6 +245,7 @@ const readingArticles = [
   {
     "name": "The Company We Keep",
     "favorite": true,
+    "publishedDate": "2026-11-24",
     "url": "https://www.thriveholdings.com/the-company-we-keep",
     "detail": "Thrive Holdings",
     "source": "Read article",

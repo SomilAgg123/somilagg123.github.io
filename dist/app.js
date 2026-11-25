@@ -191,16 +191,20 @@ function renderPaperStack() {
   function select(index, { pull = true, announce = false } = {}) {
     clearTimeout(resetTimer);
     clearTimeout(hoverTimer);
+    // The top article stays on the pile; selecting it simply returns to rest.
+    pull = pull && index !== 0;
     selected = index;
     stack.classList.toggle('is-browsing', pull);
     choices.forEach((choice, i) => {
       const { sheet, edge, link } = choice;
       const active = i === index;
+      const exposed = i === 0;
       sheet.classList.toggle('is-selected', active);
+      sheet.classList.toggle('is-exposed', exposed);
       sheet.classList.toggle('is-pulled', active && pull);
-      sheet.setAttribute('aria-hidden', String(!active));
-      sheet.inert = !active;
-      link.tabIndex = active ? 0 : -1;
+      sheet.setAttribute('aria-hidden', String(!active && !exposed));
+      sheet.inert = !active && !exposed;
+      link.tabIndex = active || exposed ? 0 : -1;
       edge.setAttribute('aria-pressed', String(active));
     });
     position.textContent = `${index + 1} / ${choices.length}`;
@@ -214,15 +218,37 @@ function renderPaperStack() {
     sheet.style.setProperty('--paper-index', index);
     sheet.style.setProperty('--paper-offset', `${offsets[index % offsets.length]}px`);
     sheet.style.setProperty('--paper-depth', favoriteArticles.length - index);
+    const face = document.createElement('div');
+    face.className = 'paper-face';
     const link = externalLink(article.url);
     link.className = 'paper-content';
     link.setAttribute('aria-label', `${article.name} — ${article.source.toLowerCase()} (opens in a new tab)`);
     const heading = label('paper-title', article.name);
+    const metadata = document.createElement('span');
+    metadata.className = 'paper-metadata';
+    metadata.append(label('paper-byline', article.detail));
+    if (article.publishedDate) {
+      const date = document.createElement('time');
+      date.className = 'paper-date';
+      date.dateTime = article.publishedDate;
+      const monthOnly = article.publishedDate.length === 7;
+      date.textContent = new Intl.DateTimeFormat('en-US', {
+        month: 'short', year: 'numeric', timeZone: 'UTC',
+        ...(monthOnly ? {} : { day: 'numeric' }),
+      }).format(new Date(`${article.publishedDate}${monthOnly ? '-01' : ''}T00:00:00Z`));
+      metadata.append(date);
+    }
     const footer = document.createElement('span');
     footer.className = 'paper-footer';
     footer.append(label('paper-action', article.source));
-    link.append(heading, footer);
-    sheet.append(link);
+    link.append(heading, metadata, footer);
+    face.append(link);
+    // The physical edge travels with its face. Pointer targets below remain fixed.
+    const rim = document.createElement('span');
+    rim.className = 'paper-rim';
+    rim.setAttribute('aria-hidden', 'true');
+    rim.append(label('paper-edge-title', article.name));
+    sheet.append(face, rim);
     sheets.append(sheet);
 
     // These stationary edge targets follow the pile's projection, not the
@@ -231,9 +257,9 @@ function renderPaperStack() {
     edge.type = 'button';
     edge.className = 'paper-edge';
     edge.style.setProperty('--paper-index', index);
+    edge.style.setProperty('--paper-offset', `${offsets[index % offsets.length]}px`);
     edge.setAttribute('aria-controls', sheet.id);
     edge.setAttribute('aria-label', `Preview ${article.name}`);
-    edge.append(label('paper-edge-title', article.name));
     edge.addEventListener('pointerenter', event => {
       if (event.pointerType === 'mouse' || event.pointerType === 'pen') {
         clearTimeout(hoverTimer);
@@ -300,8 +326,9 @@ function renderPaperStack() {
       '--pile-left': `${left}px`, '--paper-pull': `${pull}px`,
       '--pile-step': `${step}px`, '--paper-tilt': tilt, '--paper-skew': -skew,
       '--paper-flatten': flatten, '--edge-left': `${left - skew * paperHeight}px`,
+      '--face-edge-left': `${-skew * paperHeight}px`,
       '--edge-top': `${flatten * paperHeight}px`, '--edge-height': `${step}px`,
-      '--scene-height': `${projectedHeight + step * (choices.length - 1) + 16}px`,
+      '--scene-height': `${projectedHeight + step * choices.length + 16}px`,
       '--paper-title-size': `${paperWidth < 290 ? 25 : 27}px`,
     };
     Object.entries(vars).forEach(([key, value]) => stack.style.setProperty(key, value));
