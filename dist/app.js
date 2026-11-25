@@ -192,7 +192,6 @@ function renderPaperStack() {
   let lastActive = -1;
   let lastRequested = -1;
   let lastPhase;
-  let lastCleared;
   let geometry;
   let renderedState;
   let nativeAnimations = [];
@@ -213,11 +212,6 @@ function renderPaperStack() {
     const activeChanged = lastActive !== state.active;
     const reducedLayoutChanged = reducedMotion.matches && renderedState?.settle !== state.settle;
     renderedState = state;
-    const cleared = state.pull === 1 && state.active > 0;
-    if (lastCleared !== cleared) {
-      stack.classList.toggle('is-cleared', cleared);
-      lastCleared = cleared;
-    }
     if (lastPhase !== state.phase) {
       stack.dataset.motion = state.phase;
       lastPhase = state.phase;
@@ -252,8 +246,7 @@ function renderPaperStack() {
   }
 
   function transforms(index, pull, settle) {
-    const x = index === renderedState.active ? geometry.pull * pull : 0;
-    const y = index < renderedState.active ? geometry.step * settle : 0;
+    const { x, y } = paperStackDisplacement(geometry, index, renderedState.active, pull, settle);
     return {
       sheet: `translate3d(${offsets[index % offsets.length] + x}px, ${index * geometry.step + y}px, 0)`,
       edge: `translate3d(${x}px, ${y}px, 0) matrix(${geometry.c}, ${geometry.d}, 0, 1, 0, 0)`,
@@ -272,10 +265,9 @@ function renderPaperStack() {
     if (!geometry || !renderedState.active) return { pull: 0, settle: 0 };
     const extracted = new DOMMatrixReadOnly(getComputedStyle(choices[renderedState.active].sheet).transform);
     const top = new DOMMatrixReadOnly(getComputedStyle(choices[0].sheet).transform);
-    return {
-      pull: Math.max(0, Math.min(1, (extracted.m41 - offsets[renderedState.active % offsets.length]) / geometry.pull)),
-      settle: Math.max(0, Math.min(1, top.m42 / geometry.step)),
-    };
+    return paperStackPose(geometry, renderedState.active,
+      extracted.m41 - offsets[renderedState.active % offsets.length],
+      extracted.m42 - renderedState.active * geometry.step, top.m42);
   }
 
   function cancelAnimations() {
@@ -434,38 +426,21 @@ function renderPaperStack() {
 
   function layout() {
     const width = stack.clientWidth;
-    if (!width) return;
+    // Expanding the mobile scene changes height, not paper geometry. Observing
+    // that height on every frame would repeatedly restart the native animation.
+    if (!width || geometry?.width === width) return;
     const savedPose = geometry ? capturePose() : { pull: 0, settle: 0 };
-    const compact = width < 700;
-    const narrow = width < 420;
-    const paperHeight = narrow ? 340 : 360;
-    // View the long left spine from the top-left, with the page receding to the right.
-    const a = narrow ? .8 : .84;
-    const b = narrow ? -.2 : -.28;
-    const c = narrow ? .3 : .55;
-    const d = narrow ? .78 : .62;
-    const step = narrow ? 36 : compact ? 26 : 24;
+    geometry = paperStackGeometry(width, choices.length);
+    const { compact, narrow, paperHeight, paperWidth, a, b, c, d, step,
+      pull, left, top, projectedWidth, sceneHeight, openHeight } = geometry;
     // Preserve readable letter shapes along the projected spine. The paper rim
     // retains its perspective, while its label compensates for the shear.
     const spineScale = Math.hypot(c, d);
     const labelHeightScale = narrow ? .8 : 1;
     const labelTransform = `matrix(${1 / spineScale}, 0, ${-d * labelHeightScale / (c * spineScale)}, ${spineScale * labelHeightScale / c}, 0, 0)`;
-    const depth = step * (choices.length - 1);
-    const slope = c / d;
-    const clearance = 20;
-    const compactPull = narrow ? 16 : 40;
-    const fittedWidth = compact
-      ? (width - 32 - c * paperHeight - compactPull) / a
-      : (width - 32 - c * paperHeight - slope * depth - clearance) / (2 * a - slope * b);
-    const paperWidth = Math.min(narrow ? 250 : 300, fittedWidth);
-    const projectedWidth = a * paperWidth + c * paperHeight;
-    const pull = compact ? compactPull : (a - slope * b) * paperWidth + slope * depth + clearance;
-    const left = (width - projectedWidth - pull) / 2;
-    const top = -b * paperWidth;
-    const projectedHeight = top + d * paperHeight;
-    geometry = { pull, step, c, d };
     stack.classList.toggle('is-compact', compact);
     stack.classList.toggle('is-narrow', narrow);
+    stage.classList.toggle('is-compact', compact);
     const vars = {
       '--page-width': `${paperWidth}px`, '--page-height': `${paperHeight}px`,
       '--pile-left': `${left}px`, '--pile-top': `${top}px`, '--paper-pull': `${pull}px`,
@@ -477,7 +452,7 @@ function renderPaperStack() {
       // Undo the button's spine projection, then project its child along the short edge.
       '--end-target-scale': a / c, '--end-target-tilt': b - d * a / c,
       '--shadow-width': `${projectedWidth + 24}px`,
-      '--scene-height': `${projectedHeight + step * choices.length + 16}px`,
+      '--scene-height': `${sceneHeight}px`, '--scene-open-height': `${openHeight}px`,
       '--paper-title-size': `${narrow ? 22 : paperWidth < 250 ? 24 : 27}px`,
     };
     Object.entries(vars).forEach(([key, value]) => stack.style.setProperty(key, value));
