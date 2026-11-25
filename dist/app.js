@@ -206,6 +206,8 @@ function renderPaperStack() {
 
   function renderMotion(state) {
     const phaseChanged = lastPhase !== state.phase;
+    // The native fall already includes contact and its small landing recovery.
+    const continuingFall = lastPhase === 'falling' && state.phase === 'landing';
     const activeChanged = lastActive !== state.active;
     const reducedLayoutChanged = reducedMotion.matches && renderedState?.settle !== state.settle;
     renderedState = state;
@@ -242,7 +244,7 @@ function renderPaperStack() {
       position.textContent = `${state.requested + 1} / ${choices.length}`;
       lastRequested = state.requested;
     }
-    if (geometry && (phaseChanged || activeChanged || reducedLayoutChanged)) {
+    if (geometry && ((phaseChanged && !continuingFall) || activeChanged || reducedLayoutChanged)) {
       animatePhase(state, { reset: activeChanged });
     }
   }
@@ -305,13 +307,12 @@ function renderPaperStack() {
           'cubic-bezier(0.333333, 1, 0.666667, 1)');
       }
     } else {
-      const target = state.phase === 'settling' ? 1 : 0;
-      const plan = paperSettleKeyframes(start.settle, state.velocity, target);
+      const plan = paperVerticalKeyframes(start.settle, state.velocity, state.phase);
       choices.slice(0, state.active).forEach((choice, index) => {
         for (const part of ['sheet', 'edge']) {
           animate(choice[part], plan.values.map((value, frame) => ({
             transform: transforms(index, start.pull, value)[part],
-            offset: plan.values.length === 1 ? 1 : frame / (plan.values.length - 1),
+            offset: plan.offsets[frame],
           })), plan.duration);
         }
       });

@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { createPaperStackMotion, paperSettleKeyframes, PAPER_PULL_DURATION } = require('../dist/paper-motion.js');
+const { createPaperStackMotion, paperVerticalKeyframes, advancePaperGravity, PAPER_PULL_DURATION } = require('../dist/paper-motion.js');
 
 function harness(reducedMotion = false) {
   let now = 0;
@@ -192,16 +192,17 @@ test('the top article never slides out and idle states schedule no frames', () =
 
 // The compositor trajectory must preserve the same bounds and interrupted velocity.
 test('native settling keyframes end exactly at the target without moving below the base', () => {
-  for (const [position, velocity, target] of [[0, 0, 1], [1, 0, 0], [.45, -4, 1], [.55, 4, 0]]) {
-    const { values, duration } = paperSettleKeyframes(position, velocity, target);
+  for (const [position, velocity, phase] of [[0, 0, 'falling'], [1, 0, 'lifting'], [.45, -4, 'falling'], [.55, 4, 'lifting'], [1, -2.2, 'landing']]) {
+    const { values, duration } = paperVerticalKeyframes(position, velocity, phase);
+    const target = phase === 'lifting' ? 0 : 1;
     assert.equal(values[0], position);
     assert.equal(values.at(-1), target);
     assert.ok(values.every(value => value >= 0 && value <= 1));
     assert.ok(duration > 0 && duration < 400);
     for (let i = 1; i < values.length; i++) assert.ok(Math.abs(values[i] - values[i - 1]) < .25);
   }
-  const reversed = paperSettleKeyframes(.55, 4, 0).values;
-  assert.ok(reversed[1] > paperSettleKeyframes(.55, 0, 0).values[1], 'Reversal retains momentum instead of restarting at zero velocity');
+  const reversed = paperVerticalKeyframes(.55, 4, 'lifting').values;
+  assert.ok(reversed[1] > paperVerticalKeyframes(.55, 0, 'lifting').values[1], 'Reversal retains momentum instead of restarting at zero velocity');
 });
 
 test('the outward slide completes within half a second before settling begins', () => {
@@ -213,4 +214,62 @@ test('the outward slide completes within half a second before settling begins', 
   assert.equal(h.motion.getState().settle, 0);
   assert.ok(PAPER_PULL_DURATION <= 480);
   h.finish();
+});
+
+
+test('gravity accelerates toward contact and has one small landing recovery', () => {
+  const h = harness();
+  h.motion.select(8);
+  h.finish();
+  const falling = h.history.filter(state => state.phase === 'falling');
+  assert.ok(falling.length > 5);
+  for (let i = 2; i < falling.length; i++) {
+    const before = falling[i - 1].settle - falling[i - 2].settle;
+    const after = falling[i].settle - falling[i - 1].settle;
+    assert.ok(after > before, 'The free fall must accelerate instead of easing to a stop');
+  }
+  const landing = h.history.filter(state => state.phase === 'landing');
+  assert.ok(landing.length > 1, 'Landing must finish before the controller becomes idle');
+  assert.ok(landing.every(state => state.settle >= .95));
+  assert.ok(landing.some(state => state.velocity < 0));
+  assert.ok(landing.some(state => state.velocity > 0));
+  assertStableStack(h.history);
+});
+
+test('native keyframes include exact floor contact and agree with the gravity trajectory', () => {
+  const plan = paperVerticalKeyframes(0, 0, 'falling');
+  assert.ok(Math.abs(plan.duration - 288) < .001);
+  const contact = plan.values.findIndex(value => value === 1);
+  assert.ok(contact > 0 && contact < plan.values.length - 1);
+  assert.ok(Math.abs(plan.offsets[contact] * plan.duration - 200) < .001);
+  assert.ok(Math.min(...plan.values.slice(contact)) >= .95);
+  plan.values.forEach((value, i) => {
+    const actual = advancePaperGravity(0, 0, 'falling', plan.offsets[i] * plan.duration);
+    assert.ok(Math.abs(actual.position - value) < 1e-8);
+  });
+});
+
+test('interruptions during the fall and landing retain position and velocity', () => {
+  for (const phase of ['falling', 'landing']) {
+    const h = harness();
+    h.motion.select(8);
+    for (let i = 0; i < 100; i++) {
+      h.step();
+      const state = h.motion.getState();
+      if (state.phase === phase && state.settle > .1) break;
+    }
+    const before = h.motion.getState();
+    assert.equal(before.phase, phase);
+    h.motion.select(2);
+    assert.equal(h.motion.getState().settle, before.settle);
+    assert.equal(h.motion.getState().velocity, before.velocity);
+    h.advance(32);
+    h.motion.select(8);
+    h.advance(16);
+    h.motion.select(4);
+    h.finish();
+    assert.equal(h.motion.getState().active, 4);
+    assert.equal(h.motion.getState().phase, 'open');
+    assertStableStack(h.history);
+  }
 });
