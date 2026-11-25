@@ -184,7 +184,6 @@ function renderPaperStack() {
   const status = document.getElementById('paper-status');
   const offsets = [-2, 3, -4, 2, 4, -3, 1, -1];
   const choices = [];
-  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   let selected = 0;
   let resetTimer;
   let hoverTimer;
@@ -197,15 +196,6 @@ function renderPaperStack() {
     choices.forEach((choice, i) => {
       const { sheet, edge, link } = choice;
       const active = i === index;
-      if (sheet.classList.contains('is-pulled') && !(active && pull) && !reducedMotion.matches) {
-        sheet.classList.add('is-returning');
-        clearTimeout(choice.returnTimer);
-        choice.returnTimer = setTimeout(() => sheet.classList.remove('is-returning'), 900);
-      }
-      if (active && pull) {
-        clearTimeout(choice.returnTimer);
-        sheet.classList.remove('is-returning');
-      }
       sheet.classList.toggle('is-selected', active);
       sheet.classList.toggle('is-pulled', active && pull);
       sheet.setAttribute('aria-hidden', String(!active));
@@ -279,21 +269,11 @@ function renderPaperStack() {
       }
     });
     edges.append(edge);
-    const choice = { sheet, edge, link };
-    choices.push(choice);
-    sheet.addEventListener('transitionend', event => {
-      if (event.propertyName !== 'transform' || sheet.classList.contains('is-pulled')) return;
-      clearTimeout(choice.returnTimer);
-      sheet.classList.remove('is-returning');
-    });
+    choices.push({ sheet, edge, link });
   });
 
   document.getElementById('previous-paper').addEventListener('click', () => select((selected - 1 + choices.length) % choices.length, { announce: true }));
   document.getElementById('next-paper').addEventListener('click', () => select((selected + 1) % choices.length, { announce: true }));
-  reducedMotion.addEventListener('change', () => choices.forEach(choice => {
-    clearTimeout(choice.returnTimer);
-    choice.sheet.classList.remove('is-returning');
-  }));
   stage.addEventListener('pointerenter', () => clearTimeout(resetTimer));
   stage.addEventListener('pointerleave', event => {
     if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
