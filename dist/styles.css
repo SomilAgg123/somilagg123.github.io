@@ -27,6 +27,8 @@ body:not(.section-view) [data-detail-only],.section-view [data-overview-only]{di
 .profile-photo img{position:absolute;left:50%;top:50%;display:block;width:170%;max-width:none;height:auto;transform:translate(-52%,-43%)}
 @media(max-width:760px){.profile-photo{width:96px;margin:0 0 20px 10px}.index-sidebar{top:-116px}}
 
+/* Keep the home page's frame and scrollbar space across every section. */
+html{scrollbar-gutter:stable}
 /* A section becomes its own page; the full index stays available via Skip. */
 .section-link{border-radius:3px;transition:color .2s}
 .section-link:hover{color:var(--accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:6px}
@@ -37,7 +39,7 @@ body:not(.section-view) [data-detail-only],.section-view [data-overview-only]{di
 #main:focus{outline:none}
 .section-view .site-shell{min-height:100svh;display:flex;flex-direction:column}
 .section-view main{flex:1}
-.section-view .index-layout{display:block;max-width:760px;margin:0 auto;padding-top:35px}
+.section-view .index-layout{display:block;padding-top:35px}
 .section-view .content-section{padding:0;margin:0;border:0;animation:section-arrive .35s ease-out both}
 .section-view .section-heading{display:flex;align-items:center;gap:26px;margin-bottom:40px;min-height:100px}
 .section-view .section-heading h2{font-family:var(--serif);font-size:clamp(34px,4.5vw,46px);font-weight:500;line-height:1.08;letter-spacing:-1.2px}
@@ -83,7 +85,7 @@ body:not(.section-view) [data-detail-only],.section-view [data-overview-only]{di
 .about-copy a:hover{text-decoration-color:currentColor}
 @media(min-width:761px){.about-copy{line-height:1.6}.about-copy p+p{margin-top:16px}}
 @media(min-width:1001px){
-  .section-view:has(#about:not([hidden])) .index-layout{max-width:880px;padding-top:24px}
+  .section-view:has(#about:not([hidden])) .index-layout{padding-top:24px}
   .section-view:has(#about:not([hidden])) .back-to-index{margin-bottom:12px}
   .section-view #about .about-copy{max-width:none}
   .section-view #about .section-heading{min-height:72px;margin-bottom:20px;gap:20px}
@@ -107,7 +109,6 @@ body:not(.section-view) [data-detail-only],.section-view [data-overview-only]{di
 .story-subheading{font-family:var(--serif);font-size:32px;font-weight:400;line-height:1.25;letter-spacing:-.6px;margin:36px 0 26px}
 .writing-intro{margin-top:0;font-style:italic}
 .writing-profiles{display:flex;gap:24px;margin-top:26px}
-.section-view:has(#library:not([hidden]),#writing:not([hidden])) .index-layout{max-width:1000px}
 .library-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
 .library-grid li{min-width:0;display:flex}
 body:not(.section-view) .writing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -241,7 +242,6 @@ a.thesis-company-note:hover{color:var(--accent);text-decoration:underline;text-u
 }
 
 /* A shelf of game boxes, with the selected game's details alongside it. */
-.section-view:has(#games:not([hidden])) .index-layout{max-width:1000px}
 .games-intro{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:28px}
 .games-intro .section-intro{margin:0}
 .game-search-label{flex:0 1 220px;min-width:160px}
@@ -404,13 +404,12 @@ a.thesis-company-note:hover{color:var(--accent);text-decoration:underline;text-u
 @media(hover:none){.player-card:hover{transform:none}}
 @media(prefers-reduced-motion:reduce){.player-card:hover,.player-card:focus-visible{transform:none}}
 
-/* Library spans both overview columns, giving the shared scene the same
-   container width in the overview and focused view. The sidebar ends above it. */
+/* Library shares the full home frame in both views. The sidebar ends above it;
+   the paper scene keeps its own size within that frame. */
 .sidebar-column{min-width:0}
 .section-view .sidebar-column{display:none}
-#library{container-type:inline-size;grid-column:1 / -1;justify-self:center;width:100%;max-width:1000px;margin-inline:auto}
+#library{container-type:inline-size;grid-column:1 / -1;width:100%}
 body:not(.section-view) .index-layout{row-gap:40px}
-body:not(.section-view) #library{justify-self:start;margin-inline:0}
 body:not(.section-view) .content-sections > .content-section:last-child{margin-bottom:0}
 @media(max-width:760px){body:not(.section-view) #library{margin-top:32px}}
 /* Printed papers share an oblique tabletop projection, including their text. */
