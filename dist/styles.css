@@ -121,6 +121,17 @@ body:not(.section-view) .writing-grid .book-card{min-height:220px}
 .library-grid li:nth-child(6n) .book-card{background:#f3eee0;border-color:#e7e0cf;border-left-color:#ddd2b7}
 .book-card:hover{transform:translateY(-4px);box-shadow:0 8px 18px #2527220a}
 .book-title{font-family:var(--serif);font-size:26px;font-style:italic;line-height:1.25;letter-spacing:-.35px;overflow-wrap:anywhere}
+/* First Writing-title study: a shared, pressure-weighted cursive treatment. */
+.writing-ink-title{position:relative;display:block;--writing-ink:#304237}
+.writing-printed-title{display:block;transition:opacity .16s ease}
+svg.writing-ink{position:absolute;inset:0 auto auto 0;display:block;width:100%;overflow:visible;fill:none;stroke:none;stroke-width:0;opacity:0;pointer-events:none;transition:opacity .16s ease}
+.writing-guide{fill:var(--writing-ink);opacity:.15}
+.writing-stroke{fill:var(--writing-ink)}
+.writing-nib{opacity:0;filter:drop-shadow(1px 2px 1px #34291930);transition:opacity .12s ease}
+.has-writing-ink:is([data-ink-state="writing"],[data-ink-state="complete"]) .writing-printed-title{opacity:0}
+.has-writing-ink:is([data-ink-state="writing"],[data-ink-state="complete"]) .writing-ink{opacity:1}
+.has-writing-ink[data-ink-state="writing"] .writing-nib{opacity:1}
+@media(prefers-reduced-motion:reduce){.writing-printed-title,svg.writing-ink,.writing-nib{transition:none}}
 .book-author{font-size:13px;color:#64685e;line-height:1.5}
 .reading-group+.reading-group{margin-top:42px;padding-top:32px;border-top:1px solid var(--line)}
 .reading-heading{display:flex;align-items:baseline;gap:12px;margin-bottom:20px;font-family:var(--sans);font-size:16px;font-weight:600;line-height:1.5}

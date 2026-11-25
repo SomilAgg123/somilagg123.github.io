@@ -160,7 +160,9 @@ function renderBooks(id, articles, previewCount = Infinity) {
     const card = externalLink(article.url);
     card.className = 'book-card';
     card.setAttribute('aria-label', `${article.name} (opens in a new tab)`);
-    card.append(label('book-title', article.name), label('book-author', article.detail || article.publication));
+    const title = label('book-title', article.name);
+    card.append(title, label('book-author', article.detail || article.publication));
+    if (id === 'writing-links') attachWritingInk(card, title, article.name);
     if (id === 'article-links' && article.favorite) {
       card.classList.add('is-favorite');
       card.append(label('catalogue-favorite', 'Favorite'));
