@@ -507,8 +507,8 @@ body:not(.section-view) .content-sections > .content-section:last-child{margin-b
 .pocket-cards-hand{position:relative;display:flex;flex-direction:column;align-items:center}
 .pocket-cards-deal{display:block;width:100%;aspect-ratio:180/132;padding:0;border-radius:8px}
 .pocket-cards canvas{display:block;width:100%;height:100%;pointer-events:none}
-.pocket-cards-caption,.pocket-cards-restore{padding:3px 6px;min-height:28px;font:400 var(--pocket-text-size)/1.5 'Bradley Hand','Comic Sans MS',cursive;color:var(--muted)}
-.pocket-cards-caption{transform:rotate(-4deg);white-space:nowrap}
+.pocket-cards-caption,.pocket-cards-restore{padding:3px 6px;min-height:28px;font:400 var(--pocket-text-size)/1.5 var(--sans);color:var(--muted)}
+.pocket-cards-caption{white-space:nowrap}
 .pocket-cards-caption:hover,.pocket-cards-restore:hover{color:var(--ink)}
 .pocket-cards-hide{position:absolute;right:2px;top:-14px;z-index:1;padding:6px;font-size:.75rem;color:var(--muted);opacity:0;transition:opacity .15s}
 .pocket-cards:hover .pocket-cards-hide,.pocket-cards:focus-within .pocket-cards-hide{opacity:1}
