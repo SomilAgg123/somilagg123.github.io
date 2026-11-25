@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { createPaperStackMotion } = require('../dist/paper-motion.js');
+const { createPaperStackMotion, paperSettleKeyframes, PAPER_PULL_DURATION } = require('../dist/paper-motion.js');
 
 function harness(reducedMotion = false) {
   let now = 0;
@@ -172,7 +172,7 @@ test('resuming an inactive tab does not jump to the end of the motion', () => {
   h.motion.select(3);
   h.step();
   h.step(10000);
-  assert.ok(h.motion.getState().pull < .2);
+  assert.ok(h.motion.getState().pull < .25);
   assert.equal(h.motion.getState().settle, 0);
   h.finish();
 });
@@ -188,4 +188,29 @@ test('the top article never slides out and idle states schedule no frames', () =
   assert.equal(h.motion.getState().active, 0);
   assert.equal(h.motion.getState().pull, 0);
   assert.equal(h.frames.size, 0);
+});
+
+// The compositor trajectory must preserve the same bounds and interrupted velocity.
+test('native settling keyframes end exactly at the target without moving below the base', () => {
+  for (const [position, velocity, target] of [[0, 0, 1], [1, 0, 0], [.45, -4, 1], [.55, 4, 0]]) {
+    const { values, duration } = paperSettleKeyframes(position, velocity, target);
+    assert.equal(values[0], position);
+    assert.equal(values.at(-1), target);
+    assert.ok(values.every(value => value >= 0 && value <= 1));
+    assert.ok(duration > 0 && duration < 400);
+    for (let i = 1; i < values.length; i++) assert.ok(Math.abs(values[i] - values[i - 1]) < .25);
+  }
+  const reversed = paperSettleKeyframes(.55, 4, 0).values;
+  assert.ok(reversed[1] > paperSettleKeyframes(.55, 0, 0).values[1], 'Reversal retains momentum instead of restarting at zero velocity');
+});
+
+test('the outward slide completes within half a second before settling begins', () => {
+  const h = harness();
+  h.motion.select(3);
+  h.step();
+  h.advance(PAPER_PULL_DURATION);
+  assert.equal(h.motion.getState().pull, 1);
+  assert.equal(h.motion.getState().settle, 0);
+  assert.ok(PAPER_PULL_DURATION <= 480);
+  h.finish();
 });

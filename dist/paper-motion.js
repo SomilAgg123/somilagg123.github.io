@@ -1,3 +1,34 @@
+const PAPER_PULL_DURATION = 440;
+
+function advancePaperSettle(position, velocity, target, milliseconds) {
+  const seconds = milliseconds / 1000;
+  const omega = 36;
+  const error = position - target;
+  const coefficient = velocity + omega * error;
+  const decay = Math.exp(-omega * seconds);
+  position = target + (error + coefficient * seconds) * decay;
+  velocity = (velocity - omega * coefficient * seconds) * decay;
+  if (position < 0 || position > 1) {
+    position = Math.max(0, Math.min(1, position));
+    velocity = 0;
+  }
+  if (Math.abs(position - target) < .001 && Math.abs(velocity) < .04) {
+    position = target;
+    velocity = 0;
+  }
+  return { position, velocity };
+}
+
+// The browser can interpolate this trajectory on the compositor, without frame-by-frame styles.
+function paperSettleKeyframes(position, velocity, target) {
+  const values = [position];
+  while ((position !== target || velocity !== 0) && values.length < 60) {
+    ({ position, velocity } = advancePaperSettle(position, velocity, target, 16));
+    values.push(position);
+  }
+  return { values, duration: (values.length - 1) * 16 };
+}
+
 // One extracted sheet, one gap, and one latest request. No animation queue.
 function createPaperStackMotion({ count, onChange, reducedMotion = false,
   requestFrame = requestAnimationFrame, cancelFrame = cancelAnimationFrame }) {
@@ -13,7 +44,7 @@ function createPaperStackMotion({ count, onChange, reducedMotion = false,
   function getState() {
     const phase = requested !== active ? 'lifting' : !active ? 'rest'
       : pull < 1 ? 'pulling' : settle < 1 ? 'settling' : 'open';
-    return { requested, active, pull, settle, phase };
+    return { requested, active, pull, settle, velocity, phase };
   }
 
   function publish() { onChange(getState()); }
@@ -29,7 +60,7 @@ function createPaperStackMotion({ count, onChange, reducedMotion = false,
     active = requested;
     pull = settle = active ? 1 : 0;
     velocity = 0;
-    elapsed = active ? 820 : 0;
+    elapsed = active ? PAPER_PULL_DURATION : 0;
     publish();
   }
 
@@ -40,21 +71,9 @@ function createPaperStackMotion({ count, onChange, reducedMotion = false,
   function liftOrSettle(target, milliseconds) {
     // Exact critically damped motion, retaining velocity when a request reverses.
     // A bounded one-sheet displacement cannot move the pile below its base.
-    const seconds = milliseconds / 1000;
-    const omega = 36;
-    const error = settle - target;
-    const coefficient = velocity + omega * error;
-    const decay = Math.exp(-omega * seconds);
-    settle = target + (error + coefficient * seconds) * decay;
-    velocity = (velocity - omega * coefficient * seconds) * decay;
-    if (settle < 0 || settle > 1) {
-      settle = Math.max(0, Math.min(1, settle));
-      velocity = 0;
-    }
-    if (Math.abs(settle - target) < .001 && Math.abs(velocity) < .04) {
-      settle = target;
-      velocity = 0;
-    }
+    const next = advancePaperSettle(settle, velocity, target, milliseconds);
+    settle = next.position;
+    velocity = next.velocity;
   }
 
   function replaceSheet() {
@@ -75,8 +94,8 @@ function createPaperStackMotion({ count, onChange, reducedMotion = false,
     }
     if (requested === active && active > 0) {
       if (pull < 1) {
-        elapsed = Math.min(820, elapsed + delta);
-        pull = 1 - (1 - elapsed / 820) ** 3;
+        elapsed = Math.min(PAPER_PULL_DURATION, elapsed + delta);
+        pull = 1 - (1 - elapsed / PAPER_PULL_DURATION) ** 3;
       } else {
         liftOrSettle(1, delta);
       }
@@ -110,4 +129,4 @@ function createPaperStackMotion({ count, onChange, reducedMotion = false,
   };
 }
 
-if (typeof module !== 'undefined' && module.exports) module.exports = { createPaperStackMotion };
+if (typeof module !== 'undefined' && module.exports) module.exports = { createPaperStackMotion, paperSettleKeyframes, PAPER_PULL_DURATION };

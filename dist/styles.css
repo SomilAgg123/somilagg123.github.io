@@ -398,16 +398,14 @@ a.thesis-company-note:hover{color:var(--accent);text-decoration:underline;text-u
 #library .reading-hero .section-heading{margin-bottom:6px;min-height:0}
 #library .reading-hero .section-intro{margin:0;font-size:20px}
 .reading-stage{display:flex;flex-direction:column;justify-content:center;align-items:center;isolation:isolate;padding:22px 0 10px}
-.paper-stack{--pull-progress:0;--stack-settle:0;--page-width:300px;--page-height:410px;--pile-left:440px;--pile-step:14px;--paper-pull:316px;--paper-tilt:.16;--paper-skew:-.28;--paper-flatten:.68;--scene-height:440px;position:relative;width:100%;max-width:900px;height:var(--scene-height);isolation:isolate}
-.paper-stack::before{content:'';position:absolute;top:38%;left:calc(var(--pile-left) - 150px);width:calc(var(--page-width) + 95px);height:60%;background:radial-gradient(ellipse,#56452a1c,transparent 68%);filter:blur(13px);z-index:-1;pointer-events:none}
+.paper-stack{--page-width:300px;--page-height:360px;--pile-left:24px;--pile-top:84px;--pile-step:12px;--paper-pull:430px;--paper-width-scale:.84;--paper-tilt:-.28;--paper-skew:.55;--paper-flatten:.62;--scene-height:440px;position:relative;width:100%;max-width:900px;height:var(--scene-height);isolation:isolate}
+.paper-stack::before{content:'';position:absolute;top:38%;left:calc(var(--pile-left) - 12px);width:var(--shadow-width);height:60%;background:radial-gradient(ellipse,#56452a1c,transparent 68%);filter:blur(13px);z-index:-1;pointer-events:none}
 /* Translation belongs to the whole sheet; only the face uses the tabletop projection. */
-.paper-sheet{--sheet-pull:0px;--sheet-drop:0px;position:absolute;top:0;left:var(--pile-left);width:var(--page-width);height:var(--page-height);z-index:var(--paper-depth);transform:translate3d(calc(var(--paper-offset) + var(--sheet-pull)),calc(var(--paper-index) * var(--pile-step) + var(--sheet-drop)),0);filter:drop-shadow(0 4px 3px #55472d24);transition:none;will-change:transform;backface-visibility:hidden;pointer-events:none}
-.paper-face{position:absolute;inset:0;transform-origin:0 0;transform:matrix(1,var(--paper-tilt),var(--paper-skew),var(--paper-flatten),0,0);pointer-events:none}
+.paper-sheet{position:absolute;top:var(--pile-top);left:var(--pile-left);width:var(--page-width);height:var(--page-height);z-index:var(--paper-depth);transform:translate3d(var(--paper-offset),calc(var(--paper-index) * var(--pile-step)),0);filter:drop-shadow(0 4px 3px #55472d24);transition:none;will-change:transform;backface-visibility:hidden;pointer-events:none}
+.paper-face{position:absolute;inset:0;transform-origin:0 0;transform:matrix(var(--paper-width-scale),var(--paper-tilt),var(--paper-skew),var(--paper-flatten),0,0);pointer-events:none}
 .paper-face::before{content:'';position:absolute;inset:0;background:url('./assets/paper-grain.svg'),linear-gradient(110deg,#faf7ee,#fdfbf4 35%,#f3eddf 90%,#fcf9f1);clip-path:polygon(.3% .3%,12% .1%,25% .4%,38% 0,53% .3%,68% .1%,83% .4%,99.7% .2%,99.8% 24%,99.6% 47%,100% 73%,99.7% 99.6%,81% 99.8%,63% 99.5%,44% 100%,25% 99.6%,.2% 99.9%,.5% 76%,0 54%,.3% 28%);box-shadow:inset 0 0 32px #a68d6311}
 .paper-face::after{content:'';position:absolute;right:1px;bottom:2px;width:25px;height:28px;background:linear-gradient(135deg,transparent 45%,#b9aa8a22 48%,#fcfaf3 56%,#e9e0cc 88%);clip-path:polygon(100% 0,100% 100%,0 100%);pointer-events:none}
-/* A single motion clock moves the extracted sheet and the upper group separately. */
-.paper-sheet.is-pulled,.paper-edge.is-pulled{--sheet-pull:calc(-1 * var(--paper-pull) * var(--pull-progress))}
-.paper-sheet.is-above-gap,.paper-edge.is-above-gap{--sheet-drop:calc(var(--pile-step) * var(--stack-settle))}
+/* Native transform animations move sheets and pointer targets together. */
 /* A compact preview rises only after its outward motion has finished. */
 .paper-stack.is-compact.is-cleared .paper-sheet.is-pulled{z-index:24}
 .paper-content{--paper-inset:27px;position:relative;z-index:1;display:flex;flex-direction:column;gap:14px;height:100%;padding:22px var(--paper-inset) 58px;color:#38372f;pointer-events:none}
@@ -418,15 +416,16 @@ a.thesis-company-note:hover{color:var(--accent);text-decoration:underline;text-u
 .paper-date{font-size:13px}
 .paper-footer{position:absolute;right:var(--paper-inset);bottom:20px;display:block;width:max-content;font-family:var(--sans);font-size:14px;font-weight:400;font-style:normal;line-height:1.5;letter-spacing:normal;white-space:nowrap}
 .paper-action{display:inline-block;color:#4d6246;font:inherit;letter-spacing:inherit;white-space:nowrap;text-decoration:underline;text-decoration-color:#7c8a6c80;text-underline-offset:4px}
-.paper-rim{position:absolute;top:var(--edge-top);left:var(--face-edge-left);width:var(--page-width);height:var(--edge-height);display:flex;align-items:center;justify-content:flex-end;padding:0 12px;text-align:right;transform-origin:0 0;transform:matrix(1,var(--paper-tilt),0,1,0,0);color:#756b57;isolation:isolate;pointer-events:none}
-.paper-rim::before{content:'';position:absolute;inset:0 -2px;z-index:-1;background:url('./assets/paper-grain.svg'),linear-gradient(100deg,#e4dac5,#f7f2e6 35%,#e8dfcd);border-bottom:1px solid #ac9c7e80;clip-path:polygon(.2% 0,100% 0,99.8% 91%,72% 100%,46% 93%,21% 100%,0 94%)}
+.paper-rim{position:absolute;top:0;left:0;width:var(--page-height);height:var(--edge-height);display:flex;align-items:center;justify-content:center;padding:0 12px;text-align:center;transform-origin:0 0;transform:matrix(var(--paper-skew),var(--paper-flatten),0,1,0,0);color:#756b57;isolation:isolate;pointer-events:none}
+.paper-end{position:absolute;top:var(--face-end-top);left:var(--face-end-left);width:var(--page-width);height:var(--edge-height);transform-origin:0 0;transform:matrix(var(--paper-width-scale),var(--paper-tilt),0,1,0,0);isolation:isolate;pointer-events:none}
+.paper-rim::before,.paper-end::before{content:'';position:absolute;inset:0 -2px;z-index:-1;background:url('./assets/paper-grain.svg'),linear-gradient(100deg,#e4dac5,#f7f2e6 35%,#e8dfcd);border-bottom:1px solid #ac9c7e80;clip-path:polygon(.2% 0,100% 0,99.8% 91%,72% 100%,46% 93%,21% 100%,0 94%)}
 .paper-sheet:nth-child(even) .paper-rim::before{background-position:80px 120px}
 .paper-edge-title{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;font-family:var(--sans);font-size:12px;line-height:1}
 .paper-sheet.is-selected .paper-rim{color:#355130}
 .paper-sheet.is-selected .paper-rim::before{border-bottom-color:#768967;background-color:#edf0df;background-blend-mode:multiply}
 /* Transparent targets move with the rims; movement alone never changes selection. */
 .paper-edges{position:absolute;inset:0;z-index:21;pointer-events:none}
-.paper-edge{--sheet-pull:0px;--sheet-drop:0px;position:absolute;top:calc(var(--edge-top) + var(--paper-index) * var(--pile-step));left:calc(var(--edge-left) + var(--paper-offset));width:var(--page-width);height:var(--edge-height);padding:0;transform-origin:0 0;transform:translate3d(var(--sheet-pull),var(--sheet-drop),0) matrix(1,var(--paper-tilt),0,1,0,0);pointer-events:auto;touch-action:manipulation}
+.paper-edge{position:absolute;top:calc(var(--edge-top) + var(--paper-index) * var(--pile-step));left:calc(var(--edge-left) + var(--paper-offset));width:var(--page-height);height:var(--edge-height);padding:0;transform-origin:0 0;transform:matrix(var(--paper-skew),var(--paper-flatten),0,1,0,0);will-change:transform;pointer-events:auto;touch-action:manipulation}
 .paper-edge:focus-visible{outline-offset:1px;z-index:2}
 .paper-touch-controls{display:none;align-items:center;justify-content:center;gap:24px;margin-top:8px}
 .paper-touch-controls button{min-height:44px;min-width:64px}
@@ -458,6 +457,5 @@ a.thesis-company-note:hover{color:var(--accent);text-decoration:underline;text-u
 @container(max-width:380px){
   #library .reading-hero .section-intro{font-size:18px}
   .paper-content{--paper-inset:18px;padding:21px var(--paper-inset) 58px;gap:13px}
-  .paper-title{font-size:24px}
 }
 @media(max-width:760px){.section-view #library .reading-hero{min-height:calc(100svh - 144px)}}

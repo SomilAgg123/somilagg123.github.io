@@ -190,6 +190,10 @@ function renderPaperStack() {
   let lastActive = -1;
   let lastRequested = -1;
   let lastPhase;
+  let lastCleared;
+  let geometry;
+  let renderedState;
+  let nativeAnimations = [];
   let resetTimer;
   let hoverTimer;
   let hoverIndex = -1;
@@ -201,9 +205,15 @@ function renderPaperStack() {
   }
 
   function renderMotion(state) {
-    stack.style.setProperty('--pull-progress', state.pull);
-    stack.style.setProperty('--stack-settle', state.settle);
-    stack.classList.toggle('is-cleared', state.pull === 1 && state.active > 0);
+    const phaseChanged = lastPhase !== state.phase;
+    const activeChanged = lastActive !== state.active;
+    const reducedLayoutChanged = reducedMotion.matches && renderedState?.settle !== state.settle;
+    renderedState = state;
+    const cleared = state.pull === 1 && state.active > 0;
+    if (lastCleared !== cleared) {
+      stack.classList.toggle('is-cleared', cleared);
+      lastCleared = cleared;
+    }
     if (lastPhase !== state.phase) {
       stack.dataset.motion = state.phase;
       lastPhase = state.phase;
@@ -231,6 +241,80 @@ function renderPaperStack() {
       choices.forEach(({ edge }, i) => edge.setAttribute('aria-pressed', String(i === state.requested)));
       position.textContent = `${state.requested + 1} / ${choices.length}`;
       lastRequested = state.requested;
+    }
+    if (geometry && (phaseChanged || activeChanged || reducedLayoutChanged)) {
+      animatePhase(state, { reset: activeChanged });
+    }
+  }
+
+  function transforms(index, pull, settle) {
+    const x = index === renderedState.active ? geometry.pull * pull : 0;
+    const y = index < renderedState.active ? geometry.step * settle : 0;
+    return {
+      sheet: `translate3d(${offsets[index % offsets.length] + x}px, ${index * geometry.step + y}px, 0)`,
+      edge: `translate3d(${x}px, ${y}px, 0) matrix(${geometry.c}, ${geometry.d}, 0, 1, 0, 0)`,
+    };
+  }
+
+  function applyPose(pull, settle) {
+    choices.forEach(({ sheet, edge }, index) => {
+      const pose = transforms(index, pull, settle);
+      sheet.style.transform = pose.sheet;
+      edge.style.transform = pose.edge;
+    });
+  }
+
+  function capturePose() {
+    if (!geometry || !renderedState.active) return { pull: 0, settle: 0 };
+    const extracted = new DOMMatrixReadOnly(getComputedStyle(choices[renderedState.active].sheet).transform);
+    const top = new DOMMatrixReadOnly(getComputedStyle(choices[0].sheet).transform);
+    return {
+      pull: Math.max(0, Math.min(1, (extracted.m41 - offsets[renderedState.active % offsets.length]) / geometry.pull)),
+      settle: Math.max(0, Math.min(1, top.m42 / geometry.step)),
+    };
+  }
+
+  function cancelAnimations() {
+    nativeAnimations.forEach(animation => animation.cancel());
+    nativeAnimations = [];
+  }
+
+  function animatePhase(state, { reset = false, pose = null } = {}) {
+    // Read the visible pose before canceling. Retargeting never snaps to a stored frame.
+    const start = pose || (reset ? { pull: 0, settle: 0 } : capturePose());
+    cancelAnimations();
+    if (reducedMotion.matches || state.phase === 'rest' || state.phase === 'open') {
+      applyPose(state.active ? 1 : 0, state.phase === 'open' ? 1 : 0);
+      return;
+    }
+    applyPose(start.pull, start.settle);
+    const startTime = document.timeline.currentTime;
+    function animate(element, keyframes, duration, easing = 'linear') {
+      if (!duration) return;
+      const animation = element.animate(keyframes, { duration, easing, fill: 'forwards' });
+      animation.startTime = startTime;
+      nativeAnimations.push(animation);
+    }
+    if (state.phase === 'pulling') {
+      const choice = choices[state.active];
+      const from = transforms(state.active, start.pull, 0);
+      const to = transforms(state.active, 1, 0);
+      const remaining = PAPER_PULL_DURATION * Math.cbrt(1 - start.pull);
+      for (const part of ['sheet', 'edge']) {
+        animate(choice[part], [{ transform: from[part] }, { transform: to[part] }], remaining,
+          'cubic-bezier(0.333333, 1, 0.666667, 1)');
+      }
+    } else {
+      const target = state.phase === 'settling' ? 1 : 0;
+      const plan = paperSettleKeyframes(start.settle, state.velocity, target);
+      choices.slice(0, state.active).forEach((choice, index) => {
+        for (const part of ['sheet', 'edge']) {
+          animate(choice[part], plan.values.map((value, frame) => ({
+            transform: transforms(index, start.pull, value)[part],
+            offset: plan.values.length === 1 ? 1 : frame / (plan.values.length - 1),
+          })), plan.duration);
+        }
+      });
     }
   }
 
@@ -279,7 +363,10 @@ function renderPaperStack() {
     rim.className = 'paper-rim';
     rim.setAttribute('aria-hidden', 'true');
     rim.append(label('paper-edge-title', article.name));
-    sheet.append(face, rim);
+    const end = document.createElement('span');
+    end.className = 'paper-end';
+    end.setAttribute('aria-hidden', 'true');
+    sheet.append(face, end, rim);
     sheets.append(sheet);
 
     // Targets follow their visible rims; only real pointer movement selects them.
@@ -341,35 +428,45 @@ function renderPaperStack() {
   function layout() {
     const width = stack.clientWidth;
     if (!width) return;
-    const compact = width < 740;
-    const paperHeight = compact ? (width < 330 ? 448 : 400) : 384;
-    const skew = compact ? .14 : .28;
-    const tilt = compact ? .09 : .16;
-    const flatten = compact ? .84 : .68;
+    const savedPose = geometry ? capturePose() : { pull: 0, settle: 0 };
+    const compact = width < 700;
+    const narrow = width < 420;
+    const paperHeight = narrow ? 340 : 360;
+    // View the long left spine from the top-left, with the page receding to the right.
+    const a = narrow ? .8 : .84;
+    const b = narrow ? -.2 : -.28;
+    const c = narrow ? .3 : .55;
+    const d = narrow ? .78 : .62;
     const step = compact ? 17 : 12;
     const depth = step * (choices.length - 1);
-    // Parallel projected edges need more clearance for deeper sheets. Reserve
-    // that distance plus a small gap, instead of pulling by the flat page width.
-    const edgeSlope = skew / flatten;
+    const slope = c / d;
     const clearance = 20;
-    const fittedWidth = (width - 32 - skew * paperHeight - edgeSlope * depth - clearance) / (2 + edgeSlope * tilt);
-    const paperWidth = compact ? Math.min(280, width * .73) : Math.min(330, fittedWidth);
-    const projectedWidth = paperWidth + skew * paperHeight;
-    const pull = compact ? Math.max(16, Math.min(48, width - projectedWidth - 24)) : paperWidth * (1 + edgeSlope * tilt) + edgeSlope * depth + clearance;
-    const left = (width - projectedWidth - pull) / 2 + pull + skew * paperHeight;
-    const projectedHeight = tilt * paperWidth + flatten * paperHeight;
+    const compactPull = narrow ? 16 : 40;
+    const fittedWidth = compact
+      ? (width - 32 - c * paperHeight - compactPull) / a
+      : (width - 32 - c * paperHeight - slope * depth - clearance) / (2 * a - slope * b);
+    const paperWidth = Math.min(narrow ? 250 : 300, fittedWidth);
+    const projectedWidth = a * paperWidth + c * paperHeight;
+    const pull = compact ? compactPull : (a - slope * b) * paperWidth + slope * depth + clearance;
+    const left = (width - projectedWidth - pull) / 2;
+    const top = -b * paperWidth;
+    const projectedHeight = top + d * paperHeight;
+    geometry = { pull, step, c, d };
     stack.classList.toggle('is-compact', compact);
+    stack.classList.toggle('is-narrow', narrow);
     const vars = {
       '--page-width': `${paperWidth}px`, '--page-height': `${paperHeight}px`,
-      '--pile-left': `${left}px`, '--paper-pull': `${pull}px`,
-      '--pile-step': `${step}px`, '--paper-tilt': tilt, '--paper-skew': -skew,
-      '--paper-flatten': flatten, '--edge-left': `${left - skew * paperHeight}px`,
-      '--face-edge-left': `${-skew * paperHeight}px`,
-      '--edge-top': `${flatten * paperHeight}px`, '--edge-height': `${step}px`,
+      '--pile-left': `${left}px`, '--pile-top': `${top}px`, '--paper-pull': `${pull}px`,
+      '--pile-step': `${step}px`, '--paper-width-scale': a, '--paper-tilt': b,
+      '--paper-skew': c, '--paper-flatten': d,
+      '--edge-left': `${left}px`, '--edge-top': `${top}px`, '--edge-height': `${step}px`,
+      '--face-end-left': `${c * paperHeight}px`, '--face-end-top': `${d * paperHeight}px`,
+      '--shadow-width': `${projectedWidth + 24}px`,
       '--scene-height': `${projectedHeight + step * choices.length + 16}px`,
-      '--paper-title-size': `${paperWidth < 290 ? 25 : 27}px`,
+      '--paper-title-size': `${narrow ? 22 : paperWidth < 250 ? 24 : 27}px`,
     };
     Object.entries(vars).forEach(([key, value]) => stack.style.setProperty(key, value));
+    if (renderedState) animatePhase(renderedState, { pose: savedPose });
   }
   new ResizeObserver(layout).observe(stack);
   window.addEventListener('resize', layout, { passive: true });
